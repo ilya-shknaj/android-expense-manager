@@ -1,12 +1,12 @@
 package by.gravity.expensemanager.model;
 
-public class Model extends ExpandableModel {
+public class PriceModel {
 
-	public Model() {
+	public PriceModel() {
 
 	}
 
-	public Model(String date, String price) {
+	public PriceModel(String date, String price) {
 		this.date = date;
 		this.price = price;
 	}

@@ -57,8 +57,8 @@ public class DrawerActivity extends SherlockFragmentActivity {
 		mActionBar.setDisplayHomeAsUpEnabled(true);
 		mActionBar.setHomeButtonEnabled(true);
 
-		mDrawerToggle = new SherlockActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer_light, R.string.drawer_open,
-				R.string.drawer_close);
+		mDrawerToggle = new SherlockActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer_light, 0,
+				0);
 		mDrawerToggle.syncState();
 	}
 
