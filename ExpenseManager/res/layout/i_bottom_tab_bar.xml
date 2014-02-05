@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/tab_bar_background"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="@dimen/tab_bar_button_wrapper_size"
+        android:layout_height="fill_parent"
+        android:layout_centerInParent="true"
+        android:background="@drawable/tab_bar_button"
+        android:clickable="true" >
+
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="@dimen/tab_bar_button_size"
+            android:layout_height="@dimen/tab_bar_button_size"
+            android:layout_centerInParent="true"
+            android:background="@drawable/ic_action_new"
+            android:clickable="false" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="@dimen/tab_bar_button_wrapper_size"
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/tab_bar_button"
+        android:clickable="true" >
+
+        <Button
+            android:id="@+id/categoryButton"
+            android:layout_width="@dimen/tab_bar_button_size"
+            android:layout_height="@dimen/tab_bar_button_size"
+            android:layout_centerInParent="true"
+            android:background="@drawable/ic_action_labels"
+            android:clickable="false" />
+    </RelativeLayout>
+
+</RelativeLayout>

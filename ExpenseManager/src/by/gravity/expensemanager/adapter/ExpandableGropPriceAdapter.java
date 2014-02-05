@@ -34,7 +34,7 @@ public class ExpandableGropPriceAdapter extends BaseExpandableListAdapter {
 		final PriceModel priceModel = (PriceModel) getChild(groupPosition, childPosition);
 
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.costs_expanded_list_item, null);
+			convertView = inflater.inflate(R.layout.i_expanded, null);
 		}
 
 		TextView date = (TextView) convertView.findViewById(R.id.date);
@@ -69,7 +69,7 @@ public class ExpandableGropPriceAdapter extends BaseExpandableListAdapter {
 	public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 		GroupPriceModel groupPriceModel = (GroupPriceModel) getGroup(groupPosition);
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.costs_collapsed_list_item, null);
+			convertView = inflater.inflate(R.layout.i_collapsed, null);
 		}
 		TextView date = (TextView) convertView.findViewById(R.id.date);
 		date.setText(groupPriceModel.getGroupName());

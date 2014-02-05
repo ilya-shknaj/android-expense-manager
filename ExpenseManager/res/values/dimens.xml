@@ -1,7 +1,10 @@
 <resources>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="collapsed_item_margin">10dp</dimen>
+    <dimen name="item_margin">10dp</dimen>
     <dimen name="collapsed_item_left_margn">35dp</dimen>
-	<dimen name="collapsed_text_size">20sp</dimen>
+    <dimen name="title_text_size">20sp</dimen>
+    <dimen name="tab_bar_button_size">40dp</dimen>
+    <dimen name="tab_bar_button_wrapper_size">80dp</dimen>
+
 </resources>

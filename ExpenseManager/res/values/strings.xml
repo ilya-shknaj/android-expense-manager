@@ -2,9 +2,8 @@
 <resources>
 
     <string name="app_name">Expense Manager</string>
-    <string name="action_settings">Settings</string>
     <string name="action_settings">Настройки</string>
-    <string name="costs">Расходы</string>
+    <string name="outcome">Расходы</string>
     <string name="income">Доходы</string>
 
     <string name="short_lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit</string>

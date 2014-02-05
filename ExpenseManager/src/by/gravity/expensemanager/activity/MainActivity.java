@@ -2,7 +2,7 @@ package by.gravity.expensemanager.activity;
 
 import android.os.Bundle;
 import by.gravity.expensemanager.R;
-import by.gravity.expensemanager.fragments.CostsFragment;
+import by.gravity.expensemanager.fragments.OutcomeFragment;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -29,8 +29,8 @@ public class MainActivity extends DrawerActivity {
 	}
 
 	private void showCostsFragment() {
-		getSupportFragmentManager().beginTransaction().add(R.id.content, CostsFragment.newInstance()).commit();
-		setTitle(getString(R.string.costs));
+		getSupportFragmentManager().beginTransaction().add(R.id.content, OutcomeFragment.newInstance()).commit();
+		setTitle(getString(R.string.outcome));
 	}
 
 }
