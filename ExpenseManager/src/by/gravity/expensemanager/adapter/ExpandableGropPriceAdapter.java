@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.model.GroupPriceModel;
@@ -42,6 +43,14 @@ public class ExpandableGropPriceAdapter extends BaseExpandableListAdapter {
 
 		TextView price = (TextView) convertView.findViewById(R.id.price);
 		price.setText(priceModel.getPrice());
+
+		LinearLayout categoryLayout = (LinearLayout) convertView.findViewById(R.id.categoryLayout);
+		categoryLayout.removeAllViews();
+		for (int i = 0; i < priceModel.getCategory().length; i++) {
+			TextView category = (TextView) inflater.inflate(R.layout.i_category, null);
+			category.setText(priceModel.getCategory()[i]);
+			categoryLayout.addView(category, i);
+		}
 
 		return convertView;
 	}

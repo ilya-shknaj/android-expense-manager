@@ -1,22 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/item_margin"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:padding="@dimen/item_margin" >
 
-    <TextView
-        android:id="@+id/date"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@color/blue" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerInParent="true" />
+        android:layout_marginLeft="10dp"
+        android:orientation="horizontal" >
 
-    <TextView
-        android:id="@+id/price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerInParent="true" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:orientation="vertical" >
 
-</RelativeLayout>
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="05.02.2014" />
+
+            <LinearLayout
+                android:id="@+id/categoryLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical" />
+        </LinearLayout>
+
+        <TextView
+            android:textStyle="bold"
+            android:id="@+id/price"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.5"
+            android:gravity="right|center_vertical"
+            android:text="123 $" />
+    </LinearLayout>
+
+</LinearLayout>
