@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.os.Bundle;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.adapter.ExpandableGropPriceAdapter;
 import by.gravity.expensemanager.model.GroupPriceModel;
@@ -12,10 +13,10 @@ import by.gravity.expensemanager.model.PriceModel;
 
 import com.actionbarsherlock.view.MenuItem;
 
-public class CostsFragment extends CommonSherlockFragment {
+public class OutcomeFragment extends CommonSherlockFragment {
 
-	public static CostsFragment newInstance() {
-		CostsFragment fragment = new CostsFragment();
+	public static OutcomeFragment newInstance() {
+		OutcomeFragment fragment = new OutcomeFragment();
 
 		return fragment;
 	}
@@ -23,14 +24,27 @@ public class CostsFragment extends CommonSherlockFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		initPeriod();
+		initListView();
+	}
+
+	private void initPeriod() {
+		TextView period = (TextView) getView().findViewById(R.id.period);
+		period.setText("01 январ€ - 01 ‘еврал€");
+	}
+
+	private void initListView() {
 		ExpandableListView expandableListView = (ExpandableListView) getView().findViewById(R.id.expandableListView);
+		expandableListView.setChildDivider(getResources().getDrawable(R.color.divider));
+		expandableListView.setDivider(getResources().getDrawable(R.color.divider));
+		expandableListView.setDividerHeight(1);
 		ExpandableGropPriceAdapter adapter = new ExpandableGropPriceAdapter(getActivity(), getGroupPriceList());
 		expandableListView.setAdapter(adapter);
 	}
 
 	private List<GroupPriceModel> getGroupPriceList() {
 		List<GroupPriceModel> groupPriceModels = new ArrayList<GroupPriceModel>();
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 10; i++) {
 			GroupPriceModel groupPriceModel = new GroupPriceModel();
 			groupPriceModel.setGroupName(i + " январ€");
 			groupPriceModel.setGroupPrice("" + 10 + i + "$");
@@ -53,7 +67,7 @@ public class CostsFragment extends CommonSherlockFragment {
 
 	@Override
 	public int getViewId() {
-		return R.layout.f_main;
+		return R.layout.f_costs;
 	}
 
 }

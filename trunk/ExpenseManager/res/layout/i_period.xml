@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/period"
+    style="@style/collapsed_item_style"
+    android:layout_width="fill_parent"
+    android:background="@color/collapsed_item_background"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:gravity="center_horizontal"
+    android:text="1 Января - 1 Февраля"
+    android:textColor="@color/orange"
+    android:textStyle="bold" />

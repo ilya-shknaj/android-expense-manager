@@ -3,27 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/collapsed_item_margin"
+    android:background="@color/collapsed_item_background"
+    android:paddingBottom="@dimen/item_margin"
     android:paddingLeft="@dimen/collapsed_item_left_margn"
-    android:paddingRight="@dimen/collapsed_item_margin"
-    android:paddingTop="@dimen/collapsed_item_margin" >
+    android:paddingRight="@dimen/item_margin"
+    android:paddingTop="@dimen/item_margin" >
 
     <TextView
         android:id="@+id/date"
+        style="@style/collapsed_item_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_centerInParent="true"
-        android:textSize="@dimen/collapsed_text_size"
-        android:textStyle="bold" />
+        android:layout_centerInParent="true" />
 
     <TextView
         android:id="@+id/price"
+        style="@style/collapsed_item_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_centerInParent="true"
-        android:textSize="@dimen/collapsed_text_size"
-        android:textStyle="bold" />
+        android:layout_centerInParent="true" />
 
 </RelativeLayout>

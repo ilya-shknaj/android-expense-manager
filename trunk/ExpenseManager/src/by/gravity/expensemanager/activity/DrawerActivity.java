@@ -10,10 +10,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import by.gravity.common.utils.ContextHolder;
 import by.gravity.expensemanager.R;
+import by.gravity.expensemanager.adapter.MenuAdapter;
+import by.gravity.expensemanager.model.MenuModel;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -29,7 +30,7 @@ public class DrawerActivity extends SherlockFragmentActivity {
 
 	private SherlockActionBarDrawerToggle mDrawerToggle;
 
-	private static final List<String> DRAWER_MENU = getDrawerMenu();
+	private static final List<MenuModel> DRAWER_MENU = getDrawerMenu();
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -45,7 +46,9 @@ public class DrawerActivity extends SherlockFragmentActivity {
 		mDrawerLayout.setDrawerListener(new DemoDrawerListener());
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-		listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, DRAWER_MENU));
+		MenuAdapter adapter = new MenuAdapter(this, R.layout.i_menu, DRAWER_MENU);
+
+		listView.setAdapter(adapter);
 		listView.setOnItemClickListener(new DrawerItemClickListener());
 		listView.setCacheColorHint(0);
 		listView.setScrollingCacheEnabled(false);
@@ -57,8 +60,7 @@ public class DrawerActivity extends SherlockFragmentActivity {
 		mActionBar.setDisplayHomeAsUpEnabled(true);
 		mActionBar.setHomeButtonEnabled(true);
 
-		mDrawerToggle = new SherlockActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer_light, 0,
-				0);
+		mDrawerToggle = new SherlockActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer_light, 0, 0);
 		mDrawerToggle.syncState();
 	}
 
@@ -88,10 +90,10 @@ public class DrawerActivity extends SherlockFragmentActivity {
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			String selectedItem = DRAWER_MENU.get(position);
-			mActionBar.setTitle(selectedItem);
+			MenuModel selectedItem = DRAWER_MENU.get(position);
+			mActionBar.setTitle(selectedItem.getText());
 			mDrawerLayout.closeDrawer(listView);
-			onDrawerItemClick(selectedItem);
+			onDrawerItemClick(selectedItem.getText());
 		}
 	}
 
@@ -131,11 +133,11 @@ public class DrawerActivity extends SherlockFragmentActivity {
 		}
 	}
 
-	private static List<String> getDrawerMenu() {
-		List<String> drawerMenu = new ArrayList<String>();
+	private static List<MenuModel> getDrawerMenu() {
+		List<MenuModel> drawerMenu = new ArrayList<MenuModel>();
 		Context context = ContextHolder.getContext();
-		drawerMenu.add(context.getString(R.string.costs));
-		drawerMenu.add(context.getString(R.string.income));
+		drawerMenu.add(new MenuModel(R.drawable.ic_menu_outcome, context.getString(R.string.outcome)));
+		drawerMenu.add(new MenuModel(R.drawable.ic_menu_income, context.getString(R.string.income)));
 
 		return drawerMenu;
 	}

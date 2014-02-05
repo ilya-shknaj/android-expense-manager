@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="blue">#33B5E5</color>
+    <color name="orange">#FFBB33</color>
+    <color name="divider">#80333333</color>
+    <color name="collapsed_item_background">#25BBBBBB</color>
+    <color name="tab_bar_background">#222222</color>
+    <color name="pressed_color">#2D7B97</color>
+    <color name="transparent">#00000000</color>
+
+</resources>
