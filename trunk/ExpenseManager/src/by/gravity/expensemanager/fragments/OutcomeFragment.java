@@ -47,11 +47,12 @@ public class OutcomeFragment extends CommonSherlockFragment {
 		for (int i = 0; i < 10; i++) {
 			GroupPriceModel groupPriceModel = new GroupPriceModel();
 			groupPriceModel.setGroupName(i + " Января");
-			groupPriceModel.setGroupPrice("" + 10 + i + "$");
+			groupPriceModel.setGroupPrice("" + 10000 + i + "$");
 			for (int j = 0; j < 10; j++) {
 				PriceModel priceModel = new PriceModel();
 				priceModel.setDate(j + ".01.2014");
 				priceModel.setPrice(j + "$");
+				priceModel.setCategory(new String[] { "Продукты" });
 				groupPriceModel.getPriceList().add(priceModel);
 			}
 			groupPriceModels.add(groupPriceModel);

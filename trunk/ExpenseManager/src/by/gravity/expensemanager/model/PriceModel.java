@@ -1,19 +1,24 @@
 package by.gravity.expensemanager.model;
 
+import by.gravity.common.utils.StringUtil;
+
 public class PriceModel {
+
+	private String date;
+
+	private String price;
+
+	private String[] category;
 
 	public PriceModel() {
 
 	}
 
-	public PriceModel(String date, String price) {
+	public PriceModel(String date, String price, String... category) {
 		this.date = date;
 		this.price = price;
+		this.category = category;
 	}
-
-	private String date;
-
-	private String price;
 
 	public String getDate() {
 		return date;
@@ -28,7 +33,15 @@ public class PriceModel {
 	}
 
 	public void setPrice(String price) {
-		this.price = price;
+		this.price = StringUtil.convertNumberToHumanFriednly(price);
+	}
+
+	public String[] getCategory() {
+		return category;
+	}
+
+	public void setCategory(String[] category) {
+		this.category = category;
 	}
 
 }

@@ -3,6 +3,8 @@ package by.gravity.expensemanager.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import by.gravity.common.utils.StringUtil;
+
 public class GroupPriceModel {
 
 	private String groupName;
@@ -28,7 +30,7 @@ public class GroupPriceModel {
 	}
 
 	public void setGroupPrice(String groupPrice) {
-		this.groupPrice = groupPrice;
+		this.groupPrice = StringUtil.convertNumberToHumanFriednly(groupPrice);
 	}
 
 	public List<PriceModel> getPriceList() {
