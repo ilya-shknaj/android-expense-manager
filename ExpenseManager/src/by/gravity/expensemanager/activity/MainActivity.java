@@ -1,6 +1,7 @@
 package by.gravity.expensemanager.activity;
 
 import android.os.Bundle;
+import android.os.Handler;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.fragments.ChoosePeriodFragment;
 import by.gravity.expensemanager.fragments.OutcomeFragment;
@@ -10,10 +11,14 @@ import com.actionbarsherlock.view.MenuInflater;
 
 public class MainActivity extends DrawerActivity {
 
+	private static final Handler handler = new Handler();
+
+	private static final int SHOW_FRAGMENT_DELAY = 250;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		showCostsFragment();
+		showOutcomeFragment();
 
 	}
 
@@ -26,10 +31,22 @@ public class MainActivity extends DrawerActivity {
 
 	@Override
 	public void onDrawerItemClick(String item) {
-		super.onDrawerItemClick(item);
+		if (item.equals(getString(R.string.outcome))) {
+			showOutcomeFragmentDelayed();
+		}
 	}
 
-	public void showCostsFragment() {
+	private void showOutcomeFragmentDelayed() {
+		handler.postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				showOutcomeFragment();
+			}
+		}, SHOW_FRAGMENT_DELAY);
+	}
+
+	public void showOutcomeFragment() {
 		getSupportFragmentManager().beginTransaction().add(R.id.content, OutcomeFragment.newInstance()).commit();
 		setTitle(getString(R.string.outcome));
 	}
