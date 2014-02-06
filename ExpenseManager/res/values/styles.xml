@@ -2,13 +2,13 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
     <style name="AppBaseTheme" parent="android:Theme.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
+            backward-compatibility can go here.
         -->
     </style>
 
@@ -17,11 +17,17 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
-    <style name="collapsed_item_style" parent="android:Widget.Holo.Light.TextView">
+    <style name="collapsedItemStyle" parent="android:Widget.Holo.Light.TextView">
         <item name="android:padding">@dimen/item_margin</item>
         <item name="android:textColor">@color/blue</item>
         <item name="android:textSize">@dimen/title_text_size</item>
-        
+    </style>
+
+    <style name="choosePeriod" parent="android:Widget.Holo.Light.TextView">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
 </resources>

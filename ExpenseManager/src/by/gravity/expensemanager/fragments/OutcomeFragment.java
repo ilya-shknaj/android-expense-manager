@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import by.gravity.expensemanager.R;
+import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.adapter.ExpandableGropPriceAdapter;
 import by.gravity.expensemanager.model.GroupPriceModel;
 import by.gravity.expensemanager.model.PriceModel;
@@ -31,6 +34,14 @@ public class OutcomeFragment extends CommonSherlockFragment {
 	private void initPeriod() {
 		TextView period = (TextView) getView().findViewById(R.id.period);
 		period.setText("01 январ€ - 01 ‘еврал€");
+		View periodLayout = getView().findViewById(R.id.periodLayout);
+		periodLayout.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				((MainActivity) getActivity()).showChoosePeriodFragment();
+			}
+		});
 	}
 
 	private void initListView() {
@@ -47,7 +58,7 @@ public class OutcomeFragment extends CommonSherlockFragment {
 		for (int i = 0; i < 10; i++) {
 			GroupPriceModel groupPriceModel = new GroupPriceModel();
 			groupPriceModel.setGroupName(i + " январ€");
-			groupPriceModel.setGroupPrice("" + 10000 + i + "$");
+			groupPriceModel.setGroupPrice("" + 10000 + i + " $");
 			for (int j = 0; j < 10; j++) {
 				PriceModel priceModel = new PriceModel();
 				priceModel.setDate(j + ".01.2014");
@@ -68,7 +79,7 @@ public class OutcomeFragment extends CommonSherlockFragment {
 
 	@Override
 	public int getViewId() {
-		return R.layout.f_costs;
+		return R.layout.f_outcome;
 	}
 
 }

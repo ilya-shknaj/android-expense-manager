@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/periodLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/period_title"
+    android:clickable="true"
+    android:paddingBottom="@dimen/item_margin"
+    android:paddingTop="@dimen/item_margin" >
+
+    <TextView
+        android:id="@+id/period"
+        style="@style/collapsedItemStyle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:gravity="center"
+        android:text="1 Января - 1 Февраля"
+        android:textColor="@color/orange"
+        android:textStyle="bold" />
+
+</LinearLayout>

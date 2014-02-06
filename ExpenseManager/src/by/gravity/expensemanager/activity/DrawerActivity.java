@@ -40,8 +40,8 @@ public class DrawerActivity extends SherlockFragmentActivity {
 	}
 
 	private void initDrawer() {
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		listView = (ListView) findViewById(R.id.left_drawer);
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+		listView = (ListView) findViewById(R.id.leftDrawer);
 
 		mDrawerLayout.setDrawerListener(new DemoDrawerListener());
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
