@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:background="@color/collapsed_item_background"
     android:paddingBottom="@dimen/item_margin"
     android:paddingLeft="@dimen/collapsed_item_left_margn"
@@ -11,7 +10,7 @@
 
     <TextView
         android:id="@+id/date"
-        style="@style/collapsed_item_style"
+        style="@style/collapsedItemStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -19,7 +18,7 @@
 
     <TextView
         android:id="@+id/price"
-        style="@style/collapsed_item_style"
+        style="@style/collapsedItemStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

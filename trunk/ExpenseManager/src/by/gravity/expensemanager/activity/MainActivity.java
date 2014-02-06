@@ -2,6 +2,7 @@ package by.gravity.expensemanager.activity;
 
 import android.os.Bundle;
 import by.gravity.expensemanager.R;
+import by.gravity.expensemanager.fragments.ChoosePeriodFragment;
 import by.gravity.expensemanager.fragments.OutcomeFragment;
 
 import com.actionbarsherlock.view.Menu;
@@ -28,9 +29,14 @@ public class MainActivity extends DrawerActivity {
 		super.onDrawerItemClick(item);
 	}
 
-	private void showCostsFragment() {
+	public void showCostsFragment() {
 		getSupportFragmentManager().beginTransaction().add(R.id.content, OutcomeFragment.newInstance()).commit();
 		setTitle(getString(R.string.outcome));
+	}
+
+	public void showChoosePeriodFragment() {
+		getSupportFragmentManager().beginTransaction().add(R.id.content, ChoosePeriodFragment.newInstanse())
+				.addToBackStack(ChoosePeriodFragment.class.getSimpleName()).commit();
 	}
 
 }

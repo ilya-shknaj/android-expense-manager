@@ -7,6 +7,8 @@
     <color name="collapsed_item_background">#25BBBBBB</color>
     <color name="tab_bar_background">#222222</color>
     <color name="pressed_color">#2D7B97</color>
+    <color name="pressed_color2">#88CAE2</color>
     <color name="transparent">#00000000</color>
+    <color name="choose_period_date_background">#16000000</color>
 
 </resources>
