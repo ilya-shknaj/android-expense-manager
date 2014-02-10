@@ -68,7 +68,7 @@ public class PinnedHeaderExpListView extends ExpandableListView {
 
 		};
 
-		// requestLayout();
+		requestLayout();
 	}
 
 	@Override
@@ -135,7 +135,7 @@ public class PinnedHeaderExpListView extends ExpandableListView {
 		}
 
 		case IPinnedHeaderAdapter.PINNED_HEADER_VISIBLE: {
-			mAdapter.configurePinnedHeader(mHeaderView, group);
+			mAdapter.configurePinnedHeader(mHeaderView, isGroupExpanded(group), group);
 			if (mHeaderView.getTop() != 0) {
 				mHeaderView.layout(0, 0, mHeaderViewWidth, mHeaderViewHeight);
 			}
@@ -160,7 +160,7 @@ public class PinnedHeaderExpListView extends ExpandableListView {
 			} else {
 				y = 0;
 			}
-			mAdapter.configurePinnedHeader(mHeaderView, group);
+			mAdapter.configurePinnedHeader(mHeaderView, isGroupExpanded(group), group);
 			// выползание
 			if (mHeaderView.getTop() != y) {
 				mHeaderView.layout(0, y, mHeaderViewWidth, mHeaderViewHeight + y);

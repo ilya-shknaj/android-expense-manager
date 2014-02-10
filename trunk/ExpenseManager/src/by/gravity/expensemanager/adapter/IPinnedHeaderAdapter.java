@@ -31,5 +31,5 @@ public interface IPinnedHeaderAdapter {
 	 * @param position
 	 *            position of the first visible list item.
 	 */
-	void configurePinnedHeader(View header, int position);
+	void configurePinnedHeader(View header, boolean isExpanded, int position);
 }
