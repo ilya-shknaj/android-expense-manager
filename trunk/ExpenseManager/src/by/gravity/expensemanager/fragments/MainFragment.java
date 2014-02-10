@@ -2,10 +2,13 @@ package by.gravity.expensemanager.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import by.gravity.expensemanager.R;
+import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.model.PaymentDetail;
 import by.gravity.expensemanager.model.PaymentModel;
 
@@ -20,6 +23,7 @@ public class MainFragment extends CommonSherlockFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		initPaymentsMethods();
+		initBottomBar();
 
 	}
 
@@ -42,6 +46,17 @@ public class MainFragment extends CommonSherlockFragment {
 
 		TextView balance = (TextView) getView().findViewById(R.id.balanceLayout).findViewById(R.id.balance);
 		balance.setText(paymentModel.getBalance());
+	}
+
+	private void initBottomBar() {
+		LinearLayout addPayment = (LinearLayout) getView().findViewById(R.id.addPayment);
+		addPayment.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				((MainActivity) getActivity()).showAddPaymentFragment();
+			}
+		});
 	}
 
 	private PaymentModel getPaymentModel() {

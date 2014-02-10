@@ -3,6 +3,7 @@ package by.gravity.expensemanager.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import by.gravity.expensemanager.R;
+import by.gravity.expensemanager.fragments.AddPaymentFragment;
 import by.gravity.expensemanager.fragments.ChoosePeriodFragment;
 import by.gravity.expensemanager.fragments.MainFragment;
 import by.gravity.expensemanager.fragments.OutcomeFragment;
@@ -19,7 +20,8 @@ public class MainActivity extends DrawerActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		showMainFragment();
+//		showMainFragment();
+		showAddPaymentFragment();
 
 	}
 
@@ -62,6 +64,11 @@ public class MainActivity extends DrawerActivity {
 	public void showChoosePeriodFragment() {
 		getSupportFragmentManager().beginTransaction().add(R.id.content, ChoosePeriodFragment.newInstanse())
 				.addToBackStack(ChoosePeriodFragment.class.getSimpleName()).commit();
+	}
+
+	public void showAddPaymentFragment() {
+		getSupportFragmentManager().beginTransaction().add(R.id.content, AddPaymentFragment.newInstance())
+				.addToBackStack(AddPaymentFragment.class.getSimpleName()).commit();
 	}
 
 }

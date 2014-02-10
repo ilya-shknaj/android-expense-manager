@@ -9,9 +9,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        layout="@layout/i_payments_methods" />
+        layout="@layout/i_payments_methods_info" />
 
     <include
+        android:id="@+id/addPayment"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
