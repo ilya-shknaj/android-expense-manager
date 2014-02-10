@@ -6,6 +6,7 @@
     android:background="@color/white" >
 
     <LinearLayout
+        android:id="@+id/root"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
@@ -21,11 +22,12 @@
             android:layout_height="1px"
             android:background="@color/divider" />
 
-        <ExpandableListView
+        <view
             android:id="@+id/expandableListView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-        </ExpandableListView>
+            android:layout_height="match_parent"
+            class="by.gravity.expensemanager.view.PinnedHeaderExpListView" >
+        </view>
     </LinearLayout>
 
     <include

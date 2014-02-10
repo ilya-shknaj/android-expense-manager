@@ -4,15 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ExpandableListView;
+import android.view.ViewGroup;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.TextView;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
-import by.gravity.expensemanager.adapter.ExpandableGropPriceAdapter;
+import by.gravity.expensemanager.adapter.PinnedExpandableListAdapter;
 import by.gravity.expensemanager.model.GroupPriceModel;
 import by.gravity.expensemanager.model.PriceModel;
+import by.gravity.expensemanager.view.PinnedHeaderExpListView;
 
 import com.actionbarsherlock.view.MenuItem;
 
@@ -45,11 +48,20 @@ public class OutcomeFragment extends CommonSherlockFragment {
 	}
 
 	private void initListView() {
-		ExpandableListView expandableListView = (ExpandableListView) getView().findViewById(R.id.expandableListView);
+		PinnedHeaderExpListView expandableListView = (PinnedHeaderExpListView) getView().findViewById(R.id.expandableListView);
 		expandableListView.setChildDivider(getResources().getDrawable(R.color.divider));
 		expandableListView.setDivider(getResources().getDrawable(R.color.divider));
 		expandableListView.setDividerHeight(1);
-		ExpandableGropPriceAdapter adapter = new ExpandableGropPriceAdapter(getActivity(), getGroupPriceList());
+		expandableListView.setGroupIndicator(null);
+		PinnedExpandableListAdapter adapter = new PinnedExpandableListAdapter(getActivity(), getGroupPriceList());
+
+		expandableListView.setAdapter(adapter);
+
+		View pinnedHeaderView = LayoutInflater.from(getActivity())
+				.inflate(R.layout.i_collapsed, (ViewGroup) getView().findViewById(R.id.root), false);
+		expandableListView.setPinnedHeaderView(pinnedHeaderView);
+		expandableListView.setOnScrollListener((OnScrollListener) adapter);
+
 		expandableListView.setAdapter(adapter);
 	}
 
