@@ -4,17 +4,24 @@
     android:layout_height="wrap_content"
     android:background="#F5F5F5"
     android:paddingBottom="@dimen/item_margin"
-    android:paddingLeft="@dimen/collapsed_item_left_margn"
+    android:paddingLeft="@dimen/item_margin"
     android:paddingRight="@dimen/item_margin"
     android:paddingTop="@dimen/item_margin" >
+
+    <ImageView
+        android:id="@+id/indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true" />
 
     <TextView
         android:id="@+id/date"
         style="@style/collapsedItemStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerInParent="true" />
+        android:layout_toRightOf="@id/indicator"
+        android:text="1 Января" />
 
     <TextView
         android:id="@+id/price"
@@ -22,6 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        android:text="220 $" />
 
 </RelativeLayout>
