@@ -49,6 +49,7 @@ public class MainActivity extends DrawerActivity {
 	public void showOutcomeFragment() {
 		getSupportFragmentManager().beginTransaction().add(R.id.content, OutcomeFragment.newInstance()).commit();
 		setTitle(getString(R.string.outcome));
+		
 	}
 
 	public void showChoosePeriodFragment() {

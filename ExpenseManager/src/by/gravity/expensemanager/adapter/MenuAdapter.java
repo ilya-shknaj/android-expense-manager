@@ -21,7 +21,12 @@ public class MenuAdapter extends AbstractAdapter<MenuModel> {
 		TextView textView = (TextView) convertView.findViewById(R.id.text);
 		textView.setCompoundDrawablesWithIntrinsicBounds(item.getDrawableId(), 0, 0, 0);
 		textView.setText(item.getText());
-		
+		if (item.isItemSelected()) {
+			textView.setBackgroundResource(R.color.pressed_color3);
+		} else {
+			textView.setBackgroundResource(R.color.transparent);
+		}
+
 	}
 
 }

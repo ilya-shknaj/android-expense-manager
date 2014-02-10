@@ -5,6 +5,8 @@
     android:orientation="horizontal" >
 
     <TextView
+        android:background="@color/pressed_color3"
+        android:text="Доходы"
         android:id="@+id/text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
