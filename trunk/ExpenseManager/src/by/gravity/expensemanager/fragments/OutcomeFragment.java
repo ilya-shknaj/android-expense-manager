@@ -22,9 +22,8 @@ import com.actionbarsherlock.view.MenuItem;
 public class OutcomeFragment extends CommonSherlockFragment {
 
 	public static OutcomeFragment newInstance() {
-		OutcomeFragment fragment = new OutcomeFragment();
+		return new OutcomeFragment();
 
-		return fragment;
 	}
 
 	@Override

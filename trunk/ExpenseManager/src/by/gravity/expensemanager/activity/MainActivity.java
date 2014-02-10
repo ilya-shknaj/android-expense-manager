@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.fragments.ChoosePeriodFragment;
+import by.gravity.expensemanager.fragments.MainFragment;
 import by.gravity.expensemanager.fragments.OutcomeFragment;
 
 import com.actionbarsherlock.view.Menu;
@@ -18,7 +19,7 @@ public class MainActivity extends DrawerActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		showOutcomeFragment();
+		showMainFragment();
 
 	}
 
@@ -33,6 +34,8 @@ public class MainActivity extends DrawerActivity {
 	public void onDrawerItemClick(String item) {
 		if (item.equals(getString(R.string.outcome))) {
 			showOutcomeFragmentDelayed();
+		} else if (item.equals(getString(R.string.main))) {
+			showMainFragment();
 		}
 	}
 
@@ -46,10 +49,15 @@ public class MainActivity extends DrawerActivity {
 		}, SHOW_FRAGMENT_DELAY);
 	}
 
+	public void showMainFragment() {
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, MainFragment.newInstance()).commit();
+		setTitle(getString(R.string.main));
+	}
+
 	public void showOutcomeFragment() {
-		getSupportFragmentManager().beginTransaction().add(R.id.content, OutcomeFragment.newInstance()).commit();
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, OutcomeFragment.newInstance()).commit();
 		setTitle(getString(R.string.outcome));
-		
+
 	}
 
 	public void showChoosePeriodFragment() {
