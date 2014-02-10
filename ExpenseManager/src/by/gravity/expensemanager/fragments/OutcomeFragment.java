@@ -93,4 +93,9 @@ public class OutcomeFragment extends CommonSherlockFragment {
 		return R.layout.f_outcome;
 	}
 
+	@Override
+	public int getTitleResource() {
+		return R.string.outcome;
+	}
+
 }

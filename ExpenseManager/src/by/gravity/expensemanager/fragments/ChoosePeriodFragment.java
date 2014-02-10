@@ -29,7 +29,6 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		getSherlockActivity().getSupportActionBar().setTitle(getString(R.string.choose_period));
 
 		RadioGroup periodGroup = (RadioGroup) getView().findViewById(R.id.period_group);
 		periodGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -131,6 +130,11 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 	@Override
 	public int getViewId() {
 		return R.layout.f_choose_period;
+	}
+
+	@Override
+	public int getTitleResource() {
+		return R.string.choose_period;
 	}
 
 }
