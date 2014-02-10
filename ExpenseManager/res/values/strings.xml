@@ -3,6 +3,8 @@
 
     <string name="app_name">Expense Manager</string>
     <string name="action_settings">Настройки</string>
+    
+    <string name="main">Главная</string>
     <string name="outcome">Расходы</string>
     <string name="income">Доходы</string>
 	
@@ -16,4 +18,6 @@
     
     <string name="cancel">Отмена</string>
     <string name="save">Сохранить</string>
+    
+    <string name="paymentsMethods">Способы оплаты</string>
 </resources>
