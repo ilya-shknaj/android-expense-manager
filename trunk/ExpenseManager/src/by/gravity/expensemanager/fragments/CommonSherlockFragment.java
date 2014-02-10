@@ -14,6 +14,14 @@ public abstract class CommonSherlockFragment extends SherlockFragment {
 		return inflater.inflate(getViewId(), container, false);
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		getSherlockActivity().getSupportActionBar().setTitle(getTitleResource());
+	}
+
 	public abstract int getViewId();
+
+	public abstract int getTitleResource();
 
 }

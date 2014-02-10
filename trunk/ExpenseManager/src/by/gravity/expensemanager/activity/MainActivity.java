@@ -51,12 +51,11 @@ public class MainActivity extends DrawerActivity {
 
 	public void showMainFragment() {
 		getSupportFragmentManager().beginTransaction().replace(R.id.content, MainFragment.newInstance()).commit();
-		setTitle(getString(R.string.main));
+
 	}
 
 	public void showOutcomeFragment() {
 		getSupportFragmentManager().beginTransaction().replace(R.id.content, OutcomeFragment.newInstance()).commit();
-		setTitle(getString(R.string.outcome));
 
 	}
 

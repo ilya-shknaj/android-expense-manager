@@ -60,4 +60,9 @@ public class MainFragment extends CommonSherlockFragment {
 		return R.layout.f_main;
 	}
 
+	@Override
+	public int getTitleResource() {
+		return R.string.main;
+	}
+
 }
