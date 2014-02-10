@@ -10,6 +10,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import by.gravity.common.utils.ContextHolder;
 import by.gravity.expensemanager.R;
@@ -50,7 +51,7 @@ public class DrawerActivity extends SherlockFragmentActivity {
 
 		listView.setAdapter(adapter);
 		listView.setOnItemClickListener(new DrawerItemClickListener());
-		listView.setCacheColorHint(0);
+		// listView.setCacheColorHint(0);
 		listView.setScrollingCacheEnabled(false);
 		listView.setScrollContainer(false);
 		listView.setFastScrollEnabled(true);
@@ -76,6 +77,18 @@ public class DrawerActivity extends SherlockFragmentActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	private void setActiveMenuItem(int position) {
+		int size = listView.getAdapter().getCount();
+		for (int i = 0; i < size; i++) {
+			if (position == i) {
+				((MenuModel) listView.getAdapter().getItem(i)).setItemSelected(true);
+			} else {
+				((MenuModel) listView.getAdapter().getItem(i)).setItemSelected(false);
+			}
+
+		}
+	}
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
@@ -94,6 +107,9 @@ public class DrawerActivity extends SherlockFragmentActivity {
 			mActionBar.setTitle(selectedItem.getText());
 			mDrawerLayout.closeDrawer(listView);
 			onDrawerItemClick(selectedItem.getText());
+			setActiveMenuItem(position);
+			((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+
 		}
 	}
 
@@ -136,10 +152,9 @@ public class DrawerActivity extends SherlockFragmentActivity {
 	private static List<MenuModel> getDrawerMenu() {
 		List<MenuModel> drawerMenu = new ArrayList<MenuModel>();
 		Context context = ContextHolder.getContext();
-		drawerMenu.add(new MenuModel(R.drawable.ic_menu_outcome, context.getString(R.string.outcome)));
+		drawerMenu.add(new MenuModel(R.drawable.ic_menu_outcome, context.getString(R.string.outcome), true));
 		drawerMenu.add(new MenuModel(R.drawable.ic_menu_income, context.getString(R.string.income)));
 
 		return drawerMenu;
 	}
-
 }
