@@ -27,4 +27,6 @@
     <string name="categories">Категории</string>
     <string name="enterCategoryOrChooseFromList">Введите категории или выберите из списка</string>
     <string name="showAll">Показать все</string>
+    <string name="date">Дата</string>
+    <string name="note">Заметка</string>
 </resources>

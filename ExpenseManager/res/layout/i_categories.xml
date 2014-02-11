@@ -5,12 +5,10 @@
     android:orientation="vertical" >
 
     <TextView
+        style="@style/addPaymentTitlesStyle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:text="@string/categories"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:text="@string/categories" />
 
     <EditText
         android:id="@+id/categoriesEditText"

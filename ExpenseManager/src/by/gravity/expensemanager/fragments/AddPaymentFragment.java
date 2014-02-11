@@ -1,18 +1,28 @@
 package by.gravity.expensemanager.fragments;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
+import by.gravity.common.utils.CalendarUtil;
 import by.gravity.expensemanager.R;
+import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.model.PaymentDetail;
 import by.gravity.expensemanager.model.PaymentModel;
+
+import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
 
 public class AddPaymentFragment extends CommonSherlockFragment {
 
@@ -26,6 +36,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		initCurrency();
 		initPaymentsMethods();
 		initCategories();
+		initDate();
 	}
 
 	private void initCurrency() {
@@ -49,6 +60,53 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 			paymentsMethodGroup.addView(radioButton, i);
 		}
 
+	}
+
+	private void initDate() {
+		TextView dateTextView = (TextView) getView().findViewById(R.id.date);
+		final Calendar date = getDate();
+		dateTextView.setText(getFriendlyDate(date));
+		dateTextView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				((MainActivity) getActivity()).showSelectDateDialog(date.get(Calendar.YEAR), date.get(Calendar.MONTH),
+						date.get(Calendar.DAY_OF_MONTH), new OnDateSetListener() {
+
+							@Override
+							public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
+							}
+						});
+
+			}
+		});
+
+		TextView timeTextView = (TextView) getView().findViewById(R.id.time);
+		timeTextView.setText(getTime());
+		timeTextView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
+	}
+
+	private String getFriendlyDate(Calendar calendar) {
+		return calendar.get(Calendar.DAY_OF_MONTH) + " " + CalendarUtil.getMonth(calendar.get(Calendar.MONTH));
+	}
+
+	private Calendar getDate() {
+		Calendar calendar = Calendar.getInstance();
+		return calendar;
+
+	}
+
+	private String getTime() {
+		Calendar calendar = Calendar.getInstance();
+		return calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
 	}
 
 	private void initCategories() {
