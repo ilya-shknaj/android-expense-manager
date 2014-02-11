@@ -11,5 +11,6 @@
     <color name="pressed_color3">#85D3EF</color>
     <color name="transparent">#00000000</color>
     <color name="choose_period_date_background">#16000000</color>
+    <color name="cards_backgroud">#EDEDED</color>
 
 </resources>
