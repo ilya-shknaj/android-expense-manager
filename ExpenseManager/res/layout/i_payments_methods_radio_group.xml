@@ -11,7 +11,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
-        android:text="@string/paymentsMethods"
+        android:text="@string/paymentMethod"
         android:textSize="16sp"
         android:textStyle="bold" />
 

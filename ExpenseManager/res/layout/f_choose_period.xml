@@ -4,45 +4,51 @@
     android:layout_height="fill_parent"
     android:background="@color/white" >
 
-    <RadioGroup
-        android:id="@+id/period_group"
+    <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp" >
 
-        <RadioButton
-            android:id="@+id/periodUser"
-            android:layout_width="fill_parent"
-            android:layout_height="60dp"
-            android:background="@drawable/radiogroup_divider"
-            android:paddingLeft="10dp"
-            android:text="@string/period_user"
-            android:textSize="@dimen/title_text_size" />
-
-        <include
-            android:id="@+id/chooseDateLayout"
+        <RadioGroup
+            android:id="@+id/period_group"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            layout="@layout/i_period_date" />
+            android:orientation="vertical" >
 
-        <RadioButton
-            android:id="@+id/periodCurrentMonth"
-            android:layout_width="fill_parent"
-            android:layout_height="60dp"
-            android:background="@drawable/radiogroup_divider"
-            android:paddingLeft="10dp"
-            android:text="@string/period_current_month"
-            android:textSize="@dimen/title_text_size" />
+            <RadioButton
+                android:id="@+id/periodUser"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/radiogroup_divider"
+                android:paddingLeft="10dp"
+                android:text="@string/period_user"
+                android:textSize="@dimen/title_text_size" />
 
-        <RadioButton
-            android:id="@+id/periodAllTime"
-            android:layout_width="fill_parent"
-            android:layout_height="60dp"
-            android:background="@drawable/radiogroup_divider"
-            android:paddingLeft="10dp"
-            android:text="@string/periodAllTime"
-            android:textSize="@dimen/title_text_size" />
-    </RadioGroup>
+            <include
+                android:id="@+id/chooseDateLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                layout="@layout/i_period_date" />
+
+            <RadioButton
+                android:id="@+id/periodCurrentMonth"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/radiogroup_divider"
+                android:paddingLeft="10dp"
+                android:text="@string/period_current_month"
+                android:textSize="@dimen/title_text_size" />
+
+            <RadioButton
+                android:id="@+id/periodAllTime"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/radiogroup_divider"
+                android:paddingLeft="10dp"
+                android:text="@string/periodAllTime"
+                android:textSize="@dimen/title_text_size" />
+        </RadioGroup>
+    </ScrollView>
 
     <include
         android:layout_width="fill_parent"

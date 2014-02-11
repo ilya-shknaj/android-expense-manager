@@ -28,4 +28,10 @@
         android:paddingTop="10dp" >
     </LinearLayout>
 
+    <Button
+        android:id="@+id/showAllCategoriesButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/showAll" />
+
 </LinearLayout>
