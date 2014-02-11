@@ -20,9 +20,11 @@
     <string name="save">Сохранить</string>
     
     <string name="paymentsMethods">Способы оплаты</string>
+    <string name="paymentMethod">Способ оплаты</string>
     <string name="addPayment">Добавить покупку</string>
     <string name="enterAmount">Введите сумму</string>
     <string name="rememberCurrency">Запомнить валюту</string>
     <string name="categories">Категории</string>
     <string name="enterCategoryOrChooseFromList">Введите категории или выберите из списка</string>
+    <string name="showAll">Показать все</string>
 </resources>
