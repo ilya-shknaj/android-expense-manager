@@ -3,6 +3,7 @@ package by.gravity.expensemanager.adapter;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +21,11 @@ import by.gravity.expensemanager.view.PinnedHeaderExpListView;
 public class PinnedExpandableListAdapter extends BaseExpandableListAdapter implements OnScrollListener {
 
 	private List<GroupPriceModel> groupPriceList;
-	private LayoutInflater inflater;
+	private Context context;
 
 	public PinnedExpandableListAdapter(Activity context, List<GroupPriceModel> groupPriceList) {
 		this.groupPriceList = groupPriceList;
-		inflater = context.getLayoutInflater();
+		this.context = context;
 	}
 
 	public Object getChild(int groupPosition, int childPosition) {
@@ -43,7 +44,7 @@ public class PinnedExpandableListAdapter extends BaseExpandableListAdapter imple
 		final PriceModel priceModel = (PriceModel) getChild(groupPosition, childPosition);
 
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.i_expanded, null);
+			convertView = LayoutInflater.from(context).inflate(R.layout.i_expanded, null);
 		}
 
 		TextView date = (TextView) convertView.findViewById(R.id.date);
@@ -55,7 +56,7 @@ public class PinnedExpandableListAdapter extends BaseExpandableListAdapter imple
 		LinearLayout categoryLayout = (LinearLayout) convertView.findViewById(R.id.categoryLayout);
 		categoryLayout.removeAllViews();
 		for (int i = 0; i < priceModel.getCategory().length; i++) {
-			TextView category = (TextView) inflater.inflate(R.layout.i_category, null);
+			TextView category = new TextView(context);
 			category.setText(priceModel.getCategory()[i]);
 			categoryLayout.addView(category, i);
 		}
@@ -82,7 +83,7 @@ public class PinnedExpandableListAdapter extends BaseExpandableListAdapter imple
 	public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 		GroupPriceModel groupPriceModel = (GroupPriceModel) getGroup(groupPosition);
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.i_collapsed, null);
+			convertView = LayoutInflater.from(context).inflate(R.layout.i_collapsed, null);
 		}
 
 		ImageView indicator = (ImageView) convertView.findViewById(R.id.indicator);
