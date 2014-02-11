@@ -10,6 +10,8 @@ import by.gravity.expensemanager.fragments.OutcomeFragment;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
 
 public class MainActivity extends DrawerActivity {
 
@@ -20,8 +22,8 @@ public class MainActivity extends DrawerActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		 showMainFragment();
-//		showAddPaymentFragment();
+		// showMainFragment();
+		showAddPaymentFragment();
 
 	}
 
@@ -71,6 +73,11 @@ public class MainActivity extends DrawerActivity {
 	public void showAddPaymentFragment() {
 		getSupportFragmentManager().beginTransaction().add(R.id.content, AddPaymentFragment.newInstance())
 				.addToBackStack(AddPaymentFragment.class.getSimpleName()).commit();
+	}
+
+	public void showSelectDateDialog(int year, int month, int day, OnDateSetListener dateSetListener) {
+		final DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(dateSetListener, year, month, day, false);
+		datePickerDialog.show(getSupportFragmentManager(), DatePickerDialog.class.getSimpleName());
 	}
 
 }
