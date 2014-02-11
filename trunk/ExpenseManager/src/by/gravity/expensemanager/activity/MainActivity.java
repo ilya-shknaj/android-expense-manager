@@ -20,8 +20,8 @@ public class MainActivity extends DrawerActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//		showMainFragment();
-		showAddPaymentFragment();
+		 showMainFragment();
+//		showAddPaymentFragment();
 
 	}
 
@@ -38,6 +38,8 @@ public class MainActivity extends DrawerActivity {
 			showOutcomeFragmentDelayed();
 		} else if (item.equals(getString(R.string.main))) {
 			showMainFragment();
+		} else if (item.equals(getString(R.string.paymentsMethods))) {
+			showAddPaymentFragment();
 		}
 	}
 

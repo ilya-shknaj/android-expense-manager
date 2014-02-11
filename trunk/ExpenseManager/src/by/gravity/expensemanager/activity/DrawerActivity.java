@@ -155,6 +155,7 @@ public class DrawerActivity extends SherlockFragmentActivity {
 		drawerMenu.add(new MenuModel(0, context.getString(R.string.main), true));
 		drawerMenu.add(new MenuModel(R.drawable.ic_menu_outcome, context.getString(R.string.outcome)));
 		drawerMenu.add(new MenuModel(R.drawable.ic_menu_income, context.getString(R.string.income)));
+		drawerMenu.add(new MenuModel(0, context.getString(R.string.paymentsMethods)));
 
 		return drawerMenu;
 	}
