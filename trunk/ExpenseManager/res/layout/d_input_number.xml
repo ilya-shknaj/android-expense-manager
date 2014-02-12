@@ -90,33 +90,6 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/one"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.33"
-            android:text="1" />
-
-        <Button
-            android:id="@+id/two"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.33"
-            android:text="2" />
-
-        <Button
-            android:id="@+id/three"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.33"
-            android:text="3" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <Button
             android:id="@+id/four"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -205,9 +178,9 @@
             android:text="@string/cancel" />
 
         <View
-            android:layout_gravity="center_vertical"
             android:layout_width="1dp"
             android:layout_height="35dp"
+            android:layout_gravity="center_vertical"
             android:background="@color/number_borber" />
 
         <Button
