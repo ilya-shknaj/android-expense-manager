@@ -10,13 +10,14 @@
         android:layout_height="wrap_content"
         android:text="@string/categories" />
 
-    <EditText
+    <MultiAutoCompleteTextView
         android:id="@+id/categoriesEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:completionThreshold="1"
         android:hint="@string/enterCategoryOrChooseFromList"
         android:paddingTop="10dp"
-        android:singleLine="true" />
+        android:singleLine="false" />
 
     <LinearLayout
         android:id="@+id/categoriesLayout"
