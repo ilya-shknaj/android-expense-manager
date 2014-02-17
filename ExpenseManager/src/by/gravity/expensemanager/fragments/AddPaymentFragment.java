@@ -11,11 +11,13 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.RadioButton;
@@ -43,25 +45,31 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		showNumberDialog();
+		showNumberDialog(null);
+		initCostEditText();
 		initCurrency();
 		initPaymentsMethods();
 		initCategories();
 		initDate();
 	}
 
-	private void showNumberDialog() {
+	private void showNumberDialog(String costs) {
 		final Dialog dialog = new Dialog(getActivity());
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(
 				getActivity()).inflate(R.layout.d_input_number, null);
-		final TextView text = (TextView) dialogLayout.findViewById(R.id.text);
+		final TextView numberTextView = (TextView) dialogLayout
+				.findViewById(R.id.text);
+		if (!StringUtil.isEmpty(costs)) {
+			numberTextView.setText(costs);
+		}
 		OnClickListener onClickListener = new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				int viewId = v.getId();
-				StringBuilder currentText = new StringBuilder(text.getText());
+				StringBuilder currentText = new StringBuilder(
+						numberTextView.getText());
 
 				if (viewId == R.id.one) {
 					currentText.append("1");
@@ -92,14 +100,16 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 						currentText.deleteCharAt(currentText.length() - 1);
 					}
 				} else if (viewId == R.id.cancelButton) {
-					dialog.dismiss();
 					getActivity().getSupportFragmentManager().popBackStack();
 				}
 
-				text.setText(StringUtil
+				numberTextView.setText(StringUtil
 						.convertNumberToHumanFriednly(currentText.toString()
 								.replace(" ", "")));
 				if (viewId == R.id.okButton) {
+					EditText costEditText = (EditText) getView().findViewById(
+							R.id.cost);
+					costEditText.setText(numberTextView.getText());
 					dialog.dismiss();
 				}
 			}
@@ -138,6 +148,21 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		dialog.setCancelable(true);
 		dialog.show();
 
+	}
+
+	private void initCostEditText() {
+		final EditText costEditText = (EditText) getView().findViewById(
+				R.id.cost);
+		costEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View arg0, boolean focused) {
+				if (focused) {
+					costEditText.clearFocus();
+					showNumberDialog(costEditText.getText().toString());
+				}
+			}
+		});
 	}
 
 	private void initCurrency() {
@@ -220,8 +245,8 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 	}
 
 	private void initCategories() {
-		LinearLayout categoriesLayout = (LinearLayout) getView().findViewById(
-				R.id.categoriesLayout);
+		final LinearLayout categoriesLayout = (LinearLayout) getView()
+				.findViewById(R.id.categoriesLayout);
 		List<String> categoriesList = getCategories();
 		final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView()
 				.findViewById(R.id.categoriesEditText);
@@ -232,16 +257,17 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		categoriesEditText.setAdapter(adapter);
 		List<String> categories = categoriesList.size() > SHOW_CATEGORIES_COUNT ? categoriesList
 				.subList(0, 5) : categoriesList;
-		OnCheckedChangeListener checkedChangeListener = new OnCheckedChangeListener() {
+		final OnCheckedChangeListener checkedChangeListener = new OnCheckedChangeListener() {
 
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				if (containtCategory(buttonView.getText().toString(),
+				if (hasEnteredCategory(buttonView.getText().toString(),
 						categoriesEditText.getText().toString())) {
-					categoriesEditText.setText(removeCategory(buttonView
-							.getText().toString(), categoriesEditText.getText()
-							.toString()));
+					categoriesEditText
+							.setText(getEditableCategoryTextAfterRemove(
+									buttonView.getText().toString(),
+									categoriesEditText.getText().toString()));
 				} else {
 					categoriesEditText.append(buttonView.getText().toString()
 							+ ", ");
@@ -253,6 +279,18 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
+				if (count > 0) {
+					checkCategory(categoriesLayout, checkedChangeListener,
+							s.toString(), true);
+				} else if (before > 0) {
+					if (start > 1
+							&& (s.charAt(start - 1) == ',' || s
+									.charAt(start - 1) == ' ')) {
+						return;
+					}
+					checkCategory(categoriesLayout, checkedChangeListener,
+							s.toString(), false);
+				}
 			}
 
 			@Override
@@ -270,12 +308,44 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		for (int i = 0; i < categories.size(); i++) {
 			CheckBox checkBox = new CheckBox(getActivity());
 			checkBox.setText(categories.get(i));
+			checkBox.setTag(categories.get(i).toLowerCase());
 			checkBox.setOnCheckedChangeListener(checkedChangeListener);
 			categoriesLayout.addView(checkBox, i);
 		}
 	}
 
-	private boolean containtCategory(String currentCategory,
+	private void checkCategory(LinearLayout categoriesLayout,
+			OnCheckedChangeListener checkedChangeListener,
+			String currentCategoryText, boolean check) {
+		int index = currentCategoryText.lastIndexOf(",");
+		String word = null;
+		if (index != -1) {
+			if (index + 2 == currentCategoryText.length()) {
+				word = currentCategoryText.substring(0, index);
+				index = word.lastIndexOf(",");
+				if (index > 1) {
+					word = word.substring(index + 1);
+				}
+			} else {
+				word = currentCategoryText.toString().substring(index + 1);
+			}
+
+		} else {
+			word = currentCategoryText.toString();
+		}
+		if (word.length() > 0) {
+			View enteredCheckBox = categoriesLayout.findViewWithTag(word.trim()
+					.toLowerCase());
+			if (enteredCheckBox != null) {
+				((CheckBox) enteredCheckBox).setOnCheckedChangeListener(null);
+				((CheckBox) enteredCheckBox).setChecked(check);
+				((CheckBox) enteredCheckBox)
+						.setOnCheckedChangeListener(checkedChangeListener);
+			}
+		}
+	}
+
+	private boolean hasEnteredCategory(String currentCategory,
 			String enteredCategory) {
 		String[] enteredCategoryArray = enteredCategory.split(",");
 		for (int i = 0; i < enteredCategoryArray.length; i++) {
@@ -287,13 +357,14 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		return false;
 	}
 
-	private String removeCategory(String categoryToRemove,
+	private String getEditableCategoryTextAfterRemove(String categoryToRemove,
 			String enteredCategory) {
 		StringBuilder stringBuilder = new StringBuilder();
 		String[] enteredCategoryArray = enteredCategory.split(", ");
 		for (int i = 0; i < enteredCategoryArray.length; i++) {
 			if (!enteredCategoryArray[i].trim().equals(categoryToRemove)) {
-				stringBuilder.append(enteredCategoryArray[i] + ", ");
+				stringBuilder.append(enteredCategoryArray[i]);
+				stringBuilder.append(", ");
 			}
 		}
 
@@ -311,11 +382,16 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 	private List<String> getCategories() {
 		List<String> categories = new ArrayList<String>();
-		categories.add("Продукты");
-		categories.add("Алми");
-		categories.add("Расходы на автомобиль");
-		categories.add("Коммунальные платежи");
-		categories.add("Белтелеком");
+		// categories.add("Продукты");
+		// categories.add("Алми");
+		// categories.add("Расходы на автомобиль");
+		// categories.add("Коммунальные платежи");
+		// categories.add("Белтелеком");
+		categories.add("Products");
+		categories.add("Almi");
+		categories.add("Avto");
+		categories.add("flat");
+		categories.add("beltelecom");
 
 		return categories;
 	}
