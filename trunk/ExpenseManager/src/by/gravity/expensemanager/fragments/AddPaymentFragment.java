@@ -2,15 +2,20 @@ package by.gravity.expensemanager.fragments;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -25,6 +30,8 @@ import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
 
 public class AddPaymentFragment extends CommonSherlockFragment {
+
+	private static final int SHOW_CATEGORIES_COUNT = 5;
 
 	public static AddPaymentFragment newInstance() {
 		return new AddPaymentFragment();
@@ -111,14 +118,69 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 	private void initCategories() {
 		LinearLayout categoriesLayout = (LinearLayout) getView().findViewById(R.id.categoriesLayout);
-		List<String> categories = getCategories();
+		List<String> categoriesList = getCategories();
+		final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(R.id.categoriesEditText);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, categoriesList);
+		categoriesEditText.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+		categoriesEditText.setAdapter(adapter);
+		List<String> categories = categoriesList.size() > SHOW_CATEGORIES_COUNT ? categoriesList.subList(0, 5) : categoriesList;
+		OnCheckedChangeListener checkedChangeListener = new OnCheckedChangeListener() {
 
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (containtCategory(buttonView.getText().toString(), categoriesEditText.getText().toString())) {
+					categoriesEditText.setText(removeCategory(buttonView.getText().toString(), categoriesEditText.getText().toString()));
+				} else {
+					categoriesEditText.append(buttonView.getText().toString() + ", ");
+				}
+			}
+		};
+		categoriesEditText.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				
+			}
+		});
 		categoriesLayout.removeAllViews();
 		for (int i = 0; i < categories.size(); i++) {
 			CheckBox checkBox = new CheckBox(getActivity());
 			checkBox.setText(categories.get(i));
+			checkBox.setOnCheckedChangeListener(checkedChangeListener);
 			categoriesLayout.addView(checkBox, i);
 		}
+	}
+
+	private boolean containtCategory(String currentCategory, String enteredCategory) {
+		String[] enteredCategoryArray = enteredCategory.split(",");
+		for (int i = 0; i < enteredCategoryArray.length; i++) {
+			if (enteredCategoryArray[i].trim().equals(currentCategory)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private String removeCategory(String categoryToRemove, String enteredCategory) {
+		StringBuilder stringBuilder = new StringBuilder();
+		String[] enteredCategoryArray = enteredCategory.split(", ");
+		for (int i = 0; i < enteredCategoryArray.length; i++) {
+			if (!enteredCategoryArray[i].trim().equals(categoryToRemove)) {
+				stringBuilder.append(enteredCategoryArray[i] + ", ");
+			}
+		}
+
+		return stringBuilder.toString();
 	}
 
 	private List<String> getCurrencies() {
