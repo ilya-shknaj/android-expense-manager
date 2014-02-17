@@ -6,17 +6,23 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/number_padding"
+        android:paddingRight="@dimen/number_padding" >
 
         <TextView
+            android:id="@+id/text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@+id/backspace" />
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/backspace"
+            android:textSize="26sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/backspace"
-            android:layout_width="50dp"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:background="@drawable/ic_action_backspace" />
@@ -30,7 +36,9 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/number_padding"
+        android:paddingRight="@dimen/number_padding" >
 
         <Button
             android:layout_width="0dp"
@@ -60,7 +68,9 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/number_padding"
+        android:paddingRight="@dimen/number_padding" >
 
         <Button
             android:id="@+id/one"
@@ -87,7 +97,9 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/number_padding"
+        android:paddingRight="@dimen/number_padding" >
 
         <Button
             android:id="@+id/four"
@@ -114,7 +126,9 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/number_padding"
+        android:paddingRight="@dimen/number_padding" >
 
         <Button
             android:id="@+id/seven"
@@ -141,12 +155,16 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/number_padding"
+        android:paddingRight="@dimen/number_padding" >
 
         <Button
+            android:id="@+id/doubleZero"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.33" />
+            android:layout_weight="0.33"
+            android:text="00" />
 
         <Button
             android:id="@+id/zero"
@@ -156,9 +174,11 @@
             android:text="0" />
 
         <Button
+            android:id="@+id/dot"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.33" />
+            android:layout_weight="0.33"
+            android:text="." />
     </LinearLayout>
 
     <View
@@ -172,6 +192,7 @@
         android:orientation="horizontal" >
 
         <Button
+            android:id="@+id/cancelButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
@@ -184,6 +205,7 @@
             android:background="@color/number_borber" />
 
         <Button
+            android:id="@+id/okButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
