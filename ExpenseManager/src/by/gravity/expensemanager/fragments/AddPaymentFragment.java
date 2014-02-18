@@ -25,6 +25,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import by.gravity.common.utils.CalendarUtil;
+import by.gravity.common.utils.GlobalUtil;
 import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
@@ -403,6 +404,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 					}
 					currentText.append(Constants.DEVIDE_CHAR);
 				} else if (viewId == R.id.cancelButton) {
+					GlobalUtil.hideSoftKeyboard(getActivity());
 					dialog.dismiss();
 				}
 
