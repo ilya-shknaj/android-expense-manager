@@ -69,6 +69,15 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 				getActivity().getSupportFragmentManager().popBackStack();
 			}
 		});
+
+		View saveButton = getView().findViewById(R.id.tabBarLayout).findViewById(R.id.saveButton);
+		saveButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				getActivity().getSupportFragmentManager().popBackStack();
+			}
+		});
 	}
 
 	private void initCostEditText() {

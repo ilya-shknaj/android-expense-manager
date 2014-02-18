@@ -28,23 +28,17 @@
             android:background="@drawable/ic_action_backspace" />
     </RelativeLayout>
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/number_borber" />
-
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/number_padding"
-        android:paddingRight="@dimen/number_padding" >
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/multiple"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
+            android:background="@drawable/btn_number"
             android:text="*" />
 
         <Button
@@ -52,6 +46,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.25"
+            android:background="@drawable/btn_number"
             android:text="/" />
 
         <Button
@@ -59,6 +54,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
+            android:background="@drawable/btn_number"
             android:text="+" />
 
         <Button
@@ -66,21 +62,21 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
+            android:background="@drawable/btn_number"
             android:text="-" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/number_padding"
-        android:paddingRight="@dimen/number_padding" >
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/one"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.33"
+            android:background="@drawable/btn_number"
             android:text="1" />
 
         <Button
@@ -88,6 +84,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.33"
+            android:background="@drawable/btn_number"
             android:text="2" />
 
         <Button
@@ -95,21 +92,21 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.33"
+            android:background="@drawable/btn_number"
             android:text="3" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/number_padding"
-        android:paddingRight="@dimen/number_padding" >
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/four"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.33"
+            android:background="@drawable/btn_number"
             android:text="4" />
 
         <Button
@@ -117,6 +114,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.33"
+            android:background="@drawable/btn_number"
             android:text="5" />
 
         <Button
@@ -124,21 +122,21 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.33"
+            android:background="@drawable/btn_number"
             android:text="6" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/number_padding"
-        android:paddingRight="@dimen/number_padding" >
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/seven"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.33"
+            android:background="@drawable/btn_number"
             android:text="7" />
 
         <Button
@@ -146,6 +144,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.33"
+            android:background="@drawable/btn_number"
             android:text="8" />
 
         <Button
@@ -153,21 +152,21 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.33"
+            android:background="@drawable/btn_number"
             android:text="9" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/number_padding"
-        android:paddingRight="@dimen/number_padding" >
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/doubleZero"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.33"
+            android:background="@drawable/btn_number"
             android:text="00" />
 
         <Button
@@ -175,6 +174,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.33"
+            android:background="@drawable/btn_number"
             android:text="0" />
 
         <Button
@@ -182,13 +182,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.33"
+            android:background="@drawable/btn_number"
             android:text="." />
     </LinearLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/number_borber" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -200,19 +196,21 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
+            android:background="@drawable/tab_bar_button"
             android:text="@string/cancel" />
 
         <View
             android:layout_width="1dp"
             android:layout_height="35dp"
             android:layout_gravity="center_vertical"
-            android:background="@color/number_borber" />
+            android:background="@color/number_border" />
 
         <Button
             android:id="@+id/okButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
+            android:background="@drawable/tab_bar_button"
             android:text="@string/ok" />
     </LinearLayout>
 
