@@ -13,6 +13,6 @@
     <color name="choose_period_date_background">#16000000</color>
     <color name="cards_backgroud">#EDEDED</color>
     <color name="number_background">#F5F5F5</color>
-    <color name="number_borber">#CFCFCF</color>
+    <color name="number_border">#CFCFCF</color>
 
 </resources>
