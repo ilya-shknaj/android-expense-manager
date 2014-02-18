@@ -196,7 +196,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:background="@drawable/tab_bar_button"
+            android:background="@drawable/btn_dialog_ok"
             android:text="@string/cancel" />
 
         <View
@@ -210,7 +210,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:background="@drawable/tab_bar_button"
+            android:background="@drawable/btn_dialog_ok"
             android:text="@string/ok" />
     </LinearLayout>
 

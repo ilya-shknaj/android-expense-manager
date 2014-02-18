@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/tab_bar_button"
+        android:background="@drawable/btn_tab_bar"
         android:orientation="horizontal" >
 
         <ImageView
