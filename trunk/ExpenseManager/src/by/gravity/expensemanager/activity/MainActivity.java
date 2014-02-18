@@ -40,7 +40,7 @@ public class MainActivity extends DrawerActivity {
 		} else if (item.equals(getString(R.string.main))) {
 			showMainFragment();
 		} else if (item.equals(getString(R.string.paymentsMethods))) {
-			
+
 		}
 	}
 
@@ -55,37 +55,28 @@ public class MainActivity extends DrawerActivity {
 	}
 
 	public void showMainFragment() {
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.content, MainFragment.newInstance()).commit();
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, MainFragment.newInstance()).commit();
 
 	}
 
 	public void showOutcomeFragment() {
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.content, OutcomeFragment.newInstance()).commit();
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, OutcomeFragment.newInstance()).commit();
 
 	}
 
 	public void showChoosePeriodFragment() {
-		getSupportFragmentManager().beginTransaction()
-				.add(R.id.content, ChoosePeriodFragment.newInstanse())
-				.addToBackStack(ChoosePeriodFragment.class.getSimpleName())
-				.commit();
+		getSupportFragmentManager().beginTransaction().add(R.id.content, ChoosePeriodFragment.newInstanse())
+				.addToBackStack(ChoosePeriodFragment.class.getSimpleName()).commit();
 	}
 
 	public void showAddPaymentFragment() {
-		getSupportFragmentManager().beginTransaction()
-				.add(R.id.content, AddPaymentFragment.newInstance())
-				.addToBackStack(AddPaymentFragment.class.getSimpleName())
-				.commit();
+		getSupportFragmentManager().beginTransaction().add(R.id.content, AddPaymentFragment.newInstance())
+				.addToBackStack(AddPaymentFragment.class.getSimpleName()).commit();
 	}
 
-	public void showSelectDateDialog(int year, int month, int day,
-			OnDateSetListener dateSetListener) {
-		final DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
-				dateSetListener, year, month, day, false);
-		datePickerDialog.show(getSupportFragmentManager(),
-				DatePickerDialog.class.getSimpleName());
+	public void showSelectDateDialog(int year, int month, int day, OnDateSetListener dateSetListener) {
+		final DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(dateSetListener, year, month, day, false);
+		datePickerDialog.show(getSupportFragmentManager(), DatePickerDialog.class.getSimpleName());
 	}
 
 }
