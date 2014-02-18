@@ -30,6 +30,8 @@ import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.model.PaymentDetail;
 import by.gravity.expensemanager.model.PaymentModel;
+import by.gravity.expensemanager.util.math.Parser;
+import by.gravity.expensemanager.util.math.SyntaxException;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
@@ -52,97 +54,6 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		initCategories();
 		initDate();
 		initBottomTabBar();
-	}
-
-	private void showNumberDialog(String costs) {
-		final Dialog dialog = new Dialog(getActivity());
-		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.d_input_number, null);
-		final TextView numberTextView = (TextView) dialogLayout.findViewById(R.id.text);
-		if (!StringUtil.isEmpty(costs)) {
-			numberTextView.setText(costs);
-		}
-		OnClickListener onClickListener = new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				int viewId = v.getId();
-				StringBuilder currentText = new StringBuilder(numberTextView.getText());
-
-				if (viewId == R.id.one) {
-					currentText.append("1");
-				} else if (viewId == R.id.two) {
-					currentText.append("2");
-				} else if (viewId == R.id.three) {
-					currentText.append("3");
-				} else if (viewId == R.id.four) {
-					currentText.append("4");
-				} else if (viewId == R.id.five) {
-					currentText.append("5");
-				} else if (viewId == R.id.six) {
-					currentText.append("6");
-				} else if (viewId == R.id.seven) {
-					currentText.append("7");
-				} else if (viewId == R.id.eight) {
-					currentText.append("8");
-				} else if (viewId == R.id.nine) {
-					currentText.append("9");
-				} else if (viewId == R.id.doubleZero) {
-					currentText.append("00");
-				} else if (viewId == R.id.zero) {
-					currentText.append("0");
-				} else if (viewId == R.id.dot) {
-					currentText.append(".");
-				} else if (viewId == R.id.backspace) {
-					if (currentText.length() > 0) {
-						currentText.deleteCharAt(currentText.length() - 1);
-					}
-				} else if (viewId == R.id.cancelButton) {
-					dialog.dismiss();
-				}
-
-				numberTextView.setText(StringUtil.convertNumberToHumanFriednly(currentText.toString().replace(" ", "")));
-				if (viewId == R.id.okButton) {
-					EditText costEditText = (EditText) getView().findViewById(R.id.cost);
-					costEditText.setText(numberTextView.getText());
-					dialog.dismiss();
-				}
-			}
-		};
-		View one = dialogLayout.findViewById(R.id.one);
-		View two = dialogLayout.findViewById(R.id.two);
-		View three = dialogLayout.findViewById(R.id.three);
-		View four = dialogLayout.findViewById(R.id.four);
-		View five = dialogLayout.findViewById(R.id.five);
-		View six = dialogLayout.findViewById(R.id.six);
-		View seven = dialogLayout.findViewById(R.id.seven);
-		View eight = dialogLayout.findViewById(R.id.eight);
-		View nine = dialogLayout.findViewById(R.id.nine);
-		View doubleZero = dialogLayout.findViewById(R.id.doubleZero);
-		View zero = dialogLayout.findViewById(R.id.zero);
-		View dot = dialogLayout.findViewById(R.id.dot);
-		View okButton = dialogLayout.findViewById(R.id.okButton);
-		View cancelButton = dialogLayout.findViewById(R.id.cancelButton);
-		View backspace = dialogLayout.findViewById(R.id.backspace);
-		one.setOnClickListener(onClickListener);
-		two.setOnClickListener(onClickListener);
-		three.setOnClickListener(onClickListener);
-		four.setOnClickListener(onClickListener);
-		five.setOnClickListener(onClickListener);
-		six.setOnClickListener(onClickListener);
-		seven.setOnClickListener(onClickListener);
-		eight.setOnClickListener(onClickListener);
-		nine.setOnClickListener(onClickListener);
-		doubleZero.setOnClickListener(onClickListener);
-		zero.setOnClickListener(onClickListener);
-		dot.setOnClickListener(onClickListener);
-		okButton.setOnClickListener(onClickListener);
-		cancelButton.setOnClickListener(onClickListener);
-		backspace.setOnClickListener(onClickListener);
-		dialog.setContentView(dialogLayout);
-		dialog.setCancelable(true);
-		dialog.show();
-
 	}
 
 	private void initBottomTabBar() {
@@ -389,6 +300,147 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 	@Override
 	public int getTitleResource() {
 		return R.string.addPayment;
+	}
+
+	private void showNumberDialog(String costs) {
+		final Dialog dialog = new Dialog(getActivity());
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.d_input_number, null);
+		final TextView numberTextView = (TextView) dialogLayout.findViewById(R.id.text);
+		if (!StringUtil.isEmpty(costs)) {
+			numberTextView.setText(costs);
+		}
+		OnClickListener onClickListener = new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				int viewId = v.getId();
+				StringBuilder currentText = new StringBuilder(numberTextView.getText());
+
+				if (viewId == R.id.one) {
+					currentText.append("1");
+				} else if (viewId == R.id.two) {
+					currentText.append("2");
+				} else if (viewId == R.id.three) {
+					currentText.append("3");
+				} else if (viewId == R.id.four) {
+					currentText.append("4");
+				} else if (viewId == R.id.five) {
+					currentText.append("5");
+				} else if (viewId == R.id.six) {
+					currentText.append("6");
+				} else if (viewId == R.id.seven) {
+					currentText.append("7");
+				} else if (viewId == R.id.eight) {
+					currentText.append("8");
+				} else if (viewId == R.id.nine) {
+					currentText.append("9");
+				} else if (viewId == R.id.doubleZero) {
+					currentText.append("00");
+				} else if (viewId == R.id.zero) {
+					currentText.append("0");
+				} else if (viewId == R.id.dot) {
+					currentText.append(".");
+				} else if (viewId == R.id.backspace) {
+					if (currentText.length() > 0) {
+						currentText.deleteCharAt(currentText.length() - 1);
+					}
+				} else if (viewId == R.id.plus) {
+					int index = currentText.length() - 1;
+					char lastChar = currentText.charAt(index);
+					if (lastChar == '+') {
+						return;
+					} else if (lastChar == '-' || lastChar == '*' || lastChar == '/') {
+						currentText.deleteCharAt(index);
+					}
+					currentText.append("+");
+				} else if (viewId == R.id.minus) {
+					int index = currentText.length() - 1;
+					char lastChar = currentText.charAt(index);
+					if (lastChar == '-') {
+						return;
+					} else if (lastChar == '+' || lastChar == '*' || lastChar == '/') {
+						currentText.deleteCharAt(index);
+					}
+					currentText.append("-");
+				} else if (viewId == R.id.multiple) {
+					int index = currentText.length() - 1;
+					char lastChar = currentText.charAt(index);
+					if (lastChar == '*') {
+						return;
+					} else if (lastChar == '-' || lastChar == '+' || lastChar == '/') {
+						currentText.deleteCharAt(index);
+					}
+					currentText.append("*");
+				} else if (viewId == R.id.devide) {
+					int index = currentText.length() - 1;
+					char lastChar = currentText.charAt(index);
+					if (lastChar == '/') {
+						return;
+					} else if (lastChar == '-' || lastChar == '+' || lastChar == '*') {
+						currentText.deleteCharAt(index);
+					}
+					currentText.append("/");
+				} else if (viewId == R.id.cancelButton) {
+					dialog.dismiss();
+				}
+
+				numberTextView.setText(StringUtil.convertNumberToHumanFriednly(currentText.toString().replace(" ", "")));
+				if (viewId == R.id.okButton) {
+					EditText costEditText = (EditText) getView().findViewById(R.id.cost);
+					try {
+						String parsedValue = String.valueOf(Parser.parse(numberTextView.getText().toString()).value());
+						costEditText.setText(StringUtil.removeNumberAfterDot(parsedValue));
+					} catch (SyntaxException e) {
+						e.printStackTrace();
+					}
+					dialog.dismiss();
+				}
+			}
+		};
+		View one = dialogLayout.findViewById(R.id.one);
+		View two = dialogLayout.findViewById(R.id.two);
+		View three = dialogLayout.findViewById(R.id.three);
+		View four = dialogLayout.findViewById(R.id.four);
+		View five = dialogLayout.findViewById(R.id.five);
+		View six = dialogLayout.findViewById(R.id.six);
+		View seven = dialogLayout.findViewById(R.id.seven);
+		View eight = dialogLayout.findViewById(R.id.eight);
+		View nine = dialogLayout.findViewById(R.id.nine);
+		View doubleZero = dialogLayout.findViewById(R.id.doubleZero);
+		View zero = dialogLayout.findViewById(R.id.zero);
+		View dot = dialogLayout.findViewById(R.id.dot);
+		View okButton = dialogLayout.findViewById(R.id.okButton);
+		View cancelButton = dialogLayout.findViewById(R.id.cancelButton);
+		View backspace = dialogLayout.findViewById(R.id.backspace);
+		View plus = dialogLayout.findViewById(R.id.plus);
+		View minus = dialogLayout.findViewById(R.id.minus);
+		View multiple = dialogLayout.findViewById(R.id.multiple);
+		View devide = dialogLayout.findViewById(R.id.devide);
+		one.setOnClickListener(onClickListener);
+		two.setOnClickListener(onClickListener);
+		three.setOnClickListener(onClickListener);
+		four.setOnClickListener(onClickListener);
+		five.setOnClickListener(onClickListener);
+		six.setOnClickListener(onClickListener);
+		seven.setOnClickListener(onClickListener);
+		eight.setOnClickListener(onClickListener);
+		nine.setOnClickListener(onClickListener);
+		doubleZero.setOnClickListener(onClickListener);
+		zero.setOnClickListener(onClickListener);
+		dot.setOnClickListener(onClickListener);
+		okButton.setOnClickListener(onClickListener);
+		cancelButton.setOnClickListener(onClickListener);
+		backspace.setOnClickListener(onClickListener);
+		plus.setOnClickListener(onClickListener);
+		minus.setOnClickListener(onClickListener);
+		multiple.setOnClickListener(onClickListener);
+		devide.setOnClickListener(onClickListener);
+
+		dialog.setContentView(dialogLayout);
+		dialog.setCancelable(true);
+		dialog.show();
+
 	}
 
 }
