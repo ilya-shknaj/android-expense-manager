@@ -12,6 +12,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
+import com.sleepbot.datetimepicker.time.TimePickerDialog;
+import com.sleepbot.datetimepicker.time.TimePickerDialog.OnTimeSetListener;
 
 public class MainActivity extends DrawerActivity {
 
@@ -77,6 +79,11 @@ public class MainActivity extends DrawerActivity {
 	public void showSelectDateDialog(int year, int month, int day, OnDateSetListener dateSetListener) {
 		final DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(dateSetListener, year, month, day, false);
 		datePickerDialog.show(getSupportFragmentManager(), DatePickerDialog.class.getSimpleName());
+	}
+
+	public void showTimePickerDialog(int hourOfDay, int minute, OnTimeSetListener onTimeSetListener) {
+		final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(onTimeSetListener, hourOfDay, minute, true,false);
+		timePickerDialog.show(getSupportFragmentManager(), TimePickerDialog.class.getSimpleName());
 	}
 
 }

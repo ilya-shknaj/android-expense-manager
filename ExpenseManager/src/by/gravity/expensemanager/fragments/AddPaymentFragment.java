@@ -30,11 +30,14 @@ import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.model.PaymentDetail;
 import by.gravity.expensemanager.model.PaymentModel;
+import by.gravity.expensemanager.util.Constants;
 import by.gravity.expensemanager.util.math.Parser;
 import by.gravity.expensemanager.util.math.SyntaxException;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
+import com.sleepbot.datetimepicker.time.RadialPickerLayout;
+import com.sleepbot.datetimepicker.time.TimePickerDialog.OnTimeSetListener;
 
 public class AddPaymentFragment extends CommonSherlockFragment {
 
@@ -105,7 +108,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 	}
 
 	private void initDate() {
-		TextView dateTextView = (TextView) getView().findViewById(R.id.date);
+		final TextView dateTextView = (TextView) getView().findViewById(R.id.date);
 		final Calendar date = getDate();
 		dateTextView.setText(getFriendlyDate(date));
 		dateTextView.setOnClickListener(new OnClickListener() {
@@ -117,27 +120,40 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 							@Override
 							public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
+								dateTextView.setText(getFriendlyDate(year, month, day));
 							}
 						});
 
 			}
 		});
 
-		TextView timeTextView = (TextView) getView().findViewById(R.id.time);
+		final TextView timeTextView = (TextView) getView().findViewById(R.id.time);
 		timeTextView.setText(getTime());
 		timeTextView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View view) {
-				// TODO Auto-generated method stub
+				((MainActivity) getActivity()).showTimePickerDialog(date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE),
+						new OnTimeSetListener() {
 
+							@Override
+							public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+								timeTextView.setText(getTime(hourOfDay, minute));
+							}
+						});
 			}
 		});
 
 	}
 
 	private String getFriendlyDate(Calendar calendar) {
-		return calendar.get(Calendar.DAY_OF_MONTH) + " " + CalendarUtil.getMonth(calendar.get(Calendar.MONTH));
+		return calendar.get(Calendar.DAY_OF_MONTH) + Constants.SPACE_STRING + CalendarUtil.getMonth(calendar.get(Calendar.MONTH));
+	}
+
+	private String getFriendlyDate(int year, int month, int day) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(year, month, day);
+		return getFriendlyDate(calendar);
 	}
 
 	private Calendar getDate() {
@@ -148,7 +164,12 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 	private String getTime() {
 		Calendar calendar = Calendar.getInstance();
-		return calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+		return getTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+	}
+
+	private String getTime(int hourOfDay, int minutes) {
+		return hourOfDay < 10 ? Constants.ZERO_STRING + hourOfDay : hourOfDay + Constants.COLON_STRING
+				+ (minutes < 10 ? Constants.ZERO_STRING + minutes : minutes);
 	}
 
 	private void initCategories() {
@@ -167,7 +188,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 					categoriesEditText.setText(getEditableCategoryTextAfterRemove(buttonView.getText().toString(), categoriesEditText.getText()
 							.toString()));
 				} else {
-					categoriesEditText.append(buttonView.getText().toString() + ", ");
+					categoriesEditText.append(buttonView.getText().toString() + Constants.CATEGORY_SPLITTER);
 				}
 			}
 		};
@@ -178,7 +199,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 				if (count > 0) {
 					checkCategory(categoriesLayout, checkedChangeListener, s.toString(), true);
 				} else if (before > 0) {
-					if (start > 1 && (s.charAt(start - 1) == ',' || s.charAt(start - 1) == ' ')) {
+					if (start > 1 && (s.charAt(start - 1) == Constants.COMMA_CHAR || s.charAt(start - 1) == Constants.SPACE_CHAR)) {
 						return;
 					}
 					checkCategory(categoriesLayout, checkedChangeListener, s.toString(), false);
@@ -206,12 +227,12 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 	}
 
 	private void checkCategory(LinearLayout categoriesLayout, OnCheckedChangeListener checkedChangeListener, String currentCategoryText, boolean check) {
-		int index = currentCategoryText.lastIndexOf(",");
+		int index = currentCategoryText.lastIndexOf(Constants.COMMA_STRING);
 		String word = null;
 		if (index != -1) {
 			if (index + 2 == currentCategoryText.length()) {
 				word = currentCategoryText.substring(0, index);
-				index = word.lastIndexOf(",");
+				index = word.lastIndexOf(Constants.COMMA_STRING);
 				if (index > 1) {
 					word = word.substring(index + 1);
 				}
@@ -233,7 +254,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 	}
 
 	private boolean hasEnteredCategory(String currentCategory, String enteredCategory) {
-		String[] enteredCategoryArray = enteredCategory.split(",");
+		String[] enteredCategoryArray = enteredCategory.split(Constants.COMMA_STRING);
 		for (int i = 0; i < enteredCategoryArray.length; i++) {
 			if (enteredCategoryArray[i].trim().equals(currentCategory)) {
 				return true;
@@ -245,11 +266,11 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 	private String getEditableCategoryTextAfterRemove(String categoryToRemove, String enteredCategory) {
 		StringBuilder stringBuilder = new StringBuilder();
-		String[] enteredCategoryArray = enteredCategory.split(", ");
+		String[] enteredCategoryArray = enteredCategory.split(Constants.CATEGORY_SPLITTER);
 		for (int i = 0; i < enteredCategoryArray.length; i++) {
 			if (!enteredCategoryArray[i].trim().equals(categoryToRemove)) {
 				stringBuilder.append(enteredCategoryArray[i]);
-				stringBuilder.append(", ");
+				stringBuilder.append(Constants.CATEGORY_SPLITTER);
 			}
 		}
 
@@ -318,29 +339,29 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 				StringBuilder currentText = new StringBuilder(numberTextView.getText());
 
 				if (viewId == R.id.one) {
-					currentText.append("1");
+					currentText.append(Constants.ONE_STRING);
 				} else if (viewId == R.id.two) {
-					currentText.append("2");
+					currentText.append(Constants.TWO_STRING);
 				} else if (viewId == R.id.three) {
-					currentText.append("3");
+					currentText.append(Constants.THREE_STRING);
 				} else if (viewId == R.id.four) {
-					currentText.append("4");
+					currentText.append(Constants.FOUR_STRING);
 				} else if (viewId == R.id.five) {
-					currentText.append("5");
+					currentText.append(Constants.FIVE_STRING);
 				} else if (viewId == R.id.six) {
-					currentText.append("6");
+					currentText.append(Constants.SIX_STRING);
 				} else if (viewId == R.id.seven) {
-					currentText.append("7");
+					currentText.append(Constants.SEVEN_STRING);
 				} else if (viewId == R.id.eight) {
-					currentText.append("8");
+					currentText.append(Constants.EIGHT_STRING);
 				} else if (viewId == R.id.nine) {
-					currentText.append("9");
+					currentText.append(Constants.NINE_STRING);
 				} else if (viewId == R.id.doubleZero) {
-					currentText.append("00");
+					currentText.append(Constants.DOUBLE_ZERO_STRIG);
 				} else if (viewId == R.id.zero) {
-					currentText.append("0");
+					currentText.append(Constants.ZERO_STRING);
 				} else if (viewId == R.id.dot) {
-					currentText.append(".");
+					currentText.append(Constants.DOT_STRING);
 				} else if (viewId == R.id.backspace) {
 					if (currentText.length() > 0) {
 						currentText.deleteCharAt(currentText.length() - 1);
@@ -348,44 +369,45 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 				} else if (viewId == R.id.plus) {
 					int index = currentText.length() - 1;
 					char lastChar = currentText.charAt(index);
-					if (lastChar == '+') {
+					if (lastChar == Constants.PLUS_CHAR) {
 						return;
-					} else if (lastChar == '-' || lastChar == '*' || lastChar == '/') {
+					} else if (lastChar == Constants.MINUS_CHAR || lastChar == Constants.MULTIPLE_CHAR || lastChar == Constants.DEVIDE_CHAR) {
 						currentText.deleteCharAt(index);
 					}
-					currentText.append("+");
+					currentText.append(Constants.PLUS_CHAR);
 				} else if (viewId == R.id.minus) {
 					int index = currentText.length() - 1;
 					char lastChar = currentText.charAt(index);
-					if (lastChar == '-') {
+					if (lastChar == Constants.MINUS_CHAR) {
 						return;
-					} else if (lastChar == '+' || lastChar == '*' || lastChar == '/') {
+					} else if (lastChar == Constants.PLUS_CHAR || lastChar == Constants.MULTIPLE_CHAR || lastChar == Constants.DEVIDE_CHAR) {
 						currentText.deleteCharAt(index);
 					}
-					currentText.append("-");
+					currentText.append(Constants.MINUS_CHAR);
 				} else if (viewId == R.id.multiple) {
 					int index = currentText.length() - 1;
 					char lastChar = currentText.charAt(index);
-					if (lastChar == '*') {
+					if (lastChar == Constants.MULTIPLE_CHAR) {
 						return;
-					} else if (lastChar == '-' || lastChar == '+' || lastChar == '/') {
+					} else if (lastChar == Constants.MINUS_CHAR || lastChar == Constants.PLUS_CHAR || lastChar == Constants.DEVIDE_CHAR) {
 						currentText.deleteCharAt(index);
 					}
-					currentText.append("*");
+					currentText.append(Constants.MULTIPLE_CHAR);
 				} else if (viewId == R.id.devide) {
 					int index = currentText.length() - 1;
 					char lastChar = currentText.charAt(index);
-					if (lastChar == '/') {
+					if (lastChar == Constants.DEVIDE_CHAR) {
 						return;
-					} else if (lastChar == '-' || lastChar == '+' || lastChar == '*') {
+					} else if (lastChar == Constants.MINUS_CHAR || lastChar == Constants.PLUS_CHAR || lastChar == Constants.MULTIPLE_CHAR) {
 						currentText.deleteCharAt(index);
 					}
-					currentText.append("/");
+					currentText.append(Constants.DEVIDE_CHAR);
 				} else if (viewId == R.id.cancelButton) {
 					dialog.dismiss();
 				}
 
-				numberTextView.setText(StringUtil.convertNumberToHumanFriednly(currentText.toString().replace(" ", "")));
+				numberTextView.setText(StringUtil.convertNumberToHumanFriednly(currentText.toString().replace(Constants.SPACE_STRING,
+						Constants.EMPTY_STRING)));
 				if (viewId == R.id.okButton) {
 					EditText costEditText = (EditText) getView().findViewById(R.id.cost);
 					try {
