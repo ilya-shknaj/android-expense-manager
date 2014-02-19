@@ -30,4 +30,6 @@
     <string name="showAll">Показать все</string>
     <string name="date">Дата</string>
     <string name="note">Заметка</string>
+    
+    <string name="parseNumberError">Произошла ошибка во время обработки введенного значения</string>
 </resources>

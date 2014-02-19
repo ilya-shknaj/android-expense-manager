@@ -162,12 +162,12 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/doubleZero"
+            android:id="@+id/dot"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.33"
             android:background="@drawable/btn_number"
-            android:text="00" />
+            android:text="." />
 
         <Button
             android:id="@+id/zero"
@@ -178,12 +178,12 @@
             android:text="0" />
 
         <Button
-            android:id="@+id/dot"
+            android:id="@+id/doubleZero"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.33"
             android:background="@drawable/btn_number"
-            android:text="." />
+            android:text="00" />
     </LinearLayout>
 
     <LinearLayout

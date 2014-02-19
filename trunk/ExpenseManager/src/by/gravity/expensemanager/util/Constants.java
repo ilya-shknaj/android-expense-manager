@@ -16,6 +16,8 @@ public class Constants {
 	public static final char SPACE_CHAR = ' ';
 
 	public static final char COMMA_CHAR = ',';
+	
+	public static final char DOT_CHAR = '.';
 
 	public static final String CATEGORY_SPLITTER = ", ";
 
@@ -46,5 +48,7 @@ public class Constants {
 	public static final char MULTIPLE_CHAR = '*';
 
 	public static final char DEVIDE_CHAR = '/';
+	
+	public static final String SPACE_PATTERN = "\\s+";
 
 }
