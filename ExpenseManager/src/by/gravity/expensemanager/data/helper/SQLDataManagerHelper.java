@@ -63,7 +63,9 @@ public class SQLDataManagerHelper extends SQLiteOpenHelper {
 			+ SQLConstants.FIELD_NAME
 			+ " VARCHAR (100),"
 			+ SQLConstants.FIELD_SYMBOL
-			+ " VARCHAR (10));";
+			+ " VARCHAR (10),"
+			+ SQLConstants.FIELD_IS_SHOW
+			+ " INTEGER);";
 
 	private static final String CREATE_TABLE_PAYMENT_METHODS = "CREATE TABLE IF NOT EXISTS "
 			+ SQLConstants.TABLE_PAYMENT_METHODS
@@ -104,6 +106,7 @@ public class SQLDataManagerHelper extends SQLiteOpenHelper {
 			values.put(SQLConstants.FIELD_CODE, currencyModel.getCode());
 			values.put(SQLConstants.FIELD_NAME, currencyModel.getName());
 			values.put(SQLConstants.FIELD_SYMBOL, currencyModel.getSymbol());
+			values.put(SQLConstants.FIELD_IS_SHOW, "1");
 			database.insert(SQLConstants.TABLE_CURRENCY, null, values);
 		}
 	}

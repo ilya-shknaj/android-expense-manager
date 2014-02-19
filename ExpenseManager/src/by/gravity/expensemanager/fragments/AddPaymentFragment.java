@@ -32,8 +32,8 @@ import by.gravity.common.utils.GlobalUtil;
 import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
-import by.gravity.expensemanager.model.PaymentDetail;
-import by.gravity.expensemanager.model.PaymentModel;
+import by.gravity.expensemanager.data.SQLDataManager;
+import by.gravity.expensemanager.data.SQLDataManager.OnLoadCompleteListener;
 import by.gravity.expensemanager.util.Constants;
 import by.gravity.expensemanager.util.math.Parser;
 import by.gravity.expensemanager.util.math.SyntaxException;
@@ -100,25 +100,45 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 	}
 
 	private void initCurrency() {
-		Spinner spinner = (Spinner) getView().findViewById(R.id.currency);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, getCurrencies());
+		final Spinner spinner = (Spinner) getView().findViewById(R.id.currency);
+		SQLDataManager.getInstance().getCurrenciesShort(new OnLoadCompleteListener() {
 
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner.setAdapter(adapter);
+			@Override
+			public void onComplete(Object result) {
+				@SuppressWarnings("unchecked")
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, (List<String>) result);
+
+				adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				spinner.setAdapter(adapter);
+
+			}
+		});
 	}
 
 	private void initPaymentsMethods() {
 
-		RadioGroup paymentsMethodGroup = (RadioGroup) getView().findViewById(R.id.paymentMethodsGroup);
+		final RadioGroup paymentsMethodGroup = (RadioGroup) getView().findViewById(R.id.paymentMethodsGroup);
 
 		paymentsMethodGroup.removeAllViews();
-		PaymentModel paymentModel = getPaymentModel();
+		SQLDataManager.getInstance().getPaymentsMethodsShort(new OnLoadCompleteListener() {
 
-		for (int i = 0; i < paymentModel.getListPaymensDetail().size(); i++) {
-			RadioButton radioButton = new RadioButton(getActivity());
-			radioButton.setText(paymentModel.getListPaymensDetail().get(i).getName());
-			paymentsMethodGroup.addView(radioButton, i);
-		}
+			@SuppressWarnings("unchecked")
+			@Override
+			public void onComplete(Object result) {
+				List<String> paymentMethodsList = (List<String>) result;
+				if (paymentMethodsList.size() > 0) {
+					for (int i = 0; i < paymentMethodsList.size(); i++) {
+						RadioButton radioButton = new RadioButton(getActivity());
+						radioButton.setText(paymentMethodsList.get(i));
+						paymentsMethodGroup.addView(radioButton, i);
+					}
+				} else {
+					View emptyPaymentMethods = getView().findViewById(R.id.emptyPaymentMethods);
+					emptyPaymentMethods.setVisibility(View.VISIBLE);
+				}
+
+			}
+		});
 
 	}
 
@@ -292,15 +312,6 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		return stringBuilder.toString();
 	}
 
-	private List<String> getCurrencies() {
-		List<String> currencies = new ArrayList<String>();
-		currencies.add("BYR");
-		currencies.add("USD");
-		currencies.add("EUR");
-
-		return currencies;
-	}
-
 	private List<String> getCategories() {
 		List<String> categories = new ArrayList<String>();
 		categories.add("Продукты");
@@ -308,24 +319,8 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		categories.add("Расходы на автомобиль");
 		categories.add("Коммунальные платежи");
 		categories.add("Белтелеком");
-		// categories.add("Products");
-		// categories.add("Almi");
-		// categories.add("Avto");
-		// categories.add("flat");
-		// categories.add("beltelecom");
 
 		return categories;
-	}
-
-	private PaymentModel getPaymentModel() {
-		PaymentModel paymentModel = new PaymentModel();
-		paymentModel.getListPaymensDetail().add(new PaymentDetail("Prior зарплата", "3 200 000"));
-		paymentModel.getListPaymensDetail().add(new PaymentDetail("Prior быстрый депозит", "4 200 000"));
-		paymentModel.getListPaymensDetail().add(new PaymentDetail("Наличные", "600 000"));
-
-		paymentModel.setBalance("8 000 000");
-
-		return paymentModel;
 	}
 
 	@Override
