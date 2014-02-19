@@ -8,10 +8,12 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.View.OnLongClickListener;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -24,6 +26,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import by.gravity.common.utils.CalendarUtil;
 import by.gravity.common.utils.GlobalUtil;
 import by.gravity.common.utils.StringUtil;
@@ -41,6 +44,8 @@ import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog.OnTimeSetListener;
 
 public class AddPaymentFragment extends CommonSherlockFragment {
+
+	private static final String TAG = AddPaymentFragment.class.getSimpleName();
 
 	private static final int SHOW_CATEGORIES_COUNT = 5;
 
@@ -371,7 +376,9 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 				} else if (viewId == R.id.zero) {
 					currentText.append(Constants.ZERO_STRING);
 				} else if (viewId == R.id.dot) {
-					currentText.append(Constants.DOT_STRING);
+					if (currentText.lastIndexOf(Constants.DOT_STRING) == -1) {
+						currentText.append(Constants.DOT_STRING);
+					}
 				} else if (viewId == R.id.backspace) {
 					if (currentText.length() > 0) {
 						currentText.deleteCharAt(currentText.length() - 1);
@@ -416,16 +423,20 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 					GlobalUtil.hideSoftKeyboard(getActivity());
 					dialog.dismiss();
 				}
-
-				numberTextView.setText(StringUtil.convertNumberToHumanFriednly(currentText.toString().replace(Constants.SPACE_STRING,
+				numberTextView.setText(StringUtil.convertNumberToHumanFriednly(currentText.toString().replaceAll(Constants.SPACE_PATTERN,
 						Constants.EMPTY_STRING)));
 				if (viewId == R.id.okButton) {
-					EditText costEditText = (EditText) getView().findViewById(R.id.cost);
-					try {
-						String parsedValue = String.valueOf(Parser.parse(numberTextView.getText().toString()).value());
-						costEditText.setText(StringUtil.removeNumberAfterDot(parsedValue));
-					} catch (SyntaxException e) {
-						e.printStackTrace();
+					if (!StringUtil.isEmpty(currentText.toString())) {
+						EditText costEditText = (EditText) getView().findViewById(R.id.cost);
+						try {
+
+							String parsedValue = StringUtil.convertNumberToHumanFriednly(Parser.parse(
+									currentText.toString().replaceAll(Constants.SPACE_PATTERN, Constants.EMPTY_STRING)).value());
+							costEditText.setText(parsedValue);
+						} catch (SyntaxException e) {
+							Toast.makeText(getActivity(), R.string.parseNumberError, Toast.LENGTH_SHORT).show();
+							Log.e(TAG, "error ", e);
+						}
 					}
 					dialog.dismiss();
 				}
@@ -465,6 +476,14 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		okButton.setOnClickListener(onClickListener);
 		cancelButton.setOnClickListener(onClickListener);
 		backspace.setOnClickListener(onClickListener);
+		backspace.setOnLongClickListener(new OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(View v) {
+				numberTextView.setText("");
+				return false;
+			}
+		});
 		plus.setOnClickListener(onClickListener);
 		minus.setOnClickListener(onClickListener);
 		multiple.setOnClickListener(onClickListener);
