@@ -82,7 +82,7 @@ public class MainActivity extends DrawerActivity {
 	}
 
 	public void showTimePickerDialog(int hourOfDay, int minute, OnTimeSetListener onTimeSetListener) {
-		final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(onTimeSetListener, hourOfDay, minute, true,false);
+		final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(onTimeSetListener, hourOfDay, minute, true, false);
 		timePickerDialog.show(getSupportFragmentManager(), TimePickerDialog.class.getSimpleName());
 	}
 
