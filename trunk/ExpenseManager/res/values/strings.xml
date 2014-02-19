@@ -32,4 +32,5 @@
     <string name="note">Заметка</string>
     
     <string name="parseNumberError">Произошла ошибка во время обработки введенного значения</string>
+    <string name="emptyPaymentMethods">Отсутсвуют способы оплаты</string>
 </resources>

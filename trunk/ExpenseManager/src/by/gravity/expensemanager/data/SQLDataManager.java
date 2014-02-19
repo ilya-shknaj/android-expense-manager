@@ -37,6 +37,10 @@ public class SQLDataManager {
 		return instance;
 	}
 
+	public interface OnLoadCompleteListener {
+		public void onComplete(Object result);
+	}
+
 	public void addExpense(final String amount, final String currency, final Date date, final List<String> categories, final String note,
 			final String paymentMethod) {
 		new AsyncTask<Void, Void, Boolean>() {
@@ -72,6 +76,56 @@ public class SQLDataManager {
 				return null;
 			}
 
+		}.start();
+	}
+
+	public void getCurrenciesShort(final OnLoadCompleteListener loadCompleteListener) {
+		new AsyncTask<Void, Void, List<String>>() {
+
+			@Override
+			protected List<String> doInBackground(Void... params) {
+				Cursor cursor = database.query(SQLConstants.TABLE_CURRENCY, null, SQLConstants.FIELD_IS_SHOW + "=?", new String[] { "1" }, null,
+						null, null);
+				List<String> currencyList = new ArrayList<String>();
+				if (cursor != null && cursor.getCount() > 0) {
+					for (int i = 0; i < cursor.getCount(); i++) {
+						cursor.moveToPosition(i);
+						currencyList.add(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE)));
+					}
+
+					cursor.close();
+				}
+				return currencyList;
+			}
+
+			@Override
+			protected void onPostExecute(List<String> result) {
+				super.onPostExecute(result);
+				if (loadCompleteListener != null) {
+					loadCompleteListener.onComplete(result);
+				}
+			}
+
+		}.start();
+	}
+
+	public void getPaymentsMethodsShort(final OnLoadCompleteListener onLoadCompleteListener) {
+		new AsyncTask<Void, Void, List<String>>() {
+
+			@Override
+			protected List<String> doInBackground(Void... params) {
+				Cursor cursor = database.query(SQLConstants.TABLE_PAYMENT_METHODS, new String[] { SQLConstants.FIELD_NAME }, null, null, null, null,
+						null);
+				List<String> paymentMethodsList = new ArrayList<String>();
+				if (cursor != null && cursor.getCount() > 0) {
+					for (int i = 0; i < cursor.getCount(); i++) {
+						cursor.moveToPosition(i);
+						paymentMethodsList.add(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
+					}
+					cursor.close();
+				}
+				return paymentMethodsList;
+			}
 		}.start();
 	}
 
