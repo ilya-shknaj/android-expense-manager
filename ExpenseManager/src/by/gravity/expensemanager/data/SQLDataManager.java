@@ -1,6 +1,8 @@
 package by.gravity.expensemanager.data;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -8,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import by.gravity.common.task.AsyncTask;
 import by.gravity.common.utils.ContextHolder;
+import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.data.helper.SQLDataManagerHelper;
 
@@ -17,6 +20,8 @@ public class SQLDataManager {
 	private SQLiteDatabase database;
 
 	private static SQLDataManager instance;
+
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	private SQLDataManager() {
 
@@ -32,7 +37,7 @@ public class SQLDataManager {
 		return instance;
 	}
 
-	public void saveExpense(final String amount, final String currency, final String date, final List<String> categories, final String note,
+	public void addExpense(final String amount, final String currency, final Date date, final List<String> categories, final String note,
 			final String paymentMethod) {
 		new AsyncTask<Void, Void, Boolean>() {
 			@Override
@@ -42,8 +47,10 @@ public class SQLDataManager {
 				ContentValues values = new ContentValues();
 				values.put(SQLConstants.FIELD_AMOUNT, amount);
 				values.put(SQLConstants.FIELD_CURRENCY, getCurrencyIdAsync(currency));
-				values.put(SQLConstants.FIELD_DATE, date);
-				values.put(SQLConstants.FIELD_NOTE, note);
+				values.put(SQLConstants.FIELD_DATE, dateFormat.format(date));
+				if (!StringUtil.isEmpty(note)) {
+					values.put(SQLConstants.FIELD_NOTE, note);
+				}
 				Long paymentMethodId = getPaymentMethodIdAsync(paymentMethod);
 				if (paymentMethodId != null) {
 					values.put(SQLConstants.FIELD_PAYMENT_METHOD, paymentMethodId);
@@ -153,6 +160,9 @@ public class SQLDataManager {
 	}
 
 	private Long getPaymentMethodIdAsync(final String accountName) {
+		if (StringUtil.isEmpty(accountName)) {
+			return null;
+		}
 		Cursor cursor = database.query(SQLConstants.TABLE_PAYMENT_METHODS, new String[] { SQLConstants.FIELD_ID }, SQLConstants.FIELD_NAME + "=?",
 				new String[] { accountName }, null, null, null);
 		Long id = null;
