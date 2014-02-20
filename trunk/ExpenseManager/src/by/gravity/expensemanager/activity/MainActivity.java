@@ -5,6 +5,7 @@ import java.util.Calendar;
 
 import android.os.Bundle;
 import android.os.Handler;
+import by.gravity.common.task.OnLoadCompleteListener;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.data.SQLDataManager;
 import by.gravity.expensemanager.fragments.AddPaymentFragment;
@@ -29,7 +30,10 @@ public class MainActivity extends DrawerActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		showMainFragment();
-//		SQLDataManager.getInstance().addExpense("35000", "BYR", Calendar.getInstance().getTime(), Arrays.asList(new String[]{"Продукты"}), null, null);
+		// SQLDataManager.getInstance().addExpense("35000", "BYR",
+		// Calendar.getInstance().getTime(),
+		// Arrays.asList(new String[] { "Продукты", "Авто", "Алми", "Спектр",
+		// "Нарочь" }), null, null);
 	}
 
 	@Override

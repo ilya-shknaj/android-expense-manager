@@ -21,4 +21,5 @@ public class SQLConstants {
 	public static final String FIELD_SYMBOL = "symbol";
 	public static final String FIELD_BALANCE = "balance";
 	public static final String FIELD_IS_SHOW = "isShow";
+	public static final String FIELD_USAGE_COUNT = "usageCount";
 }

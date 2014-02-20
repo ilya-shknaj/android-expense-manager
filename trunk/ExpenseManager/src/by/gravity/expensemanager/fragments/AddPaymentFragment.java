@@ -1,6 +1,5 @@
 package by.gravity.expensemanager.fragments;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -27,13 +26,13 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import by.gravity.common.task.OnLoadCompleteListener;
 import by.gravity.common.utils.CalendarUtil;
 import by.gravity.common.utils.GlobalUtil;
 import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.data.SQLDataManager;
-import by.gravity.expensemanager.data.SQLDataManager.OnLoadCompleteListener;
 import by.gravity.expensemanager.util.Constants;
 import by.gravity.expensemanager.util.math.Parser;
 import by.gravity.expensemanager.util.math.SyntaxException;
@@ -209,56 +208,65 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 	private void initCategories() {
 		final LinearLayout categoriesLayout = (LinearLayout) getView().findViewById(R.id.categoriesLayout);
-		List<String> categoriesList = getCategories();
-		final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(R.id.categoriesEditText);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, categoriesList);
-		categoriesEditText.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-		categoriesEditText.setAdapter(adapter);
-		List<String> categories = categoriesList.size() > SHOW_CATEGORIES_COUNT ? categoriesList.subList(0, 5) : categoriesList;
-		final OnCheckedChangeListener checkedChangeListener = new OnCheckedChangeListener() {
+		SQLDataManager.getInstance().getCategoriesPopular(new OnLoadCompleteListener() {
 
+			@SuppressWarnings("unchecked")
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if (hasEnteredCategory(buttonView.getText().toString(), categoriesEditText.getText().toString())) {
-					categoriesEditText.setText(getEditableCategoryTextAfterRemove(buttonView.getText().toString(), categoriesEditText.getText()
-							.toString()));
-				} else {
-					categoriesEditText.append(buttonView.getText().toString() + Constants.CATEGORY_SPLITTER);
-				}
-			}
-		};
-		categoriesEditText.addTextChangedListener(new TextWatcher() {
+			public void onComplete(Object result) {
+				List<String> categoriesList = (List<String>) result;
+				final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(R.id.categoriesEditText);
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, categoriesList);
+				categoriesEditText.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+				categoriesEditText.setAdapter(adapter);
+				List<String> categories = categoriesList.size() > SHOW_CATEGORIES_COUNT ? categoriesList.subList(0, SHOW_CATEGORIES_COUNT)
+						: categoriesList;
+				final OnCheckedChangeListener checkedChangeListener = new OnCheckedChangeListener() {
 
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				if (count > 0) {
-					checkCategory(categoriesLayout, checkedChangeListener, s.toString(), true);
-				} else if (before > 0) {
-					if (start > 1 && (s.charAt(start - 1) == Constants.COMMA_CHAR || s.charAt(start - 1) == Constants.SPACE_CHAR)) {
-						return;
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+						if (hasEnteredCategory(buttonView.getText().toString(), categoriesEditText.getText().toString())) {
+							categoriesEditText.setText(getEditableCategoryTextAfterRemove(buttonView.getText().toString(), categoriesEditText
+									.getText().toString()));
+						} else {
+							categoriesEditText.append(buttonView.getText().toString() + Constants.CATEGORY_SPLITTER);
+						}
 					}
-					checkCategory(categoriesLayout, checkedChangeListener, s.toString(), false);
+				};
+				categoriesEditText.addTextChangedListener(new TextWatcher() {
+
+					@Override
+					public void onTextChanged(CharSequence s, int start, int before, int count) {
+						if (count > 0) {
+							checkCategory(categoriesLayout, checkedChangeListener, s.toString(), true);
+						} else if (before > 0) {
+							if (start > 1 && (s.charAt(start - 1) == Constants.COMMA_CHAR || s.charAt(start - 1) == Constants.SPACE_CHAR)) {
+								return;
+							}
+							checkCategory(categoriesLayout, checkedChangeListener, s.toString(), false);
+						}
+					}
+
+					@Override
+					public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+					}
+
+					@Override
+					public void afterTextChanged(Editable s) {
+
+					}
+				});
+				categoriesLayout.removeAllViews();
+				for (int i = 0; i < categories.size(); i++) {
+					CheckBox checkBox = new CheckBox(getActivity());
+					checkBox.setText(categories.get(i));
+					checkBox.setTag(categories.get(i).toLowerCase());
+					checkBox.setOnCheckedChangeListener(checkedChangeListener);
+					categoriesLayout.addView(checkBox, i);
 				}
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
 
 			}
 		});
-		categoriesLayout.removeAllViews();
-		for (int i = 0; i < categories.size(); i++) {
-			CheckBox checkBox = new CheckBox(getActivity());
-			checkBox.setText(categories.get(i));
-			checkBox.setTag(categories.get(i).toLowerCase());
-			checkBox.setOnCheckedChangeListener(checkedChangeListener);
-			categoriesLayout.addView(checkBox, i);
-		}
 	}
 
 	private void checkCategory(LinearLayout categoriesLayout, OnCheckedChangeListener checkedChangeListener, String currentCategoryText, boolean check) {
@@ -310,17 +318,6 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		}
 
 		return stringBuilder.toString();
-	}
-
-	private List<String> getCategories() {
-		List<String> categories = new ArrayList<String>();
-		categories.add("Продукты");
-		categories.add("Алми");
-		categories.add("Расходы на автомобиль");
-		categories.add("Коммунальные платежи");
-		categories.add("Белтелеком");
-
-		return categories;
 	}
 
 	@Override
