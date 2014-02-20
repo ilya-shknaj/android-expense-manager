@@ -12,6 +12,7 @@ public class SQLConstants {
 	public static final String FIELD_AMOUNT = "amount";
 	public static final String FIELD_CURRENCY = "currency";
 	public static final String FIELD_DATE = "date";
+	public static final String FIELD_TIME = "time";
 	public static final String FIELD_NOTE = "note";
 	public static final String FIELD_PAYMENT_METHOD = "paymentMethod";
 	public static final String FIELD_NAME = "name";

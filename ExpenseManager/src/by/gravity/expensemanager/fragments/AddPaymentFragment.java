@@ -80,7 +80,6 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		final View saveButton = getView().findViewById(R.id.tabBarLayout).findViewById(R.id.saveButton);
 		saveButton.setOnClickListener(new OnClickListener() {
 
-			@SuppressWarnings("deprecation")
 			@Override
 			public void onClick(View v) {
 				final EditText costEditText = (EditText) getView().findViewById(R.id.cost);
@@ -98,12 +97,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 				Date date = (Date) dateTextView.getTag();
 				Date time = (Date) timeTextView.getTag();
 
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(date);
-				calendar.set(Calendar.HOUR_OF_DAY, time.getHours());
-				calendar.set(Calendar.MINUTE, time.getMinutes());
-
-				SQLDataManager.getInstance().addExpense(costEditText.getText().toString(), spinner.getSelectedItem().toString(), calendar.getTime(),
+				SQLDataManager.getInstance().addExpense(costEditText.getText().toString(), spinner.getSelectedItem().toString(), date, time,
 						getEnteredCategoriesList(categoriesEditText.getText().toString()), noteEditText.getText().toString(), null);
 				GlobalUtil.hideSoftKeyboard(getActivity());
 				getActivity().getSupportFragmentManager().popBackStack();
@@ -170,7 +164,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 	private void initDate() {
 		final TextView dateTextView = (TextView) getView().findViewById(R.id.date);
-		final Calendar date = getDate();
+		final Calendar date = getCurrentDate();
 		dateTextView.setTag(date.getTime());
 		dateTextView.setText(getFriendlyDate(date));
 		dateTextView.setOnClickListener(new OnClickListener() {
@@ -185,6 +179,10 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 								date.set(Calendar.YEAR, year);
 								date.set(Calendar.MONTH, month);
 								date.set(Calendar.DAY_OF_MONTH, day);
+								date.set(Calendar.HOUR, 0);
+								date.set(Calendar.MINUTE, 0);
+								date.set(Calendar.SECOND, 0);
+								date.set(Calendar.MILLISECOND, 0);
 								dateTextView.setTag(date.getTime());
 								dateTextView.setText(getFriendlyDate(year, month, day));
 							}
@@ -194,7 +192,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		});
 
 		final TextView timeTextView = (TextView) getView().findViewById(R.id.time);
-		Calendar time = getDate();
+		Calendar time = getCurrentTime();
 		timeTextView.setText(getTime(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE)));
 		timeTextView.setTag(time.getTime());
 		timeTextView.setOnClickListener(new OnClickListener() {
@@ -226,10 +224,19 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		return getFriendlyDate(calendar);
 	}
 
-	private Calendar getDate() {
+	private Calendar getCurrentDate() {
 		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
 		return calendar;
 
+	}
+	
+	private Calendar getCurrentTime(){
+		Calendar calendar = Calendar.getInstance();
+		return calendar;
 	}
 
 	private String getTime(int hourOfDay, int minutes) {
@@ -364,7 +371,12 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 	}
 
 	private String[] getEnteredCategories(String enteredCategoryText) {
-		return enteredCategoryText.replaceAll(Constants.SPACE_PATTERN, Constants.EMPTY_STRING).split(Constants.COMMA_STRING);
+		if (enteredCategoryText.length() > 0) {
+			return enteredCategoryText.replaceAll(Constants.SPACE_PATTERN, Constants.EMPTY_STRING).split(Constants.COMMA_STRING);
+		}
+
+		return new String[] {};
+
 	}
 
 	private List<String> getEnteredCategoriesList(String enteredCategoryText) {
@@ -374,7 +386,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 	private String getEditableCategoryTextAfterRemove(String categoryToRemove, String enteredCategory) {
 		StringBuilder stringBuilder = new StringBuilder();
 		String[] enteredCategoryArray = enteredCategory.split(Constants.CATEGORY_SPLITTER);
-		for (int i = 0; i < enteredCategoryArray.length; i++) {
+		for (int i = 0; i < enteredCategoryArray.length; i++) { 
 			if (!enteredCategoryArray[i].trim().equals(categoryToRemove)) {
 				stringBuilder.append(enteredCategoryArray[i]);
 				stringBuilder.append(Constants.CATEGORY_SPLITTER);
