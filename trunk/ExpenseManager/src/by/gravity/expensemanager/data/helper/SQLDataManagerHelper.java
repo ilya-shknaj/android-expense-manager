@@ -29,7 +29,9 @@ public class SQLDataManagerHelper extends SQLiteOpenHelper {
 			+ SQLConstants.FIELD_CURRENCY
 			+ " INTEGER (20),"
 			+ SQLConstants.FIELD_DATE
-			+ " DATE,"
+			+ " INTEGER,"
+			+ SQLConstants.FIELD_TIME
+			+ " INTEGER,"
 			+ SQLConstants.FIELD_NOTE
 			+ " VARCHAR (200),"
 			+ SQLConstants.FIELD_PAYMENT_METHOD

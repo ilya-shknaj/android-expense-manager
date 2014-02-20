@@ -14,6 +14,7 @@ import by.gravity.common.utils.ContextHolder;
 import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.data.helper.SQLDataManagerHelper;
+import by.gravity.expensemanager.util.Constants;
 
 public class SQLDataManager {
 
@@ -38,17 +39,18 @@ public class SQLDataManager {
 		return instance;
 	}
 
-	public void addExpense(final String amount, final String currency, final Date date, final List<String> categories, final String note,
-			final String paymentMethod) {
+	public void addExpense(final String amount, final String currency, final Date date, final Date time, final List<String> categories,
+			final String note, final String paymentMethod) {
 		new AsyncTask<Void, Void, Boolean>() {
 			@Override
 			protected Boolean doInBackground(Void... params) {
 				updateCategoriesAsync(categories);
 
 				ContentValues values = new ContentValues();
-				values.put(SQLConstants.FIELD_AMOUNT, amount);
+				values.put(SQLConstants.FIELD_AMOUNT, amount.replaceAll(Constants.SPACE_PATTERN, Constants.EMPTY_STRING));
 				values.put(SQLConstants.FIELD_CURRENCY, getCurrencyIdAsync(currency));
-				values.put(SQLConstants.FIELD_DATE, dateFormat.format(date));
+				values.put(SQLConstants.FIELD_DATE, date.getTime());
+				values.put(SQLConstants.FIELD_TIME, time.getTime());
 				if (!StringUtil.isEmpty(note)) {
 					values.put(SQLConstants.FIELD_NOTE, note);
 				}
@@ -57,8 +59,10 @@ public class SQLDataManager {
 					values.put(SQLConstants.FIELD_PAYMENT_METHOD, paymentMethodId);
 				}
 				long expenseId = database.insert(SQLConstants.TABLE_EXPENSE, null, values);
-				addExpenseCategoriesAsync(categories, expenseId);
-				updateUsageCategoryCountAsync(categories);
+				if (categories.size() > 0) {
+					addExpenseCategoriesAsync(categories, expenseId);
+					updateUsageCategoryCountAsync(categories);
+				}
 				return null;
 
 			}
