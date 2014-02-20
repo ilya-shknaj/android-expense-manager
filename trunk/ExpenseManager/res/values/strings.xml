@@ -33,4 +33,5 @@
     
     <string name="parseNumberError">Произошла ошибка во время обработки введенного значения</string>
     <string name="emptyPaymentMethods">Отсутсвуют способы оплаты</string>
+    <string name="emptyAmount">Введите сумму</string>
 </resources>

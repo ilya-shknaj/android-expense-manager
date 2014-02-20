@@ -2,6 +2,7 @@ package by.gravity.expensemanager.fragments;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import android.app.Dialog;
@@ -66,20 +67,45 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 	}
 
 	private void initBottomTabBar() {
-		View cancelButton = getView().findViewById(R.id.tabBarLayout).findViewById(R.id.cancelButton);
+		final View cancelButton = getView().findViewById(R.id.tabBarLayout).findViewById(R.id.cancelButton);
 		cancelButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
+				GlobalUtil.hideSoftKeyboard(getActivity());
 				getActivity().getSupportFragmentManager().popBackStack();
 			}
 		});
 
-		View saveButton = getView().findViewById(R.id.tabBarLayout).findViewById(R.id.saveButton);
+		final View saveButton = getView().findViewById(R.id.tabBarLayout).findViewById(R.id.saveButton);
 		saveButton.setOnClickListener(new OnClickListener() {
 
+			@SuppressWarnings("deprecation")
 			@Override
 			public void onClick(View v) {
+				final EditText costEditText = (EditText) getView().findViewById(R.id.cost);
+				if (StringUtil.isEmpty(costEditText.getText().toString())) {
+					Toast.makeText(getActivity(), R.string.emptyAmount, Toast.LENGTH_SHORT).show();
+					return;
+				}
+
+				final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(R.id.categoriesEditText);
+				final Spinner spinner = (Spinner) getView().findViewById(R.id.currency);
+				final TextView dateTextView = (TextView) getView().findViewById(R.id.date);
+				final TextView timeTextView = (TextView) getView().findViewById(R.id.time);
+				final EditText noteEditText = (EditText) getView().findViewById(R.id.note);
+
+				Date date = (Date) dateTextView.getTag();
+				Date time = (Date) timeTextView.getTag();
+
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(date);
+				calendar.set(Calendar.HOUR_OF_DAY, time.getHours());
+				calendar.set(Calendar.MINUTE, time.getMinutes());
+
+				SQLDataManager.getInstance().addExpense(costEditText.getText().toString(), spinner.getSelectedItem().toString(), calendar.getTime(),
+						getEnteredCategoriesList(categoriesEditText.getText().toString()), noteEditText.getText().toString(), null);
+				GlobalUtil.hideSoftKeyboard(getActivity());
 				getActivity().getSupportFragmentManager().popBackStack();
 			}
 		});
@@ -145,6 +171,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 	private void initDate() {
 		final TextView dateTextView = (TextView) getView().findViewById(R.id.date);
 		final Calendar date = getDate();
+		dateTextView.setTag(date.getTime());
 		dateTextView.setText(getFriendlyDate(date));
 		dateTextView.setOnClickListener(new OnClickListener() {
 
@@ -155,6 +182,10 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 							@Override
 							public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
+								date.set(Calendar.YEAR, year);
+								date.set(Calendar.MONTH, month);
+								date.set(Calendar.DAY_OF_MONTH, day);
+								dateTextView.setTag(date.getTime());
 								dateTextView.setText(getFriendlyDate(year, month, day));
 							}
 						});
@@ -163,7 +194,9 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		});
 
 		final TextView timeTextView = (TextView) getView().findViewById(R.id.time);
-		timeTextView.setText(getTime());
+		Calendar time = getDate();
+		timeTextView.setText(getTime(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE)));
+		timeTextView.setTag(time.getTime());
 		timeTextView.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -171,8 +204,10 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 				((MainActivity) getActivity()).showTimePickerDialog(date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE),
 						new OnTimeSetListener() {
 
+							@SuppressWarnings("deprecation")
 							@Override
 							public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+								timeTextView.setTag(new Date(0, 0, 0, hourOfDay, minute));
 								timeTextView.setText(getTime(hourOfDay, minute));
 							}
 						});
@@ -195,11 +230,6 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		Calendar calendar = Calendar.getInstance();
 		return calendar;
 
-	}
-
-	private String getTime() {
-		Calendar calendar = Calendar.getInstance();
-		return getTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
 	}
 
 	private String getTime(int hourOfDay, int minutes) {

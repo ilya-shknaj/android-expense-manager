@@ -43,7 +43,7 @@ public class SQLDataManager {
 		new AsyncTask<Void, Void, Boolean>() {
 			@Override
 			protected Boolean doInBackground(Void... params) {
-				addCategoriesAsync(categories);
+				updateCategoriesAsync(categories);
 
 				ContentValues values = new ContentValues();
 				values.put(SQLConstants.FIELD_AMOUNT, amount);
@@ -62,18 +62,6 @@ public class SQLDataManager {
 				return null;
 
 			}
-		}.start();
-	}
-
-	public void addCategory(final String name) {
-		new AsyncTask<Void, Void, Void>() {
-
-			@Override
-			protected Void doInBackground(Void... params) {
-				addCategoryAsync(name);
-				return null;
-			}
-
 		}.start();
 	}
 
@@ -160,7 +148,7 @@ public class SQLDataManager {
 
 	private List<Long> getCategoriesIdAsync(final List<String> categories) {
 		Cursor cursor = database.query(SQLConstants.TABLE_CATEGORY, new String[] { SQLConstants.FIELD_ID }, SQLConstants.FIELD_NAME + " IN("
-				+ makePlaceholders(categories.size()) + ")", categories.toArray(new String[] {}), null, null, null);
+				+ makePlaceholders(categories.size()) + ") COLLATE NOCASE", categories.toArray(new String[] {}), null, null, null);
 		List<Long> categoriesId = new ArrayList<Long>();
 		if (cursor != null && cursor.getCount() > 0) {
 			for (int i = 0; i < cursor.getCount(); i++) {
@@ -192,11 +180,11 @@ public class SQLDataManager {
 		database.insert(SQLConstants.TABLE_CATEGORY, null, values);
 	}
 
-	private void addCategoriesAsync(final List<String> categories) {
+	private void updateCategoriesAsync(final List<String> categories) {
 		for (int i = 0; i < categories.size(); i++) {
 			String category = categories.get(i);
 			if (getCategoryIdAsync(category) == null) {
-				addCategoryAsync(category);
+				addCategoryAsync(StringUtil.uppercaseFirstLetter(category));
 			}
 		}
 	}
@@ -204,7 +192,7 @@ public class SQLDataManager {
 	private void addExpenseCategoriesAsync(final List<String> categories, final long expenseId) {
 		List<Long> categoriesId = getCategoriesIdAsync(categories);
 		ContentValues values = null;
-		for (int i = 0; i < categories.size(); i++) {
+		for (int i = 0; i < categoriesId.size(); i++) {
 			values = new ContentValues();
 			values.put(SQLConstants.FIELD_CATEGORY_ID, categoriesId.get(i));
 			values.put(SQLConstants.FIELD_EXPENSE_ID, expenseId);
