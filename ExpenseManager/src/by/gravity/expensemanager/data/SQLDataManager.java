@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import by.gravity.common.task.AsyncTask;
+import by.gravity.common.task.OnLoadCompleteListener;
 import by.gravity.common.utils.ContextHolder;
 import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.data.helper.SQLConstants;
@@ -37,10 +38,6 @@ public class SQLDataManager {
 		return instance;
 	}
 
-	public interface OnLoadCompleteListener {
-		public void onComplete(Object result);
-	}
-
 	public void addExpense(final String amount, final String currency, final Date date, final List<String> categories, final String note,
 			final String paymentMethod) {
 		new AsyncTask<Void, Void, Boolean>() {
@@ -61,6 +58,7 @@ public class SQLDataManager {
 				}
 				long expenseId = database.insert(SQLConstants.TABLE_EXPENSE, null, values);
 				addExpenseCategoriesAsync(categories, expenseId);
+				updateUsageCategoryCountAsync(categories);
 				return null;
 
 			}
@@ -80,7 +78,7 @@ public class SQLDataManager {
 	}
 
 	public void getCurrenciesShort(final OnLoadCompleteListener loadCompleteListener) {
-		new AsyncTask<Void, Void, List<String>>() {
+		new AsyncTask<Void, Void, List<String>>(loadCompleteListener) {
 
 			@Override
 			protected List<String> doInBackground(Void... params) {
@@ -98,19 +96,11 @@ public class SQLDataManager {
 				return currencyList;
 			}
 
-			@Override
-			protected void onPostExecute(List<String> result) {
-				super.onPostExecute(result);
-				if (loadCompleteListener != null) {
-					loadCompleteListener.onComplete(result);
-				}
-			}
-
 		}.start();
 	}
 
 	public void getPaymentsMethodsShort(final OnLoadCompleteListener onLoadCompleteListener) {
-		new AsyncTask<Void, Void, List<String>>() {
+		new AsyncTask<Void, Void, List<String>>(onLoadCompleteListener) {
 
 			@Override
 			protected List<String> doInBackground(Void... params) {
@@ -126,6 +116,29 @@ public class SQLDataManager {
 				}
 				return paymentMethodsList;
 			}
+
+		}.start();
+	}
+
+	public void getCategoriesPopular(final OnLoadCompleteListener loadCompleteListener) {
+		new AsyncTask<Void, Void, List<String>>(loadCompleteListener) {
+
+			@Override
+			protected List<String> doInBackground(Void... params) {
+				Cursor cursor = database.query(SQLConstants.TABLE_CATEGORY, null, null, null, null, null, SQLConstants.FIELD_USAGE_COUNT + " DESC");
+				List<String> categories = new ArrayList<String>();
+				if (cursor != null && cursor.getCount() > 0) {
+					for (int i = 0; i < cursor.getCount(); i++) {
+						cursor.moveToPosition(i);
+						categories.add(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
+					}
+
+					cursor.close();
+				}
+
+				return categories;
+			}
+
 		}.start();
 	}
 
@@ -229,4 +242,21 @@ public class SQLDataManager {
 		return id;
 	}
 
+	private void updateUsageCategoryCountAsync(final List<String> categories) {
+		Cursor cursor = database.query(SQLConstants.TABLE_CATEGORY, null, SQLConstants.FIELD_NAME + " IN(" + makePlaceholders(categories.size())
+				+ ")", categories.toArray(new String[] {}), null, null, null);
+		if (cursor != null && cursor.getCount() > 0) {
+			for (int i = 0; i < cursor.getCount(); i++) {
+				cursor.moveToPosition(i);
+				long id = cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_ID));
+				int usageCount = cursor.getInt(cursor.getColumnIndex(SQLConstants.FIELD_USAGE_COUNT));
+
+				ContentValues values = new ContentValues();
+				values.put(SQLConstants.FIELD_USAGE_COUNT, ++usageCount);
+
+				database.update(SQLConstants.TABLE_CATEGORY, values, SQLConstants.FIELD_ID + "=?", new String[] { String.valueOf(id) });
+			}
+			cursor.close();
+		}
+	}
 }
