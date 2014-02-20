@@ -1,5 +1,6 @@
 package by.gravity.expensemanager.fragments;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 	private static final String TAG = AddPaymentFragment.class.getSimpleName();
 
-	private static final int SHOW_CATEGORIES_COUNT = 5;
+	private static final int SHOW_CATEGORIES_COUNT = 3;
 
 	public static AddPaymentFragment newInstance() {
 		return new AddPaymentFragment();
@@ -207,19 +208,20 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 	}
 
 	private void initCategories() {
-		final LinearLayout categoriesLayout = (LinearLayout) getView().findViewById(R.id.categoriesLayout);
 		SQLDataManager.getInstance().getCategoriesPopular(new OnLoadCompleteListener() {
 
 			@SuppressWarnings("unchecked")
 			@Override
 			public void onComplete(Object result) {
-				List<String> categoriesList = (List<String>) result;
+				final LinearLayout categoriesLayout = (LinearLayout) getView().findViewById(R.id.categoriesLayout);
+				final List<String> allCategoriesList = (List<String>) result;
 				final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(R.id.categoriesEditText);
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, categoriesList);
+				final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line,
+						allCategoriesList);
 				categoriesEditText.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 				categoriesEditText.setAdapter(adapter);
-				List<String> categories = categoriesList.size() > SHOW_CATEGORIES_COUNT ? categoriesList.subList(0, SHOW_CATEGORIES_COUNT)
-						: categoriesList;
+				final List<String> popularCategories = allCategoriesList.size() > SHOW_CATEGORIES_COUNT ? allCategoriesList.subList(0,
+						SHOW_CATEGORIES_COUNT) : allCategoriesList;
 				final OnCheckedChangeListener checkedChangeListener = new OnCheckedChangeListener() {
 
 					@Override
@@ -257,16 +259,40 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 					}
 				});
 				categoriesLayout.removeAllViews();
-				for (int i = 0; i < categories.size(); i++) {
+				for (int i = 0; i < popularCategories.size(); i++) {
 					CheckBox checkBox = new CheckBox(getActivity());
-					checkBox.setText(categories.get(i));
-					checkBox.setTag(categories.get(i).toLowerCase());
+					checkBox.setText(popularCategories.get(i));
+					checkBox.setTag(popularCategories.get(i).toLowerCase());
 					checkBox.setOnCheckedChangeListener(checkedChangeListener);
 					categoriesLayout.addView(checkBox, i);
 				}
 
+				final View showAllCategoriesButton = getView().findViewById(R.id.showAllCategoriesButton);
+				if (allCategoriesList.size() > popularCategories.size()) {
+					showAllCategoriesButton.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							List<String> enteredCategories = getEnteredCategoriesList(categoriesEditText.getText().toString());
+							for (int i = popularCategories.size(); i < allCategoriesList.size(); i++) {
+								CheckBox checkBox = new CheckBox(getActivity());
+								checkBox.setText(allCategoriesList.get(i));
+								checkBox.setTag(allCategoriesList.get(i).toLowerCase());
+								if (enteredCategories.contains(allCategoriesList.get(i))) {
+									checkBox.setChecked(true);
+								}
+								checkBox.setOnCheckedChangeListener(checkedChangeListener);
+								categoriesLayout.addView(checkBox, i);
+							}
+							showAllCategoriesButton.setVisibility(View.GONE);
+						}
+					});
+				} else {
+					showAllCategoriesButton.setVisibility(View.GONE);
+				}
 			}
 		});
+
 	}
 
 	private void checkCategory(LinearLayout categoriesLayout, OnCheckedChangeListener checkedChangeListener, String currentCategoryText, boolean check) {
@@ -296,15 +322,23 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		}
 	}
 
-	private boolean hasEnteredCategory(String currentCategory, String enteredCategory) {
-		String[] enteredCategoryArray = enteredCategory.split(Constants.COMMA_STRING);
+	private boolean hasEnteredCategory(String currentCategory, String enteredCategoryText) {
+		String[] enteredCategoryArray = getEnteredCategories(enteredCategoryText);
 		for (int i = 0; i < enteredCategoryArray.length; i++) {
-			if (enteredCategoryArray[i].trim().equals(currentCategory)) {
+			if (enteredCategoryArray[i].equals(currentCategory)) {
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	private String[] getEnteredCategories(String enteredCategoryText) {
+		return enteredCategoryText.replaceAll(Constants.SPACE_PATTERN, Constants.EMPTY_STRING).split(Constants.COMMA_STRING);
+	}
+
+	private List<String> getEnteredCategoriesList(String enteredCategoryText) {
+		return Arrays.asList(getEnteredCategories(enteredCategoryText));
 	}
 
 	private String getEditableCategoryTextAfterRemove(String categoryToRemove, String enteredCategory) {
