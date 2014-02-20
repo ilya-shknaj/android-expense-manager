@@ -34,6 +34,7 @@ public class MainActivity extends DrawerActivity {
 		// Calendar.getInstance().getTime(),
 		// Arrays.asList(new String[] { "Продукты", "Авто", "Алми", "Спектр",
 		// "Нарочь" }), null, null);
+		SQLDataManager.getInstance().getExpenseGroupedByDate(null);
 	}
 
 	@Override

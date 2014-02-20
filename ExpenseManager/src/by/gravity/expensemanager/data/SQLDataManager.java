@@ -1,6 +1,5 @@
 package by.gravity.expensemanager.data;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +13,7 @@ import by.gravity.common.utils.ContextHolder;
 import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.data.helper.SQLDataManagerHelper;
+import by.gravity.expensemanager.model.CollapsedModel;
 import by.gravity.expensemanager.util.Constants;
 
 public class SQLDataManager {
@@ -22,8 +22,6 @@ public class SQLDataManager {
 	private SQLiteDatabase database;
 
 	private static SQLDataManager instance;
-
-	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	private SQLDataManager() {
 
@@ -131,6 +129,32 @@ public class SQLDataManager {
 				return categories;
 			}
 
+		}.start();
+	}
+
+	public void getExpenseGroupedByDate(final OnLoadCompleteListener loadCompleteListener) {
+		new AsyncTask<Void, Void, List<CollapsedModel>>() {
+
+			@Override
+			protected List<CollapsedModel> doInBackground(Void... params) {
+				Cursor cursor = database.query(SQLConstants.TABLE_EXPENSE, new String[] { SQLConstants.FIELD_DATE,
+						"sum(" + SQLConstants.FIELD_AMOUNT + ") AS " + SQLConstants.FIELD_SUM_AMOUNT }, null, null, SQLConstants.FIELD_DATE, null,
+						null);
+				List<CollapsedModel> collapsedModels = new ArrayList<CollapsedModel>();
+				CollapsedModel collapsedModel = null;
+				if (cursor != null && cursor.getCount() > 0) {
+					for (int i = 0; i < cursor.getCount(); i++) {
+						cursor.moveToPosition(i);
+						collapsedModel = new CollapsedModel();
+						collapsedModel.setAmount(String.valueOf(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_SUM_AMOUNT))));
+						collapsedModel.setDate(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_DATE)));
+						
+						collapsedModels.add(collapsedModel);
+					}
+					cursor.close();
+				}
+				return collapsedModels;
+			}
 		}.start();
 	}
 
