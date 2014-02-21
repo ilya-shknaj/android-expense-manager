@@ -193,7 +193,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 		final TextView timeTextView = (TextView) getView().findViewById(R.id.time);
 		Calendar time = getCurrentTime();
-		timeTextView.setText(getTime(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE)));
+		timeTextView.setText(StringUtil.getFriendltyTime(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE)));
 		timeTextView.setTag(time.getTime());
 		timeTextView.setOnClickListener(new OnClickListener() {
 
@@ -206,7 +206,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 							@Override
 							public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
 								timeTextView.setTag(new Date(0, 0, 0, hourOfDay, minute));
-								timeTextView.setText(getTime(hourOfDay, minute));
+								timeTextView.setText(StringUtil.getFriendltyTime(hourOfDay, minute));
 							}
 						});
 			}
@@ -233,15 +233,10 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		return calendar;
 
 	}
-	
-	private Calendar getCurrentTime(){
+
+	private Calendar getCurrentTime() {
 		Calendar calendar = Calendar.getInstance();
 		return calendar;
-	}
-
-	private String getTime(int hourOfDay, int minutes) {
-		return hourOfDay < 10 ? Constants.ZERO_STRING + hourOfDay : hourOfDay + Constants.COLON_STRING
-				+ (minutes < 10 ? Constants.ZERO_STRING + minutes : minutes);
 	}
 
 	private void initCategories() {
@@ -386,7 +381,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 	private String getEditableCategoryTextAfterRemove(String categoryToRemove, String enteredCategory) {
 		StringBuilder stringBuilder = new StringBuilder();
 		String[] enteredCategoryArray = enteredCategory.split(Constants.CATEGORY_SPLITTER);
-		for (int i = 0; i < enteredCategoryArray.length; i++) { 
+		for (int i = 0; i < enteredCategoryArray.length; i++) {
 			if (!enteredCategoryArray[i].trim().equals(categoryToRemove)) {
 				stringBuilder.append(enteredCategoryArray[i]);
 				stringBuilder.append(Constants.CATEGORY_SPLITTER);

@@ -1,8 +1,6 @@
 package by.gravity.expensemanager.fragments;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +11,7 @@ import android.widget.TextView;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.adapter.PinnedExpandableListAdapter;
-import by.gravity.expensemanager.model.GroupPriceModel;
-import by.gravity.expensemanager.model.PriceModel;
+import by.gravity.expensemanager.data.SQLDataManager;
 import by.gravity.expensemanager.view.PinnedHeaderExpListView;
 
 import com.actionbarsherlock.view.MenuItem;
@@ -31,6 +28,7 @@ public class OutcomeFragment extends CommonSherlockFragment {
 		super.onActivityCreated(savedInstanceState);
 		initPeriod();
 		initListView();
+		initBottomTabBar();
 	}
 
 	private void initPeriod() {
@@ -52,7 +50,8 @@ public class OutcomeFragment extends CommonSherlockFragment {
 		expandableListView.setDivider(getResources().getDrawable(R.color.divider));
 		expandableListView.setDividerHeight(1);
 		expandableListView.setGroupIndicator(null);
-		PinnedExpandableListAdapter adapter = new PinnedExpandableListAdapter(getActivity(), getGroupPriceList());
+		Cursor cursor = SQLDataManager.getInstance().getGroupedByDateCursor();
+		PinnedExpandableListAdapter adapter = new PinnedExpandableListAdapter(getActivity(), cursor, R.layout.i_collapsed, R.layout.i_expanded);
 
 		expandableListView.setAdapter(adapter);
 
@@ -64,23 +63,15 @@ public class OutcomeFragment extends CommonSherlockFragment {
 		expandableListView.setAdapter(adapter);
 	}
 
-	private List<GroupPriceModel> getGroupPriceList() {
-		List<GroupPriceModel> groupPriceModels = new ArrayList<GroupPriceModel>();
-		for (int i = 0; i < 10; i++) {
-			GroupPriceModel groupPriceModel = new GroupPriceModel();
-			groupPriceModel.setGroupName(i + " Января");
-			groupPriceModel.setGroupPrice("" + 10000 + i + " $");
-			for (int j = 0; j < 10; j++) {
-				PriceModel priceModel = new PriceModel();
-				priceModel.setDate(j + ".01.2014");
-				priceModel.setPrice(j + "$");
-				priceModel.setCategory(new String[] { "Продукты" });
-				groupPriceModel.getPriceList().add(priceModel);
-			}
-			groupPriceModels.add(groupPriceModel);
-		}
+	private void initBottomTabBar() {
+		View addExpenseButton = getView().findViewById(R.id.addButton);
+		addExpenseButton.setOnClickListener(new OnClickListener() {
 
-		return groupPriceModels;
+			@Override
+			public void onClick(View v) {
+				((MainActivity) getActivity()).showAddPaymentFragment();
+			}
+		});
 	}
 
 	@Override

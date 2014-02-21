@@ -148,7 +148,7 @@ public class SQLDataManager {
 						collapsedModel = new CollapsedModel();
 						collapsedModel.setAmount(String.valueOf(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_SUM_AMOUNT))));
 						collapsedModel.setDate(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_DATE)));
-						
+
 						collapsedModels.add(collapsedModel);
 					}
 					cursor.close();
@@ -156,6 +156,33 @@ public class SQLDataManager {
 				return collapsedModels;
 			}
 		}.start();
+	}
+
+	private static final String getDayExpenseQuery = "SELECT " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_ID + ","
+			+ SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_CODE + "," + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_TIME + ","
+			+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_AMOUNT + "," + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_NOTE + ","
+			+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_PAYMENT_METHOD + " FROM " + SQLConstants.TABLE_EXPENSE + " INNER JOIN "
+			+ SQLConstants.TABLE_CURRENCY + " ON " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_CURRENCY + "="
+			+ SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_ID + " WHERE " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_DATE
+			+ "=?";
+
+	public Cursor getGroupedByDateCursor() {
+		return database.query(SQLConstants.TABLE_EXPENSE + "," + SQLConstants.TABLE_CURRENCY, new String[] {
+				SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_ID, SQLConstants.FIELD_DATE,
+				"sum(" + SQLConstants.FIELD_AMOUNT + ") AS " + SQLConstants.FIELD_SUM_AMOUNT,
+				SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_SYMBOL }, SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_ID + "="
+				+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_CURRENCY, null, SQLConstants.FIELD_DATE, null, null);
+	}
+
+	public Cursor getDayExpense(Long date) {
+		return database.rawQuery(getDayExpenseQuery, new String[] { String.valueOf(date) });
+	}
+
+	public Cursor getExpenseCategories(Long expenseId) {
+		return database.query(SQLConstants.TABLE_CATEGORY + "," + SQLConstants.TABLE_EXPENSE_CATEGORY, new String[] { SQLConstants.FIELD_NAME },
+				SQLConstants.TABLE_EXPENSE_CATEGORY + "." + SQLConstants.FIELD_CATEGORY_ID + "=" + SQLConstants.TABLE_CATEGORY + "."
+						+ SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE_CATEGORY + "." + SQLConstants.FIELD_EXPENSE_ID + "=?",
+				new String[] { String.valueOf(expenseId) }, null, null, null);
 	}
 
 	private Long getCategoryIdAsync(final String name) {
@@ -176,7 +203,7 @@ public class SQLDataManager {
 
 	private List<Long> getCategoriesIdAsync(final List<String> categories) {
 		Cursor cursor = database.query(SQLConstants.TABLE_CATEGORY, new String[] { SQLConstants.FIELD_ID }, SQLConstants.FIELD_NAME + " IN("
-				+ makePlaceholders(categories.size()) + ") COLLATE NOCASE", categories.toArray(new String[] {}), null, null, null);
+				+ makePlaceholders(categories.size()) + ")", categories.toArray(new String[] {}), null, null, null);
 		List<Long> categoriesId = new ArrayList<Long>();
 		if (cursor != null && cursor.getCount() > 0) {
 			for (int i = 0; i < cursor.getCount(); i++) {
@@ -210,9 +237,10 @@ public class SQLDataManager {
 
 	private void updateCategoriesAsync(final List<String> categories) {
 		for (int i = 0; i < categories.size(); i++) {
-			String category = categories.get(i);
-			if (getCategoryIdAsync(category) == null) {
-				addCategoryAsync(StringUtil.uppercaseFirstLetter(category));
+			if (getCategoryIdAsync(categories.get(i)) == null) {
+				categories.set(i, StringUtil.uppercaseFirstLetter(categories.get(i)));
+				;
+				addCategoryAsync(categories.get(i));
 			}
 		}
 	}

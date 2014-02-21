@@ -5,6 +5,7 @@
     android:background="@color/tab_bar_background" >
 
     <RelativeLayout
+        android:id="@+id/addButton"
         android:layout_width="@dimen/tab_bar_button_wrapper_size"
         android:layout_height="fill_parent"
         android:layout_centerInParent="true"
@@ -12,12 +13,12 @@
         android:clickable="true" >
 
         <Button
-            android:id="@+id/addButton"
             android:layout_width="@dimen/tab_bar_button_size"
             android:layout_height="@dimen/tab_bar_button_size"
             android:layout_centerInParent="true"
             android:background="@drawable/ic_action_new"
-            android:clickable="false" />
+            android:clickable="false"
+            android:duplicateParentState="true" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -34,7 +35,8 @@
             android:layout_height="@dimen/tab_bar_button_size"
             android:layout_centerInParent="true"
             android:background="@drawable/ic_action_labels"
-            android:clickable="false" />
+            android:clickable="false"
+            android:duplicateParentState="true" />
     </RelativeLayout>
 
 </RelativeLayout>
