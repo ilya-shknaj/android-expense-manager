@@ -24,10 +24,10 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/date"
+                android:id="@+id/time"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="05.02.2014" />
+                android:text="15:53" />
 
             <LinearLayout
                 android:id="@+id/categoryLayout"

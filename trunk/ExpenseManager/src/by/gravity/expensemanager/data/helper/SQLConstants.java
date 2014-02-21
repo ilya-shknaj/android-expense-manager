@@ -8,7 +8,7 @@ public class SQLConstants {
 	public static final String TABLE_CURRENCY = "Currency";
 	public static final String TABLE_PAYMENT_METHODS = "PaymentMethods";
 
-	public static final String FIELD_ID = "id";
+	public static final String FIELD_ID = "_id";
 	public static final String FIELD_AMOUNT = "amount";
 	public static final String FIELD_CURRENCY = "currency";
 	public static final String FIELD_DATE = "date";

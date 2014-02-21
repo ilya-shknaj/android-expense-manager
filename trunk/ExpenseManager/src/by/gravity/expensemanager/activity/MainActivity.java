@@ -29,12 +29,13 @@ public class MainActivity extends DrawerActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		showMainFragment();
+//		showMainFragment();
+		showOutcomeFragment();
 		// SQLDataManager.getInstance().addExpense("35000", "BYR",
 		// Calendar.getInstance().getTime(),
 		// Arrays.asList(new String[] { "Продукты", "Авто", "Алми", "Спектр",
 		// "Нарочь" }), null, null);
-		SQLDataManager.getInstance().getExpenseGroupedByDate(null);
+//		SQLDataManager.getInstance().getExpenseGroupedByDate(null);
 	}
 
 	@Override
