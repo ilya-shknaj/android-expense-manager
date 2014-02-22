@@ -2,7 +2,6 @@ package by.gravity.expensemanager.fragments;
 
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import android.app.Dialog;
@@ -88,19 +87,28 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 					return;
 				}
 
-				final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(R.id.categoriesEditText);
+				final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(
+						R.id.categoriesEditText);
 				final Spinner spinner = (Spinner) getView().findViewById(R.id.currency);
 				final TextView dateTextView = (TextView) getView().findViewById(R.id.date);
 				final TextView timeTextView = (TextView) getView().findViewById(R.id.time);
 				final EditText noteEditText = (EditText) getView().findViewById(R.id.note);
 
-				Date date = (Date) dateTextView.getTag();
-				Date time = (Date) timeTextView.getTag();
+				Long date = (Long) dateTextView.getTag();
+				Long time = (Long) timeTextView.getTag();
 
-				SQLDataManager.getInstance().addExpense(costEditText.getText().toString(), spinner.getSelectedItem().toString(), date, time,
-						getEnteredCategoriesList(categoriesEditText.getText().toString()), noteEditText.getText().toString(), null);
-				GlobalUtil.hideSoftKeyboard(getActivity());
-				getActivity().getSupportFragmentManager().popBackStack();
+				SQLDataManager.getInstance().addExpense(costEditText.getText().toString(), spinner.getSelectedItem().toString(), date,
+						time, getEnteredCategoriesList(categoriesEditText.getText().toString()), noteEditText.getText().toString(), null,
+						new OnLoadCompleteListener() {
+
+							@Override
+							public void onComplete(Object result) {
+								GlobalUtil.hideSoftKeyboard(getActivity());
+								((MainActivity) getActivity()).notifyOutcomeFragmentStateChanged();
+								getActivity().getSupportFragmentManager().popBackStack();
+							}
+						});
+
 			}
 		});
 	}
@@ -126,7 +134,8 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 			@Override
 			public void onComplete(Object result) {
 				@SuppressWarnings("unchecked")
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, (List<String>) result);
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
+						(List<String>) result);
 
 				adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 				spinner.setAdapter(adapter);
@@ -165,7 +174,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 	private void initDate() {
 		final TextView dateTextView = (TextView) getView().findViewById(R.id.date);
 		final Calendar date = getCurrentDate();
-		dateTextView.setTag(date.getTime());
+		dateTextView.setTag(date.getTimeInMillis());
 		dateTextView.setText(getFriendlyDate(date));
 		dateTextView.setOnClickListener(new OnClickListener() {
 
@@ -183,7 +192,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 								date.set(Calendar.MINUTE, 0);
 								date.set(Calendar.SECOND, 0);
 								date.set(Calendar.MILLISECOND, 0);
-								dateTextView.setTag(date.getTime());
+								dateTextView.setTag(date.getTimeInMillis());
 								dateTextView.setText(getFriendlyDate(year, month, day));
 							}
 						});
@@ -192,9 +201,9 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		});
 
 		final TextView timeTextView = (TextView) getView().findViewById(R.id.time);
-		Calendar time = getCurrentTime();
+		final Calendar time = getCurrentTime();
 		timeTextView.setText(StringUtil.getFriendltyTime(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE)));
-		timeTextView.setTag(time.getTime());
+		timeTextView.setTag(time.getTimeInMillis());
 		timeTextView.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -202,10 +211,12 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 				((MainActivity) getActivity()).showTimePickerDialog(date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE),
 						new OnTimeSetListener() {
 
-							@SuppressWarnings("deprecation")
 							@Override
 							public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
-								timeTextView.setTag(new Date(0, 0, 0, hourOfDay, minute));
+								time.setTime(date.getTime());
+								time.set(Calendar.HOUR_OF_DAY, hourOfDay);
+								time.set(Calendar.MINUTE, minute);
+								timeTextView.setTag(time.getTimeInMillis());
 								timeTextView.setText(StringUtil.getFriendltyTime(hourOfDay, minute));
 							}
 						});
@@ -247,7 +258,8 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 			public void onComplete(Object result) {
 				final LinearLayout categoriesLayout = (LinearLayout) getView().findViewById(R.id.categoriesLayout);
 				final List<String> allCategoriesList = (List<String>) result;
-				final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(R.id.categoriesEditText);
+				final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(
+						R.id.categoriesEditText);
 				final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line,
 						allCategoriesList);
 				categoriesEditText.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
@@ -259,8 +271,8 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 					@Override
 					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 						if (hasEnteredCategory(buttonView.getText().toString(), categoriesEditText.getText().toString())) {
-							categoriesEditText.setText(getEditableCategoryTextAfterRemove(buttonView.getText().toString(), categoriesEditText
-									.getText().toString()));
+							categoriesEditText.setText(getEditableCategoryTextAfterRemove(buttonView.getText().toString(),
+									categoriesEditText.getText().toString()));
 						} else {
 							categoriesEditText.append(buttonView.getText().toString() + Constants.CATEGORY_SPLITTER);
 						}
@@ -327,7 +339,8 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 	}
 
-	private void checkCategory(LinearLayout categoriesLayout, OnCheckedChangeListener checkedChangeListener, String currentCategoryText, boolean check) {
+	private void checkCategory(LinearLayout categoriesLayout, OnCheckedChangeListener checkedChangeListener, String currentCategoryText,
+			boolean check) {
 		int index = currentCategoryText.lastIndexOf(Constants.COMMA_STRING);
 		String word = null;
 		if (index != -1) {

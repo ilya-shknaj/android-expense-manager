@@ -18,6 +18,8 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class OutcomeFragment extends CommonSherlockFragment {
 
+	private OnFragmentStateChangedListener onFragmentStateChangedListener;
+
 	public static OutcomeFragment newInstance() {
 		return new OutcomeFragment();
 
@@ -51,16 +53,30 @@ public class OutcomeFragment extends CommonSherlockFragment {
 		expandableListView.setDividerHeight(1);
 		expandableListView.setGroupIndicator(null);
 		Cursor cursor = SQLDataManager.getInstance().getGroupedByDateCursor();
-		PinnedExpandableListAdapter adapter = new PinnedExpandableListAdapter(getActivity(), cursor, R.layout.i_collapsed, R.layout.i_expanded);
+		final PinnedExpandableListAdapter adapter = new PinnedExpandableListAdapter(getActivity(), cursor, R.layout.i_collapsed,
+				R.layout.i_expanded);
 
 		expandableListView.setAdapter(adapter);
 
-		View pinnedHeaderView = LayoutInflater.from(getActivity())
-				.inflate(R.layout.i_collapsed, (ViewGroup) getView().findViewById(R.id.root), false);
+		View pinnedHeaderView = LayoutInflater.from(getActivity()).inflate(R.layout.i_collapsed,
+				(ViewGroup) getView().findViewById(R.id.root), false);
 		expandableListView.setPinnedHeaderView(pinnedHeaderView);
 		expandableListView.setOnScrollListener((OnScrollListener) adapter);
 
 		expandableListView.setAdapter(adapter);
+
+		onFragmentStateChangedListener = new OnFragmentStateChangedListener() {
+
+			@Override
+			public void notifyDataSetChanges() {
+				adapter.changeCursor(SQLDataManager.getInstance().getGroupedByDateCursor());
+			}
+		};
+
+	}
+
+	public OnFragmentStateChangedListener getOnFragmentStateChangeListener() {
+		return onFragmentStateChangedListener;
 	}
 
 	private void initBottomTabBar() {

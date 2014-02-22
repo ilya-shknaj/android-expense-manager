@@ -104,7 +104,8 @@ public class PinnedExpandableListAdapter extends ResourceCursorTreeAdapter imple
 		if (expenseCategoryCursor != null && expenseCategoryCursor.getCount() > 0) {
 			for (int i = 0; i < expenseCategoryCursor.getCount(); i++) {
 				expenseCategoryCursor.moveToPosition(i);
-				expenseModel.getCategories().add(expenseCategoryCursor.getString(expenseCategoryCursor.getColumnIndex(SQLConstants.FIELD_NAME)));
+				expenseModel.getCategories().add(
+						expenseCategoryCursor.getString(expenseCategoryCursor.getColumnIndex(SQLConstants.FIELD_NAME)));
 			}
 			expenseCategoryCursor.close();
 		}
