@@ -7,8 +7,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp" >
+        android:paddingLeft="10dp" >
 
         <TextView
             android:id="@+id/text"
@@ -20,12 +19,21 @@
             android:textSize="26sp"
             android:textStyle="bold" />
 
-        <Button
+        <RelativeLayout
             android:id="@+id/backspace"
-            android:layout_width="38dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:background="@drawable/ic_action_backspace" />
+            android:background="@drawable/btn_dialog_ok"
+            android:paddingRight="10dp" >
+
+            <Button
+                android:layout_width="38dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_action_backspace"
+                android:clickable="false"
+                android:duplicateParentState="true" />
+        </RelativeLayout>
     </RelativeLayout>
 
     <LinearLayout
