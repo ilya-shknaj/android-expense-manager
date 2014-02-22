@@ -103,9 +103,14 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 							@Override
 							public void onComplete(Object result) {
-								GlobalUtil.hideSoftKeyboard(getActivity());
-								((MainActivity) getActivity()).notifyOutcomeFragmentStateChanged();
-								getActivity().getSupportFragmentManager().popBackStack();
+								if (categoriesEditText.getText().length() == 0) {
+									Toast.makeText(getActivity(), R.string.emptyCategory, Toast.LENGTH_SHORT).show();
+									categoriesEditText.requestFocus();
+								} else {
+									GlobalUtil.hideSoftKeyboard(getActivity());
+									((MainActivity) getActivity()).notifyOutcomeFragmentStateChanged();
+									getActivity().getSupportFragmentManager().popBackStack();
+								}
 							}
 						});
 
