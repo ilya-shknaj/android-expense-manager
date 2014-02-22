@@ -1,13 +1,12 @@
 package by.gravity.expensemanager.activity;
 
-import java.util.Arrays;
-import java.util.Calendar;
-
 import android.os.Bundle;
 import android.os.Handler;
-import by.gravity.common.task.OnLoadCompleteListener;
+import android.support.v4.app.Fragment;
+import android.widget.ExpandableListView;
+import android.widget.ListView;
 import by.gravity.expensemanager.R;
-import by.gravity.expensemanager.data.SQLDataManager;
+import by.gravity.expensemanager.adapter.PinnedExpandableListAdapter;
 import by.gravity.expensemanager.fragments.AddPaymentFragment;
 import by.gravity.expensemanager.fragments.ChoosePeriodFragment;
 import by.gravity.expensemanager.fragments.MainFragment;
@@ -29,13 +28,13 @@ public class MainActivity extends DrawerActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//		showMainFragment();
+		// showMainFragment();
 		showOutcomeFragment();
 		// SQLDataManager.getInstance().addExpense("35000", "BYR",
 		// Calendar.getInstance().getTime(),
 		// Arrays.asList(new String[] { "Продукты", "Авто", "Алми", "Спектр",
 		// "Нарочь" }), null, null);
-//		SQLDataManager.getInstance().getExpenseGroupedByDate(null);
+		// SQLDataManager.getInstance().getExpenseGroupedByDate(null);
 	}
 
 	@Override
@@ -72,7 +71,8 @@ public class MainActivity extends DrawerActivity {
 	}
 
 	public void showOutcomeFragment() {
-		getSupportFragmentManager().beginTransaction().replace(R.id.content, OutcomeFragment.newInstance()).commit();
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.content, OutcomeFragment.newInstance(), OutcomeFragment.class.getSimpleName()).commit();
 
 	}
 
@@ -96,4 +96,11 @@ public class MainActivity extends DrawerActivity {
 		timePickerDialog.show(getSupportFragmentManager(), TimePickerDialog.class.getSimpleName());
 	}
 
+	public void notifyOutcomeFragmentStateChanged() {
+		Fragment fragment = getSupportFragmentManager().findFragmentByTag(OutcomeFragment.class.getSimpleName());
+		if (fragment != null) {
+			OutcomeFragment outcomeFragment = (OutcomeFragment) fragment;
+			outcomeFragment.getOnFragmentStateChangeListener().notifyDataSetChanges();
+		}
+	}
 }
