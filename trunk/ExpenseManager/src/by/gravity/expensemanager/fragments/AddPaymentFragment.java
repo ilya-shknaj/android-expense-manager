@@ -100,7 +100,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 									categoriesEditText.requestFocus();
 								} else {
 									GlobalUtil.hideSoftKeyboard(getActivity());
-									((MainActivity) getActivity()).notifyOutcomeFragmentStateChanged();
+//									((MainActivity) getActivity()).notifyOutcomeFragmentStateChanged();
 									getActivity().getSupportFragmentManager().popBackStack();
 								}
 							}
