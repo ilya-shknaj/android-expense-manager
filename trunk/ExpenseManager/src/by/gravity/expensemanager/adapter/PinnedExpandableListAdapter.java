@@ -81,15 +81,14 @@ public class PinnedExpandableListAdapter extends ResourceCursorTreeAdapter imple
 		date.setText(collapsedModel.getDate());
 
 		TextView price = (TextView) view.findViewById(R.id.price);
-		price.setText(collapsedModel.getAmount() + Constants.SPACE_STRING + collapsedModel.getCurrency());
+		price.setText(collapsedModel.getAmount());
 
 	}
 
 	private CollapsedModel getCollapsedModel(Cursor cursor) {
 		CollapsedModel collapsedModel = new CollapsedModel();
-		collapsedModel.setAmount(String.valueOf(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_SUM_AMOUNT))));
+		collapsedModel.setAmount(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_SUM_AMOUNT)));
 		collapsedModel.setDate(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_DATE)));
-		collapsedModel.setCurrency(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_SYMBOL)));
 		return collapsedModel;
 	}
 
@@ -104,8 +103,7 @@ public class PinnedExpandableListAdapter extends ResourceCursorTreeAdapter imple
 		if (expenseCategoryCursor != null && expenseCategoryCursor.getCount() > 0) {
 			for (int i = 0; i < expenseCategoryCursor.getCount(); i++) {
 				expenseCategoryCursor.moveToPosition(i);
-				expenseModel.getCategories().add(
-						expenseCategoryCursor.getString(expenseCategoryCursor.getColumnIndex(SQLConstants.FIELD_NAME)));
+				expenseModel.getCategories().add(expenseCategoryCursor.getString(expenseCategoryCursor.getColumnIndex(SQLConstants.FIELD_NAME)));
 			}
 			expenseCategoryCursor.close();
 		}

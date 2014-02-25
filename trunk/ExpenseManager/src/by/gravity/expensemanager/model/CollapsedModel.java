@@ -12,8 +12,6 @@ public class CollapsedModel {
 
 	private String amount;
 
-	private String currency;
-
 	public String getDate() {
 		return date;
 	}
@@ -33,15 +31,8 @@ public class CollapsedModel {
 	}
 
 	public void setAmount(String amount) {
-		this.amount = StringUtil.convertNumberToHumanFriednly(amount);
-	}
-
-	public String getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(String currency) {
-		this.currency = currency;
+		int index = amount.lastIndexOf(Constants.NEW_STRING);
+		this.amount = StringUtil.convertNumberToHumanFriednly(amount.substring(0, index));
 	}
 
 }
