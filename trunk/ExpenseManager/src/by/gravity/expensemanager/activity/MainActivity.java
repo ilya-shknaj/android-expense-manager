@@ -3,10 +3,7 @@ package by.gravity.expensemanager.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.widget.ExpandableListView;
-import android.widget.ListView;
 import by.gravity.expensemanager.R;
-import by.gravity.expensemanager.adapter.PinnedExpandableListAdapter;
 import by.gravity.expensemanager.fragments.AddPaymentFragment;
 import by.gravity.expensemanager.fragments.ChoosePeriodFragment;
 import by.gravity.expensemanager.fragments.MainFragment;
@@ -77,13 +74,13 @@ public class MainActivity extends DrawerActivity {
 	}
 
 	public void showChoosePeriodFragment() {
-		getSupportFragmentManager().beginTransaction().add(R.id.content, ChoosePeriodFragment.newInstanse())
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, ChoosePeriodFragment.newInstanse())
 				.addToBackStack(ChoosePeriodFragment.class.getSimpleName()).commit();
 	}
 
 	public void showAddPaymentFragment() {
-		getSupportFragmentManager().beginTransaction().add(R.id.content, AddPaymentFragment.newInstance())
-				.addToBackStack(AddPaymentFragment.class.getSimpleName()).commit();
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, AddPaymentFragment.newInstance())
+				.addToBackStack(AddPaymentFragment.class.getSimpleName()).addToBackStack(AddPaymentFragment.class.getSimpleName()).commit();
 	}
 
 	public void showSelectDateDialog(int year, int month, int day, OnDateSetListener dateSetListener) {
