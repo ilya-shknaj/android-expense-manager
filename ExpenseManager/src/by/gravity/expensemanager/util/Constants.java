@@ -18,8 +18,12 @@ public class Constants {
 	public static final char COMMA_CHAR = ',';
 	
 	public static final char DOT_CHAR = '.';
+	
+	public static final String SEMICOLON_STRING = ";";
 
 	public static final String CATEGORY_SPLITTER = ", ";
+	
+	public static final String NEW_STRING = "\n";
 
 	public static final String ONE_STRING = "1";
 
