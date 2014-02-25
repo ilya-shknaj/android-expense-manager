@@ -39,8 +39,6 @@ import com.sleepbot.datetimepicker.time.TimePickerDialog.OnTimeSetListener;
 
 public class AddPaymentFragment extends CommonSherlockFragment {
 
-	private static final String TAG = AddPaymentFragment.class.getSimpleName();
-
 	private static final int SHOW_CATEGORIES_COUNT = 3;
 
 	public static AddPaymentFragment newInstance() {
@@ -93,10 +91,10 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 				SQLDataManager.getInstance().addExpense(costEditText.getText().toString(), spinner.getSelectedItem().toString(), date,
 						time, getEnteredCategoriesList(categoriesEditText.getText().toString()), noteEditText.getText().toString(), null,
-						new OnLoadCompleteListener() {
+						new OnLoadCompleteListener<Boolean>() {
 
 							@Override
-							public void onComplete(Object result) {
+							public void onComplete(Boolean result) {
 								if (categoriesEditText.getText().length() == 0) {
 									Toast.makeText(getActivity(), R.string.emptyCategory, Toast.LENGTH_SHORT).show();
 									categoriesEditText.requestFocus();
@@ -128,11 +126,10 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 	private void initCurrency() {
 		final Spinner spinner = (Spinner) getView().findViewById(R.id.currency);
-		SQLDataManager.getInstance().getCurrenciesShort(new OnLoadCompleteListener() {
+		SQLDataManager.getInstance().getCurrenciesShort(new OnLoadCompleteListener<List<String>>() {
 
 			@Override
-			public void onComplete(Object result) {
-				@SuppressWarnings("unchecked")
+			public void onComplete(List<String> result) {
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
 						(List<String>) result);
 
@@ -148,11 +145,10 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		final RadioGroup paymentsMethodGroup = (RadioGroup) getView().findViewById(R.id.paymentMethodsGroup);
 
 		paymentsMethodGroup.removeAllViews();
-		SQLDataManager.getInstance().getPaymentsMethodsShort(new OnLoadCompleteListener() {
+		SQLDataManager.getInstance().getPaymentsMethodsShort(new OnLoadCompleteListener<List<String>>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
-			public void onComplete(Object result) {
+			public void onComplete(List<String> result) {
 				List<String> paymentMethodsList = (List<String>) result;
 				if (paymentMethodsList.size() > 0) {
 					for (int i = 0; i < paymentMethodsList.size(); i++) {
@@ -250,13 +246,12 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 	}
 
 	private void initCategories() {
-		SQLDataManager.getInstance().getCategoriesPopular(new OnLoadCompleteListener() {
+		SQLDataManager.getInstance().getCategoriesPopular(new OnLoadCompleteListener<List<String>>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
-			public void onComplete(Object result) {
+			public void onComplete(List<String> result) {
 				final LinearLayout categoriesLayout = (LinearLayout) getView().findViewById(R.id.categoriesLayout);
-				final List<String> allCategoriesList = (List<String>) result;
+				final List<String> allCategoriesList = result;
 				final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(
 						R.id.categoriesEditText);
 				final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line,

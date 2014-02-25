@@ -36,7 +36,7 @@ public class SQLDataManager {
 	}
 
 	public void addExpense(final String amount, final String currency, final Long date, final Long time, final List<String> categories,
-			final String note, final String paymentMethod, OnLoadCompleteListener onLoadCompleteListener) {
+			final String note, final String paymentMethod, OnLoadCompleteListener<Boolean> onLoadCompleteListener) {
 		new AsyncTask<Void, Void, Boolean>(onLoadCompleteListener) {
 			@Override
 			protected Boolean doInBackground(Void... params) {
@@ -65,7 +65,7 @@ public class SQLDataManager {
 		}.start();
 	}
 
-	public void getCurrenciesShort(final OnLoadCompleteListener loadCompleteListener) {
+	public void getCurrenciesShort(final OnLoadCompleteListener<List<String>> loadCompleteListener) {
 		new AsyncTask<Void, Void, List<String>>(loadCompleteListener) {
 
 			@Override
@@ -87,7 +87,7 @@ public class SQLDataManager {
 		}.start();
 	}
 
-	public void getPaymentsMethodsShort(final OnLoadCompleteListener onLoadCompleteListener) {
+	public void getPaymentsMethodsShort(final OnLoadCompleteListener<List<String>> onLoadCompleteListener) {
 		new AsyncTask<Void, Void, List<String>>(onLoadCompleteListener) {
 
 			@Override
@@ -108,7 +108,7 @@ public class SQLDataManager {
 		}.start();
 	}
 
-	public void getCategoriesPopular(final OnLoadCompleteListener loadCompleteListener) {
+	public void getCategoriesPopular(final OnLoadCompleteListener<List<String>> loadCompleteListener) {
 		new AsyncTask<Void, Void, List<String>>(loadCompleteListener) {
 
 			@Override
