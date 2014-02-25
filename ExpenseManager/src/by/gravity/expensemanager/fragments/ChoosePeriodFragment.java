@@ -1,7 +1,6 @@
 package by.gravity.expensemanager.fragments;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import android.os.Bundle;
 import android.view.View;
@@ -53,14 +52,15 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 
 			@Override
 			public void onClick(View view) {
-				Date date = getStartDate();
-				((MainActivity) getActivity()).showSelectDateDialog(date.getYear(), date.getMonth(), date.getDay(), new OnDateSetListener() {
+				Calendar date = getStartDate();
+				((MainActivity) getActivity()).showSelectDateDialog(date.get(Calendar.YEAR), date.get(Calendar.MONTH),
+						date.get(Calendar.DAY_OF_MONTH), new OnDateSetListener() {
 
-					@Override
-					public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
-						initDateView(startDate, year, month, day);
-					}
-				});
+							@Override
+							public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
+								initDateView(startDate, year, month, day);
+							}
+						});
 			}
 		});
 
@@ -70,14 +70,15 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 
 			@Override
 			public void onClick(View view) {
-				Date date = getFinishDate();
-				((MainActivity) getActivity()).showSelectDateDialog(date.getYear(), date.getMonth(), date.getDay(), new OnDateSetListener() {
+				Calendar date = getFinishDate();
+				((MainActivity) getActivity()).showSelectDateDialog(date.get(Calendar.YEAR), date.get(Calendar.MONTH),
+						date.get(Calendar.DAY_OF_MONTH), new OnDateSetListener() {
 
-					@Override
-					public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
-						initDateView(finishDate, year, month, day);
-					}
-				});
+							@Override
+							public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
+								initDateView(finishDate, year, month, day);
+							}
+						});
 			}
 		});
 
@@ -102,16 +103,16 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 
 	}
 
-	private Date getStartDate() {
+	private Calendar getStartDate() {
 		Calendar calendar = Calendar.getInstance();
 
-		return calendar.getTime();
+		return calendar;
 	}
 
-	private Date getFinishDate() {
+	private Calendar getFinishDate() {
 		Calendar calendar = Calendar.getInstance();
 
-		return calendar.getTime();
+		return calendar;
 	}
 
 	private void enableUserPeriod() {
@@ -127,17 +128,6 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 			ViewUtils.enableAllView(chooseDateLayout, false);
 		}
 	}
-
-	// private void showSelectDateDialog(OnDateSetListener dateSetListener) {
-	// Calendar calendar = Calendar.getInstance();
-	// final DatePickerDialog datePickerDialog =
-	// DatePickerDialog.newInstance(dateSetListener,
-	// calendar.get(Calendar.YEAR),
-	// calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
-	// false);
-	// datePickerDialog.show(getActivity().getSupportFragmentManager(),
-	// DatePickerDialog.class.getSimpleName());
-	// }
 
 	private void initDateView(TextView textView, int year, int month, int day) {
 		Calendar calendar = Calendar.getInstance();
