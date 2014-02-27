@@ -48,7 +48,6 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 
 	@Override
 	protected void bindChildView(View view, Context context, Cursor cursor, boolean isLastChild) {
-		Log.e("test", "bindChildView");
 		final ExpenseModel expenseModel = getExpenseModel(cursor);
 
 		TextView date = (TextView) view.findViewById(R.id.time);
@@ -69,7 +68,6 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 
 	@Override
 	protected void bindGroupView(View view, Context context, Cursor cursor, boolean isExpanded) {
-		Log.e("test", "bindGroupView");
 		CollapsedModel collapsedModel = getCollapsedModel(cursor);
 
 		ImageView indicator = (ImageView) view.findViewById(R.id.indicator);
