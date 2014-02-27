@@ -1,0 +1,10 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="settings" >
+
+    <Preference
+        android:key="@string/keyCurrentPeriod"
+        android:summary="@string/period_current_month"
+        android:title="@string/settingCurrentPeriod" >
+    </Preference>
+
+</PreferenceScreen>
