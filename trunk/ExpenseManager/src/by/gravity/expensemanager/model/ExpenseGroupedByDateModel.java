@@ -6,11 +6,9 @@ import java.util.List;
 
 import by.gravity.common.utils.StringUtil;
 
-public class ExpenseModel {
+public class ExpenseGroupedByDateModel {
 
 	private long id;
-
-	private String currency;
 
 	private String time;
 
@@ -20,7 +18,7 @@ public class ExpenseModel {
 
 	private List<String> categories;
 
-	public ExpenseModel() {
+	public ExpenseGroupedByDateModel() {
 		categories = new ArrayList<String>();
 	}
 
@@ -30,14 +28,6 @@ public class ExpenseModel {
 
 	public void setId(long id) {
 		this.id = id;
-	}
-
-	public String getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(String currency) {
-		this.currency = currency;
 	}
 
 	public String getTime() {

@@ -4,7 +4,7 @@ public class SQLConstants {
 
 	public static final String TABLE_EXPENSE = "Expense";
 	public static final String TABLE_CATEGORY = "Category";
-	public static final String TABLE_EXPENSE_CATEGORY = "Expsense_Category";
+	public static final String TABLE_EXPENSE_CATEGORY = "Expense_Category";
 	public static final String TABLE_CURRENCY = "Currency";
 	public static final String TABLE_PAYMENT_METHODS = "PaymentMethods";
 

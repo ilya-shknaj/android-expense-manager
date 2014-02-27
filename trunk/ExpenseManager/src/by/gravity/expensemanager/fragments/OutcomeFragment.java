@@ -15,6 +15,10 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class OutcomeFragment extends CommonSherlockFragment {
 
+	private boolean isGroupedByDate = true;
+
+	private ExpandableListAdapter adapter;
+
 	public static OutcomeFragment newInstance() {
 		return new OutcomeFragment();
 
@@ -48,7 +52,7 @@ public class OutcomeFragment extends CommonSherlockFragment {
 		expandableListView.setDividerHeight(1);
 		expandableListView.setGroupIndicator(null);
 		Cursor cursor = SQLDataManager.getInstance().getGroupedByDateCursor();
-		final ExpandableListAdapter adapter = new ExpandableListAdapter(getActivity(), cursor, R.layout.i_collapsed, R.layout.i_expanded);
+		adapter = new ExpandableListAdapter(getActivity(), cursor, R.layout.i_collapsed, R.layout.i_expanded, isGroupedByDate);
 
 		expandableListView.setAdapter(adapter);
 
@@ -69,6 +73,21 @@ public class OutcomeFragment extends CommonSherlockFragment {
 			@Override
 			public void onClick(View v) {
 				((MainActivity) getActivity()).showAddPaymentFragment();
+			}
+		});
+
+		View categoryButton = getView().findViewById(R.id.categoryButton);
+		categoryButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				isGroupedByDate = !isGroupedByDate;
+				if (isGroupedByDate) {
+					adapter.changeCursor(SQLDataManager.getInstance().getGroupedByDateCursor(), isGroupedByDate);
+				} else {
+					adapter.changeCursor(SQLDataManager.getInstance().getGroupedByCategoryNameCursor(), isGroupedByDate);
+				}
+
 			}
 		});
 	}
