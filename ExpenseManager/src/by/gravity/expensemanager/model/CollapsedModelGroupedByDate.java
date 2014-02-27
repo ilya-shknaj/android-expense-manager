@@ -6,7 +6,7 @@ import by.gravity.common.utils.CalendarUtil;
 import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.util.Constants;
 
-public class CollapsedModel {
+public class CollapsedModelGroupedByDate {
 
 	private String date;
 

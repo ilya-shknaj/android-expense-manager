@@ -11,10 +11,10 @@ public class GroupPriceModel {
 
 	private String groupPrice;
 
-	private List<ExpenseModel> priceList;
+	private List<ExpenseGroupedByDateModel> priceList;
 
 	public GroupPriceModel() {
-		priceList = new ArrayList<ExpenseModel>();
+		priceList = new ArrayList<ExpenseGroupedByDateModel>();
 	}
 
 	public String getGroupName() {
@@ -33,11 +33,11 @@ public class GroupPriceModel {
 		this.groupPrice = StringUtil.convertNumberToHumanFriednly(groupPrice);
 	}
 
-	public List<ExpenseModel> getPriceList() {
+	public List<ExpenseGroupedByDateModel> getPriceList() {
 		return priceList;
 	}
 
-	public void setPriceList(List<ExpenseModel> priceList) {
+	public void setPriceList(List<ExpenseGroupedByDateModel> priceList) {
 		this.priceList = priceList;
 	}
 

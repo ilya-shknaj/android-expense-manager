@@ -2,7 +2,6 @@ package by.gravity.expensemanager.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageView;
@@ -12,14 +11,18 @@ import android.widget.TextView;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.data.SQLDataManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
-import by.gravity.expensemanager.model.CollapsedModel;
-import by.gravity.expensemanager.model.ExpenseModel;
-import by.gravity.expensemanager.util.Constants;
+import by.gravity.expensemanager.model.CollapsedModelGroupedByCategoryName;
+import by.gravity.expensemanager.model.CollapsedModelGroupedByDate;
+import by.gravity.expensemanager.model.ExpenseGroupedByCategoryNameModel;
+import by.gravity.expensemanager.model.ExpenseGroupedByDateModel;
 
 public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 
-	public ExpandableListAdapter(Context context, Cursor cursor, int groupLayout, int childLayout) {
+	private boolean isGroupedByDate;
+
+	public ExpandableListAdapter(Context context, Cursor cursor, int groupLayout, int childLayout, boolean isGroupedByDate) {
 		super(context, cursor, groupLayout, childLayout);
+		this.isGroupedByDate = isGroupedByDate;
 	}
 
 	public boolean isChildSelectable(int groupPosition, int childPosition) {
@@ -48,28 +51,43 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 
 	@Override
 	protected void bindChildView(View view, Context context, Cursor cursor, boolean isLastChild) {
-		final ExpenseModel expenseModel = getExpenseModel(cursor);
+		if (isGroupedByDate) {
+			final ExpenseGroupedByDateModel expenseModel = getExpenseGroupedByDateModel(cursor);
 
-		TextView date = (TextView) view.findViewById(R.id.time);
-		date.setText(expenseModel.getTime());
+			TextView time = (TextView) view.findViewById(R.id.time);
+			time.setText(expenseModel.getTime());
 
-		TextView amount = (TextView) view.findViewById(R.id.price);
-		amount.setText(expenseModel.getAmount() + Constants.SPACE_STRING + expenseModel.getCurrency());
+			TextView amount = (TextView) view.findViewById(R.id.price);
+			amount.setText(expenseModel.getAmount());
 
-		LinearLayout categoryLayout = (LinearLayout) view.findViewById(R.id.categoryLayout);
-		categoryLayout.removeAllViews();
-		for (int i = 0; i < expenseModel.getCategories().size(); i++) {
-			TextView category = new TextView(context);
-			category.setText(expenseModel.getCategories().get(i));
-			categoryLayout.addView(category, i);
+			LinearLayout categoryLayout = (LinearLayout) view.findViewById(R.id.categoryLayout);
+			categoryLayout.removeAllViews();
+			for (int i = 0; i < expenseModel.getCategories().size(); i++) {
+				TextView category = new TextView(context);
+				category.setText(expenseModel.getCategories().get(i));
+				categoryLayout.addView(category, i);
+			}
+		} else {
+			final ExpenseGroupedByCategoryNameModel expenseModel = getExpenseGroupedByCategoryNameModel(cursor);
+
+			TextView date = (TextView) view.findViewById(R.id.time);
+			date.setText(expenseModel.getDate());
+
+			TextView amount = (TextView) view.findViewById(R.id.price);
+			amount.setText(expenseModel.getAmount());
+
+			LinearLayout categoryLayout = (LinearLayout) view.findViewById(R.id.categoryLayout);
+			categoryLayout.removeAllViews();
+
+			TextView time = new TextView(context);
+			time.setText(expenseModel.getTime());
+			categoryLayout.addView(time);
 		}
 
 	}
 
 	@Override
 	protected void bindGroupView(View view, Context context, Cursor cursor, boolean isExpanded) {
-		CollapsedModel collapsedModel = getCollapsedModel(cursor);
-
 		ImageView indicator = (ImageView) view.findViewById(R.id.indicator);
 		if (isExpanded) {
 			indicator.setBackgroundResource(R.drawable.ic_action_expand);
@@ -77,26 +95,44 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 			indicator.setBackgroundResource(R.drawable.ic_action_collapse);
 		}
 
-		TextView date = (TextView) view.findViewById(R.id.date);
-		date.setText(collapsedModel.getDate());
+		if (isGroupedByDate) {
+			CollapsedModelGroupedByDate collapsedModel = getCollapsedByDateModel(cursor);
 
-		TextView price = (TextView) view.findViewById(R.id.price);
-		price.setText(collapsedModel.getAmount());
+			TextView date = (TextView) view.findViewById(R.id.date);
+			date.setText(collapsedModel.getDate());
+
+			TextView price = (TextView) view.findViewById(R.id.price);
+			price.setText(collapsedModel.getAmount());
+		} else {
+			CollapsedModelGroupedByCategoryName collapsedModel = getCollapsedByCategoryNameModel(cursor);
+
+			TextView name = (TextView) view.findViewById(R.id.date);
+			name.setText(collapsedModel.getName());
+
+			TextView price = (TextView) view.findViewById(R.id.price);
+			price.setText(collapsedModel.getAmount());
+		}
 
 	}
 
-	private CollapsedModel getCollapsedModel(Cursor cursor) {
-		CollapsedModel collapsedModel = new CollapsedModel();
+	private CollapsedModelGroupedByDate getCollapsedByDateModel(Cursor cursor) {
+		CollapsedModelGroupedByDate collapsedModel = new CollapsedModelGroupedByDate();
 		collapsedModel.setAmount(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_SUM_AMOUNT)));
 		collapsedModel.setDate(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_DATE)));
 		return collapsedModel;
 	}
 
-	private ExpenseModel getExpenseModel(Cursor cursor) {
-		ExpenseModel expenseModel = new ExpenseModel();
+	private CollapsedModelGroupedByCategoryName getCollapsedByCategoryNameModel(Cursor cursor) {
+		CollapsedModelGroupedByCategoryName collapsedModel = new CollapsedModelGroupedByCategoryName();
+		collapsedModel.setAmount(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_SUM_AMOUNT)));
+		collapsedModel.setName(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
+		return collapsedModel;
+	}
+
+	private ExpenseGroupedByDateModel getExpenseGroupedByDateModel(Cursor cursor) {
+		ExpenseGroupedByDateModel expenseModel = new ExpenseGroupedByDateModel();
 		expenseModel.setId(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_ID)));
 		expenseModel.setAmount(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
-		expenseModel.setCurrency(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE)));
 		expenseModel.setNote(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NOTE)));
 		expenseModel.setTime(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_TIME)));
 		Cursor expenseCategoryCursor = SQLDataManager.getInstance().getExpenseCategories(expenseModel.getId());
@@ -110,13 +146,36 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 		return expenseModel;
 	}
 
+	private ExpenseGroupedByCategoryNameModel getExpenseGroupedByCategoryNameModel(Cursor cursor) {
+		ExpenseGroupedByCategoryNameModel expenseModel = new ExpenseGroupedByCategoryNameModel();
+		expenseModel.setId(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_ID)));
+		expenseModel.setAmount(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
+		expenseModel.setNote(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NOTE)));
+		expenseModel.setTime(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_TIME)));
+		expenseModel.setDate(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_DATE)));
+
+		return expenseModel;
+	}
+
 	@Override
 	protected Cursor getChildrenCursor(Cursor groupCursor) {
-		Long date = groupCursor.getLong(groupCursor.getColumnIndex(SQLConstants.FIELD_DATE));
-		if (date != null) {
-			return SQLDataManager.getInstance().getDayExpense(date);
+		if (isGroupedByDate) {
+			Long date = groupCursor.getLong(groupCursor.getColumnIndex(SQLConstants.FIELD_DATE));
+			if (date != null) {
+				return SQLDataManager.getInstance().getDayExpense(date);
+			}
+		} else {
+			Long categoryId = groupCursor.getLong(groupCursor.getColumnIndex(SQLConstants.FIELD_ID));
+			if (categoryId != null) {
+				return SQLDataManager.getInstance().getCategoryExpense(categoryId);
+			}
 		}
 		return null;
+	}
+
+	public void changeCursor(Cursor cursor, boolean isGroupedByDate) {
+		this.isGroupedByDate = isGroupedByDate;
+		super.changeCursor(cursor);
 	}
 
 }
