@@ -1,5 +1,6 @@
 package by.gravity.expensemanager.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import by.gravity.expensemanager.R;
@@ -10,6 +11,7 @@ import by.gravity.expensemanager.fragments.OutcomeFragment;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
@@ -24,13 +26,13 @@ public class MainActivity extends DrawerActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// showMainFragment();
-		showOutcomeFragment();
-		// SQLDataManager.getInstance().addExpense("35000", "BYR",
-		// Calendar.getInstance().getTime(),
-		// Arrays.asList(new String[] { "Продукты", "Авто", "Алми", "Спектр",
-		// "Нарочь" }), null, null);
-		// SQLDataManager.getInstance().getExpenseGroupedByDate(null);
+		String action = getIntent().getAction();
+		if (action.equals(Intent.ACTION_MAIN)) {
+			// showMainFragment();
+			showOutcomeFragment();
+		} else if (action.equals(ChoosePeriodFragment.class.getSimpleName())) {
+			showChoosePeriodFragment();
+		}
 	}
 
 	@Override
@@ -38,6 +40,14 @@ public class MainActivity extends DrawerActivity {
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.main, menu);
 		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getTitle().equals(getString(R.string.action_settings))) {
+			startActivity(new Intent(this, SettingActivity.class));
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override

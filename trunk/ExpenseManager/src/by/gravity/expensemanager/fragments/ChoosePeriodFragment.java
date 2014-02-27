@@ -2,6 +2,7 @@ package by.gravity.expensemanager.fragments;
 
 import java.util.Calendar;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -87,7 +88,12 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 
 			@Override
 			public void onClick(View view) {
-				getActivity().getSupportFragmentManager().popBackStack();
+				if (getActivity().getCallingActivity() != null) {
+					getActivity().setResult(Activity.RESULT_OK);
+					getActivity().finish();
+				} else {
+					getActivity().getSupportFragmentManager().popBackStack();
+				}
 			}
 		});
 
@@ -96,7 +102,12 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 
 			@Override
 			public void onClick(View view) {
-				getActivity().getSupportFragmentManager().popBackStack();
+				if (getActivity().getCallingActivity() != null) {
+					getActivity().setResult(Activity.RESULT_CANCELED);
+					getActivity().finish();
+				} else {
+					getActivity().getSupportFragmentManager().popBackStack();
+				}
 
 			}
 		});

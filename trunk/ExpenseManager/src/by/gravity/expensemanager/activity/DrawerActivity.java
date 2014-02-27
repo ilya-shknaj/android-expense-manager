@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -37,7 +38,9 @@ public class DrawerActivity extends SherlockFragmentActivity {
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		setContentView(R.layout.a_main);
-		initDrawer();
+		if (getIntent().getAction().equals(Intent.ACTION_MAIN)) {
+			initDrawer();
+		}
 	}
 
 	private void initDrawer() {
