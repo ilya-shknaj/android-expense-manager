@@ -2,9 +2,9 @@ package by.gravity.expensemanager.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ResourceCursorTreeAdapter;
@@ -15,11 +15,10 @@ import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.model.CollapsedModel;
 import by.gravity.expensemanager.model.ExpenseModel;
 import by.gravity.expensemanager.util.Constants;
-import by.gravity.expensemanager.view.PinnedHeaderExpListView;
 
-public class PinnedExpandableListAdapter extends ResourceCursorTreeAdapter implements OnScrollListener {
+public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 
-	public PinnedExpandableListAdapter(Context context, Cursor cursor, int groupLayout, int childLayout) {
+	public ExpandableListAdapter(Context context, Cursor cursor, int groupLayout, int childLayout) {
 		super(context, cursor, groupLayout, childLayout);
 	}
 
@@ -32,13 +31,14 @@ public class PinnedExpandableListAdapter extends ResourceCursorTreeAdapter imple
 	}
 
 	public void configurePinnedHeader(View convertView, boolean isExpanded, int position) {
-		getGroupView(position, isExpanded, convertView, null);
+		// getGroupView(position, isExpanded, convertView, null);
 	}
 
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-		if (view instanceof PinnedHeaderExpListView) {
-			((PinnedHeaderExpListView) view).configureHeaderView(firstVisibleItem);
-		}
+		// if (view instanceof PinnedHeaderExpListView) {
+		// ((PinnedHeaderExpListView)
+		// view).configureHeaderView(firstVisibleItem);
+		// }
 
 	}
 
@@ -48,6 +48,7 @@ public class PinnedExpandableListAdapter extends ResourceCursorTreeAdapter imple
 
 	@Override
 	protected void bindChildView(View view, Context context, Cursor cursor, boolean isLastChild) {
+		Log.e("test", "bindChildView");
 		final ExpenseModel expenseModel = getExpenseModel(cursor);
 
 		TextView date = (TextView) view.findViewById(R.id.time);
@@ -68,6 +69,7 @@ public class PinnedExpandableListAdapter extends ResourceCursorTreeAdapter imple
 
 	@Override
 	protected void bindGroupView(View view, Context context, Cursor cursor, boolean isExpanded) {
+		Log.e("test", "bindGroupView");
 		CollapsedModel collapsedModel = getCollapsedModel(cursor);
 
 		ImageView indicator = (ImageView) view.findViewById(R.id.indicator);

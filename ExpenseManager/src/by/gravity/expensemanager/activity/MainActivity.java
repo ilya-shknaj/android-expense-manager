@@ -2,7 +2,6 @@ package by.gravity.expensemanager.activity;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.fragments.AddPaymentFragment;
 import by.gravity.expensemanager.fragments.ChoosePeriodFragment;
@@ -68,8 +67,7 @@ public class MainActivity extends DrawerActivity {
 	}
 
 	public void showOutcomeFragment() {
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.content, OutcomeFragment.newInstance(), OutcomeFragment.class.getSimpleName()).commit();
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, OutcomeFragment.newInstance()).commit();
 
 	}
 
@@ -93,11 +91,4 @@ public class MainActivity extends DrawerActivity {
 		timePickerDialog.show(getSupportFragmentManager(), TimePickerDialog.class.getSimpleName());
 	}
 
-	public void notifyOutcomeFragmentStateChanged() {
-		Fragment fragment = getSupportFragmentManager().findFragmentByTag(OutcomeFragment.class.getSimpleName());
-		if (fragment != null) {
-			OutcomeFragment outcomeFragment = (OutcomeFragment) fragment;
-			outcomeFragment.getOnFragmentStateChangeListener().notifyDataSetChanges();
-		}
-	}
 }
