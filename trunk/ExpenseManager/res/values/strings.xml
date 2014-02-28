@@ -9,11 +9,11 @@
     <string name="income">Доходы</string>
 	
     <string name="choose_period">Выберите период</string>
-    <string name="period_user">Пользовательский</string>
     <string name="period_current_month">Текущий месяц</string>
     <string name="period_prev_month">Предыдущий месяц</string>
     <string name="period_week">Неделя</string>
     <string name="period_day">День</string>
+    <string name="period_user">Пользовательский</string>
     <string name="periodAllTime">Все время</string>
     <string name="periodStart">С</string>
     <string name="periodFinish">По</string>

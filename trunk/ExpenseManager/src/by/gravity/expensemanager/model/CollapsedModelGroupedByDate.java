@@ -23,7 +23,7 @@ public class CollapsedModelGroupedByDate {
 	public void setDate(Long time) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(time);
-		date = calendar.get(Calendar.DAY_OF_MONTH) + Constants.SPACE_STRING + CalendarUtil.getMonth(calendar.get(Calendar.MONTH));
+		date = CalendarUtil.getDay(calendar.get(Calendar.DAY_OF_MONTH)) + Constants.SPACE_STRING + CalendarUtil.getMonth(calendar.get(Calendar.MONTH));
 	}
 
 	public String getAmount() {

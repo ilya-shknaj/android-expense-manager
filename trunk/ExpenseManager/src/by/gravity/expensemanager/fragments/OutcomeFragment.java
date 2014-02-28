@@ -10,6 +10,7 @@ import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.adapter.ExpandableListAdapter;
 import by.gravity.expensemanager.data.SQLDataManager;
+import by.gravity.expensemanager.data.SettingsManager;
 
 import com.actionbarsherlock.view.MenuItem;
 
@@ -34,7 +35,7 @@ public class OutcomeFragment extends CommonSherlockFragment {
 
 	private void initPeriod() {
 		TextView period = (TextView) getView().findViewById(R.id.period);
-		period.setText("01 январ€ - 01 ‘еврал€");
+		period.setText(SettingsManager.getFriendlyCurrentPeriod());
 		View periodLayout = getView().findViewById(R.id.periodLayout);
 		periodLayout.setOnClickListener(new OnClickListener() {
 

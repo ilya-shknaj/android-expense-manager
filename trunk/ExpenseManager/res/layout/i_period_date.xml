@@ -26,7 +26,6 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="5dp"
-            android:text="01 Января 2014"
             android:textColor="@color/blue" />
     </LinearLayout>
 
@@ -54,7 +53,6 @@
             style="@style/choosePeriod"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="01 Января 2014"
             android:textColor="@color/blue" />
     </LinearLayout>
 

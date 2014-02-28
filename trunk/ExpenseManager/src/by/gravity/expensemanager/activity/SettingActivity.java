@@ -6,6 +6,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import by.gravity.expensemanager.R;
+import by.gravity.expensemanager.data.SettingsManager;
 import by.gravity.expensemanager.fragments.ChoosePeriodFragment;
 
 public class SettingActivity extends PreferenceActivity {
@@ -27,6 +28,7 @@ public class SettingActivity extends PreferenceActivity {
 				return false;
 			}
 		});
+		currentPeriodPreference.setSummary(SettingsManager.getCurrentPeriod());
 	}
 
 }

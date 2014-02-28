@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="keyCurrentPeriod">currentPeriod</string>
+    <string name="keyCurrentPeriodRes">currentPeriodRes</string>
+    <string name="keyUserPeriodStartDate">userPeriodStartDate</string>
+    <string name="keyUserPeriodEndDate">userPeriodEndDate</string>
+</resources>
