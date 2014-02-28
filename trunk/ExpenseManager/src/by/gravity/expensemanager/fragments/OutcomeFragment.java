@@ -52,7 +52,8 @@ public class OutcomeFragment extends CommonSherlockFragment {
 		expandableListView.setDivider(getResources().getDrawable(R.color.divider));
 		expandableListView.setDividerHeight(1);
 		expandableListView.setGroupIndicator(null);
-		Cursor cursor = SQLDataManager.getInstance().getGroupedByDateCursor();
+		Cursor cursor = isGroupedByDate ? SQLDataManager.getInstance().getGroupedByDateCursor() : SQLDataManager.getInstance()
+				.getGroupedByCategoryNameCursor();
 		adapter = new ExpandableListAdapter(getActivity(), cursor, R.layout.i_collapsed, R.layout.i_expanded, isGroupedByDate);
 
 		expandableListView.setAdapter(adapter);

@@ -55,6 +55,8 @@ public class Constants {
 
 	public static final String SPACE_PATTERN = "\\s+";
 
+	public static final String DATE_FORMAT = "dd MMMM yyyy";
+	
 	// day month year
 	public static final String DATE_FORMAT_FULL = "%s %s %s";
 
