@@ -1,10 +1,14 @@
 package by.gravity.expensemanager.data;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import by.gravity.common.preference.PreferenceHelper;
 import by.gravity.common.utils.CalendarUtil;
 import by.gravity.expensemanager.R;
+import by.gravity.expensemanager.model.PeriodDate;
 import by.gravity.expensemanager.util.Constants;
 
 public class SettingsManager extends PreferenceHelper {
@@ -57,6 +61,59 @@ public class SettingsManager extends PreferenceHelper {
 		}
 
 		return stringBuilder.toString();
+	}
+
+	public static PeriodDate getCurrentPeriodDates() {
+		String currentPeriod = getCurrentPeriod();
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		PeriodDate periodDate = new PeriodDate();
+
+		if (currentPeriod.equals(getString(R.string.period_current_month))) {
+			calendar.set(Calendar.DAY_OF_MONTH, 1);
+			periodDate.setStartDate(calendar.getTime());
+			
+			calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+			calendar.add(Calendar.DAY_OF_MONTH, 1);
+			periodDate.setEndDate(calendar.getTime());
+			
+		} else if (currentPeriod.equals(getString(R.string.period_prev_month))) {
+			calendar.add(Calendar.MONTH, -1);
+			calendar.set(Calendar.DAY_OF_MONTH, 1);
+			periodDate.setStartDate(calendar.getTime());
+			calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+			calendar.add(Calendar.DAY_OF_MONTH, 1);
+			periodDate.setEndDate(calendar.getTime());
+			
+		} else if (currentPeriod.equals(getString(R.string.period_week))) {
+			periodDate.setEndDate(calendar.getTime());
+			calendar.add(Calendar.DAY_OF_MONTH, -7);
+			periodDate.setStartDate(calendar.getTime());
+		} else if (currentPeriod.equals(getString(R.string.period_day))) {
+			periodDate.setEndDate(calendar.getTime());
+			periodDate.setStartDate(calendar.getTime());
+		} else if (currentPeriod.equals(getString(R.string.periodAllTime))) {
+			calendar.set(Calendar.YEAR, 1990);
+			periodDate.setStartDate(calendar.getTime());
+			periodDate.setEndDate(new Date(Long.MAX_VALUE));
+		} else if (currentPeriod.equals(getString(R.string.period_user))) {
+			String startDate = getUserPeriodStartDate("");
+			String endDate = getUserPeriodEndDate("");
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT);
+			try {
+				periodDate.setStartDate(simpleDateFormat.parse(startDate));
+				calendar.setTime(simpleDateFormat.parse(endDate));
+				calendar.add(Calendar.DAY_OF_MONTH, 1);
+				periodDate.setEndDate(calendar.getTime());
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return periodDate;
 	}
 
 	public static void putUserPeriodStartDate(String value) {
