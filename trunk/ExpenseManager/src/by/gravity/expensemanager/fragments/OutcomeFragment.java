@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.TextView;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
@@ -57,6 +58,14 @@ public class OutcomeFragment extends CommonSherlockFragment {
 		adapter = new ExpandableListAdapter(getActivity(), cursor, R.layout.i_collapsed, R.layout.i_expanded, isGroupedByDate);
 
 		expandableListView.setAdapter(adapter);
+		expandableListView.setOnChildClickListener(new OnChildClickListener() {
+
+			@Override
+			public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+				((MainActivity) getActivity()).showAddPaymentFragment(id);
+				return false;
+			}
+		});
 
 		// View pinnedHeaderView =
 		// LayoutInflater.from(getActivity()).inflate(R.layout.i_collapsed,

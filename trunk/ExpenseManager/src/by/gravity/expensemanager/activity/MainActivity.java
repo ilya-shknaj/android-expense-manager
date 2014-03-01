@@ -87,7 +87,11 @@ public class MainActivity extends DrawerActivity {
 	}
 
 	public void showAddPaymentFragment() {
-		getSupportFragmentManager().beginTransaction().replace(R.id.content, AddPaymentFragment.newInstance())
+		showAddPaymentFragment(null);
+	}
+
+	public void showAddPaymentFragment(Long paymentId) {
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, AddPaymentFragment.newInstance(paymentId))
 				.addToBackStack(AddPaymentFragment.class.getSimpleName()).addToBackStack(AddPaymentFragment.class.getSimpleName()).commit();
 	}
 

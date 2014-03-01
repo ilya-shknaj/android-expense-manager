@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -29,7 +30,9 @@ import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.data.SQLDataManager;
+import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.NumberDialog.OnInputCompleteListener;
+import by.gravity.expensemanager.model.ExpenseModel;
 import by.gravity.expensemanager.util.Constants;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
@@ -41,20 +44,60 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 	private static final int SHOW_CATEGORIES_COUNT = 3;
 
-	public static AddPaymentFragment newInstance() {
-		return new AddPaymentFragment();
+	private static final String ARG_PAYMENT_ID = "ARG_PAYMENT_ID";
+
+	private ExpenseModel expenseModel;
+
+	public static AddPaymentFragment newInstance(Long paymentId) {
+		AddPaymentFragment fragment = new AddPaymentFragment();
+		if (paymentId != null) {
+			Bundle bundle = new Bundle();
+			bundle.putLong(ARG_PAYMENT_ID, paymentId);
+			fragment.setArguments(bundle);
+		}
+
+		return fragment;
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		showNumberDialog(null);
+		if (getPaymentId() != null) {
+			loadExpenseModel();
+		}
+		if (expenseModel == null) {
+			showNumberDialog(null);
+		}
 		initCostEditText();
 		initCurrency();
 		initPaymentsMethods();
 		initCategories();
 		initDate();
 		initBottomTabBar();
+	}
+
+	private Long getPaymentId() {
+		if (getArguments() != null && getArguments().getLong(ARG_PAYMENT_ID) != 0) {
+			return getArguments().getLong(ARG_PAYMENT_ID);
+		}
+
+		return null;
+	}
+
+	private void loadExpenseModel() {
+		Cursor cursor = SQLDataManager.getInstance().getExpenseById(getPaymentId());
+		if (cursor != null && cursor.moveToFirst()) {
+			expenseModel = new ExpenseModel();
+			expenseModel.setAmount(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
+			expenseModel.setCurrency(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE)));
+			expenseModel.setDate(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_DATE)));
+			expenseModel.setTime(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_TIME)));
+			expenseModel.setNote(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NOTE)));
+			String categories = cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME));
+			expenseModel.setCategories(Arrays.asList(categories.split(Constants.COMMA_STRING)));
+
+			cursor.close();
+		}
 	}
 
 	private void initBottomTabBar() {
@@ -100,7 +143,8 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 									categoriesEditText.requestFocus();
 								} else {
 									GlobalUtil.hideSoftKeyboard(getActivity());
-//									((MainActivity) getActivity()).notifyOutcomeFragmentStateChanged();
+									// ((MainActivity)
+									// getActivity()).notifyOutcomeFragmentStateChanged();
 									getActivity().getSupportFragmentManager().popBackStack();
 								}
 							}
@@ -122,6 +166,9 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 				}
 			}
 		});
+		if (expenseModel != null) {
+			costEditText.setText(StringUtil.convertNumberToHumanFriednly(expenseModel.getAmount()));
+		}
 	}
 
 	private void initCurrency() {
@@ -135,6 +182,12 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 				adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 				spinner.setAdapter(adapter);
+				if (expenseModel != null) {
+					int position = adapter.getPosition(expenseModel.getCurrency());
+					if (position != -1) {
+						spinner.setSelection(position);
+					}
+				}
 
 			}
 		});
@@ -194,6 +247,10 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 			}
 		});
+		if (expenseModel != null) {
+			date.setTimeInMillis(expenseModel.getDate());
+			dateTextView.setText(getFriendlyDate(date));
+		}
 
 		final TextView timeTextView = (TextView) getView().findViewById(R.id.time);
 		final Calendar time = getCurrentTime();
@@ -217,11 +274,16 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 						});
 			}
 		});
+		if (expenseModel != null) {
+			time.setTimeInMillis(expenseModel.getTime());
+			timeTextView.setText(StringUtil.getFriendltyTime(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE)));
+		}
 
 	}
 
 	private String getFriendlyDate(Calendar calendar) {
-		return calendar.get(Calendar.DAY_OF_MONTH) + Constants.SPACE_STRING + CalendarUtil.getMonth(calendar.get(Calendar.MONTH));
+		return CalendarUtil.getDay(calendar.get(Calendar.DAY_OF_MONTH)) + Constants.SPACE_STRING
+				+ CalendarUtil.getMonth(calendar.get(Calendar.MONTH));
 	}
 
 	private String getFriendlyDate(int year, int month, int day) {
@@ -297,6 +359,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 					}
 				});
 				categoriesLayout.removeAllViews();
+
 				for (int i = 0; i < popularCategories.size(); i++) {
 					CheckBox checkBox = new CheckBox(getActivity());
 					checkBox.setText(popularCategories.get(i));
@@ -328,6 +391,13 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 				} else {
 					showAllCategoriesButton.setVisibility(View.GONE);
 				}
+
+				if (expenseModel != null) {
+					for (int i = 0; i < expenseModel.getCategories().size(); i++) {
+						categoriesEditText.append(expenseModel.getCategories().get(i) + Constants.CATEGORY_SPLITTER);
+					}
+				}
+
 			}
 		});
 
