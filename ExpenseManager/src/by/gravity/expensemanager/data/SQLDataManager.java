@@ -71,8 +71,8 @@ public class SQLDataManager {
 
 			@Override
 			protected List<String> doInBackground(Void... params) {
-				Cursor cursor = database.query(SQLConstants.TABLE_CURRENCY, null, SQLConstants.FIELD_IS_SHOW + "=?", new String[] { "1" }, null,
-						null, null);
+				Cursor cursor = database.query(SQLConstants.TABLE_CURRENCY, null, SQLConstants.FIELD_IS_SHOW + "=?", new String[] { "1" },
+						null, null, null);
 				List<String> currencyList = new ArrayList<String>();
 				if (cursor != null && cursor.getCount() > 0) {
 					for (int i = 0; i < cursor.getCount(); i++) {
@@ -93,8 +93,8 @@ public class SQLDataManager {
 
 			@Override
 			protected List<String> doInBackground(Void... params) {
-				Cursor cursor = database.query(SQLConstants.TABLE_PAYMENT_METHODS, new String[] { SQLConstants.FIELD_NAME }, null, null, null, null,
-						null);
+				Cursor cursor = database.query(SQLConstants.TABLE_PAYMENT_METHODS, new String[] { SQLConstants.FIELD_NAME }, null, null,
+						null, null, null);
 				List<String> paymentMethodsList = new ArrayList<String>();
 				if (cursor != null && cursor.getCount() > 0) {
 					for (int i = 0; i < cursor.getCount(); i++) {
@@ -114,7 +114,8 @@ public class SQLDataManager {
 
 			@Override
 			protected List<String> doInBackground(Void... params) {
-				Cursor cursor = database.query(SQLConstants.TABLE_CATEGORY, null, null, null, null, null, SQLConstants.FIELD_USAGE_COUNT + " DESC");
+				Cursor cursor = database.query(SQLConstants.TABLE_CATEGORY, null, null, null, null, null, SQLConstants.FIELD_USAGE_COUNT
+						+ " DESC");
 				List<String> categories = new ArrayList<String>();
 				if (cursor != null && cursor.getCount() > 0) {
 					for (int i = 0; i < cursor.getCount(); i++) {
@@ -131,21 +132,23 @@ public class SQLDataManager {
 		}.start();
 	}
 
-	private static final String EXPENSE_GROUPED_BY_DATE_AND_AMOUNT_QUERY = "SELECT " + SQLConstants.FIELD_ID + "," + SQLConstants.FIELD_DATE
-			+ ", group_concat(" + SQLConstants.FIELD_SUM_AMOUNT + ", '') AS " + SQLConstants.FIELD_SUM_AMOUNT + " FROM(SELECT "
-			+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_ID + "," + SQLConstants.FIELD_DATE + ", sum(" + SQLConstants.FIELD_AMOUNT
-			+ ") || ' '|| " + SQLConstants.FIELD_SYMBOL + " || '\n' " + SQLConstants.FIELD_SUM_AMOUNT + " FROM " + SQLConstants.TABLE_EXPENSE + ","
-			+ SQLConstants.TABLE_CURRENCY + " WHERE " + SQLConstants.FIELD_CURRENCY + "=" + SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_ID
-			+ " GROUP BY " + SQLConstants.FIELD_DATE + "," + SQLConstants.FIELD_CURRENCY + ")WHERE " + SQLConstants.FIELD_DATE + " BETWEEN "
-			+ "? AND ? GROUP BY " + SQLConstants.FIELD_DATE;
+	private static final String EXPENSE_GROUPED_BY_DATE_AND_AMOUNT_QUERY = "SELECT " + SQLConstants.FIELD_ID + ","
+			+ SQLConstants.FIELD_DATE + ", group_concat(" + SQLConstants.FIELD_SUM_AMOUNT + ", '') AS " + SQLConstants.FIELD_SUM_AMOUNT
+			+ " FROM(SELECT " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_ID + "," + SQLConstants.FIELD_DATE + ", sum("
+			+ SQLConstants.FIELD_AMOUNT + ") || ' '|| " + SQLConstants.FIELD_SYMBOL + " || '\n' " + SQLConstants.FIELD_SUM_AMOUNT
+			+ " FROM " + SQLConstants.TABLE_EXPENSE + "," + SQLConstants.TABLE_CURRENCY + " WHERE " + SQLConstants.FIELD_CURRENCY + "="
+			+ SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_ID + " GROUP BY " + SQLConstants.FIELD_DATE + ","
+			+ SQLConstants.FIELD_CURRENCY + ")WHERE " + SQLConstants.FIELD_DATE + " BETWEEN " + "? AND ? GROUP BY "
+			+ SQLConstants.FIELD_DATE;
 
 	public Cursor getGroupedByDateCursor() {
 		PeriodDate periodDate = SettingsManager.getCurrentPeriodDates();
-		return database.rawQuery(EXPENSE_GROUPED_BY_DATE_AND_AMOUNT_QUERY, new String[] { periodDate.getStartDate(), periodDate.getEndDate() });
+		return database.rawQuery(EXPENSE_GROUPED_BY_DATE_AND_AMOUNT_QUERY,
+				new String[] { periodDate.getStartDate(), periodDate.getEndDate() });
 	}
 
-	private static final String EXPENSE_GROUPED_BY_CATEGORY_NAME_QUERY = "SELECT " + SQLConstants.FIELD_ID + "," + SQLConstants.FIELD_NAME + ","
-			+ "group_concat(" + SQLConstants.FIELD_SUM_AMOUNT + ",'') AS " + SQLConstants.FIELD_SUM_AMOUNT + " FROM( SELECT  "
+	private static final String EXPENSE_GROUPED_BY_CATEGORY_NAME_QUERY = "SELECT " + SQLConstants.FIELD_ID + "," + SQLConstants.FIELD_NAME
+			+ "," + "group_concat(" + SQLConstants.FIELD_SUM_AMOUNT + ",'') AS " + SQLConstants.FIELD_SUM_AMOUNT + " FROM( SELECT  "
 			+ SQLConstants.TABLE_EXPENSE_CATEGORY + "." + SQLConstants.FIELD_CATEGORY_ID + " AS " + SQLConstants.FIELD_ID + ","
 			+ SQLConstants.TABLE_CATEGORY + "." + SQLConstants.FIELD_NAME + "," + "sum(" + SQLConstants.TABLE_EXPENSE + "."
 			+ SQLConstants.FIELD_AMOUNT + ") || ' '||  " + SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_SYMBOL + "|| '\n' AS "
@@ -154,36 +157,54 @@ public class SQLDataManager {
 			+ SQLConstants.FIELD_CURRENCY + "=" + SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_ID + " AND "
 			+ SQLConstants.TABLE_EXPENSE_CATEGORY + "." + SQLConstants.FIELD_CATEGORY_ID + "=" + SQLConstants.TABLE_CATEGORY + "."
 			+ SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE_CATEGORY + "." + SQLConstants.FIELD_EXPENSE_ID + "="
-			+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_DATE
-			+ " BETWEEN ? AND ? GROUP BY " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_CURRENCY + "," + SQLConstants.TABLE_CATEGORY + "."
-			+ SQLConstants.FIELD_NAME + ")GROUP BY " + SQLConstants.FIELD_NAME;
+			+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE + "."
+			+ SQLConstants.FIELD_DATE + " BETWEEN ? AND ? GROUP BY " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_CURRENCY + ","
+			+ SQLConstants.TABLE_CATEGORY + "." + SQLConstants.FIELD_NAME + ")GROUP BY " + SQLConstants.FIELD_NAME;
 
 	public Cursor getGroupedByCategoryNameCursor() {
 		PeriodDate periodDate = SettingsManager.getCurrentPeriodDates();
-		return database.rawQuery(EXPENSE_GROUPED_BY_CATEGORY_NAME_QUERY, new String[] { periodDate.getStartDate(), periodDate.getEndDate() });
+		return database.rawQuery(EXPENSE_GROUPED_BY_CATEGORY_NAME_QUERY,
+				new String[] { periodDate.getStartDate(), periodDate.getEndDate() });
 	}
 
 	private static final String GET_DAY_EXPENSE_QUERY = "SELECT " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_ID + ","
-			+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_TIME + "," + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_AMOUNT
-			+ " || ' ' || " + SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_CODE + " AS " + SQLConstants.FIELD_AMOUNT + ","
-			+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_NOTE + "," + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_PAYMENT_METHOD
-			+ " FROM " + SQLConstants.TABLE_EXPENSE + "," + SQLConstants.TABLE_CURRENCY + " WHERE " + SQLConstants.TABLE_EXPENSE + "."
-			+ SQLConstants.FIELD_CURRENCY + "=" + SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE
-			+ "." + SQLConstants.FIELD_DATE + "=?";
+			+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_TIME + "," + SQLConstants.TABLE_EXPENSE + "."
+			+ SQLConstants.FIELD_AMOUNT + " || ' ' || " + SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_CODE + " AS "
+			+ SQLConstants.FIELD_AMOUNT + "," + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_NOTE + ","
+			+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_PAYMENT_METHOD + " FROM " + SQLConstants.TABLE_EXPENSE + ","
+			+ SQLConstants.TABLE_CURRENCY + " WHERE " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_CURRENCY + "="
+			+ SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE + "."
+			+ SQLConstants.FIELD_DATE + "=?";
 
 	public Cursor getDayExpense(Long date) {
 		return database.rawQuery(GET_DAY_EXPENSE_QUERY, new String[] { String.valueOf(date) });
 	}
 
+	private static final String GET_EXPENSE_BY_ID_QUERY = "SELECT " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_ID + ","
+			+ SQLConstants.FIELD_TIME + "," + SQLConstants.FIELD_DATE + "," + SQLConstants.FIELD_AMOUNT + "," + SQLConstants.TABLE_CURRENCY
+			+ "." + SQLConstants.FIELD_CODE + "," + SQLConstants.FIELD_NOTE + "," + SQLConstants.FIELD_PAYMENT_METHOD + ", group_concat("
+			+ SQLConstants.TABLE_CATEGORY + "." + SQLConstants.FIELD_NAME + ",',') AS " + SQLConstants.FIELD_NAME + " FROM "
+			+ SQLConstants.TABLE_EXPENSE + "," + SQLConstants.TABLE_CURRENCY + "," + SQLConstants.TABLE_EXPENSE_CATEGORY + ","
+			+ SQLConstants.TABLE_CATEGORY + " WHERE " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_CURRENCY + "="
+			+ SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE + "."
+			+ SQLConstants.FIELD_ID + "=?" + " AND " + SQLConstants.TABLE_EXPENSE_CATEGORY + "." + SQLConstants.FIELD_EXPENSE_ID + "="
+			+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE_CATEGORY + "."
+			+ SQLConstants.FIELD_CATEGORY_ID + "=" + SQLConstants.TABLE_CATEGORY + "." + SQLConstants.FIELD_ID;
+
+	public Cursor getExpenseById(Long id) {
+		return database.rawQuery(GET_EXPENSE_BY_ID_QUERY, new String[] { String.valueOf(id) });
+	}
+
 	private static final String GET_CATEGORY_EXPENSE_QUERY = "SELECT " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_ID + ","
-			+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_DATE + "," + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_TIME + ","
-			+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_AMOUNT + " || ' ' || " + SQLConstants.TABLE_CURRENCY + "."
-			+ SQLConstants.FIELD_SYMBOL + " AS " + SQLConstants.FIELD_AMOUNT + "," + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_NOTE
-			+ " FROM " + SQLConstants.TABLE_EXPENSE + "," + SQLConstants.TABLE_CURRENCY + "," + SQLConstants.TABLE_EXPENSE_CATEGORY + " WHERE "
-			+ SQLConstants.TABLE_EXPENSE_CATEGORY + "." + SQLConstants.FIELD_EXPENSE_ID + "=" + SQLConstants.TABLE_EXPENSE + "."
-			+ SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE_CATEGORY + "." + SQLConstants.FIELD_CATEGORY_ID + "= ? AND "
-			+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_CURRENCY + "=" + SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_ID
-			+ " AND " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_DATE + " BETWEEN ? AND ?";
+			+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_DATE + "," + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_TIME
+			+ "," + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_AMOUNT + " || ' ' || " + SQLConstants.TABLE_CURRENCY + "."
+			+ SQLConstants.FIELD_SYMBOL + " AS " + SQLConstants.FIELD_AMOUNT + "," + SQLConstants.TABLE_EXPENSE + "."
+			+ SQLConstants.FIELD_NOTE + " FROM " + SQLConstants.TABLE_EXPENSE + "," + SQLConstants.TABLE_CURRENCY + ","
+			+ SQLConstants.TABLE_EXPENSE_CATEGORY + " WHERE " + SQLConstants.TABLE_EXPENSE_CATEGORY + "." + SQLConstants.FIELD_EXPENSE_ID
+			+ "=" + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE_CATEGORY + "."
+			+ SQLConstants.FIELD_CATEGORY_ID + "= ? AND " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_CURRENCY + "="
+			+ SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE + "."
+			+ SQLConstants.FIELD_DATE + " BETWEEN ? AND ?";
 
 	public Cursor getCategoryExpense(Long category) {
 		PeriodDate periodDate = SettingsManager.getCurrentPeriodDates();
@@ -192,10 +213,10 @@ public class SQLDataManager {
 	}
 
 	public Cursor getExpenseCategories(Long expenseId) {
-		return database.query(SQLConstants.TABLE_CATEGORY + "," + SQLConstants.TABLE_EXPENSE_CATEGORY, new String[] { SQLConstants.FIELD_NAME },
-				SQLConstants.TABLE_EXPENSE_CATEGORY + "." + SQLConstants.FIELD_CATEGORY_ID + "=" + SQLConstants.TABLE_CATEGORY + "."
-						+ SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE_CATEGORY + "." + SQLConstants.FIELD_EXPENSE_ID + "=?",
-				new String[] { String.valueOf(expenseId) }, null, null, null);
+		return database.query(SQLConstants.TABLE_CATEGORY + "," + SQLConstants.TABLE_EXPENSE_CATEGORY,
+				new String[] { SQLConstants.FIELD_NAME }, SQLConstants.TABLE_EXPENSE_CATEGORY + "." + SQLConstants.FIELD_CATEGORY_ID + "="
+						+ SQLConstants.TABLE_CATEGORY + "." + SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE_CATEGORY + "."
+						+ SQLConstants.FIELD_EXPENSE_ID + "=?", new String[] { String.valueOf(expenseId) }, null, null, null);
 	}
 
 	private Long getCategoryIdAsync(final String name) {
@@ -215,8 +236,8 @@ public class SQLDataManager {
 	}
 
 	private List<Long> getCategoriesIdAsync(final List<String> categories) {
-		Cursor cursor = database.query(SQLConstants.TABLE_CATEGORY, new String[] { SQLConstants.FIELD_ID }, SQLConstants.FIELD_NAME + " IN("
-				+ makePlaceholders(categories.size()) + ")", categories.toArray(new String[] {}), null, null, null);
+		Cursor cursor = database.query(SQLConstants.TABLE_CATEGORY, new String[] { SQLConstants.FIELD_ID }, SQLConstants.FIELD_NAME
+				+ " IN(" + makePlaceholders(categories.size()) + ")", categories.toArray(new String[] {}), null, null, null);
 		List<Long> categoriesId = new ArrayList<Long>();
 		if (cursor != null && cursor.getCount() > 0) {
 			for (int i = 0; i < cursor.getCount(); i++) {
@@ -287,8 +308,8 @@ public class SQLDataManager {
 		if (StringUtil.isEmpty(accountName)) {
 			return null;
 		}
-		Cursor cursor = database.query(SQLConstants.TABLE_PAYMENT_METHODS, new String[] { SQLConstants.FIELD_ID }, SQLConstants.FIELD_NAME + "=?",
-				new String[] { accountName }, null, null, null);
+		Cursor cursor = database.query(SQLConstants.TABLE_PAYMENT_METHODS, new String[] { SQLConstants.FIELD_ID }, SQLConstants.FIELD_NAME
+				+ "=?", new String[] { accountName }, null, null, null);
 		Long id = null;
 		if (cursor != null && cursor.getCount() > 0) {
 			cursor.moveToFirst();
@@ -300,8 +321,9 @@ public class SQLDataManager {
 	}
 
 	private void updateUsageCategoryCountAsync(final List<String> categories) {
-		Cursor cursor = database.query(SQLConstants.TABLE_CATEGORY, null, SQLConstants.FIELD_NAME + " IN(" + makePlaceholders(categories.size())
-				+ ")", categories.toArray(new String[] {}), null, null, null);
+		Cursor cursor = database.query(SQLConstants.TABLE_CATEGORY, null,
+				SQLConstants.FIELD_NAME + " IN(" + makePlaceholders(categories.size()) + ")", categories.toArray(new String[] {}), null,
+				null, null);
 		if (cursor != null && cursor.getCount() > 0) {
 			for (int i = 0; i < cursor.getCount(); i++) {
 				cursor.moveToPosition(i);
