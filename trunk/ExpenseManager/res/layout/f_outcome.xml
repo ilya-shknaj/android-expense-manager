@@ -24,10 +24,10 @@
     </LinearLayout>
 
     <ExpandableListView
-        android:layout_below="@id/root"
         android:id="@+id/expandableListView"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
+        android:layout_below="@id/root"
         android:layout_marginBottom="50dp" >
     </ExpandableListView>
 
@@ -37,5 +37,12 @@
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         layout="@layout/i_outcome_tab_bar" />
+
+    <ViewStub
+        android:id="@+id/stub"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:inflatedId="@+id/subTree"
+        android:layout="@layout/i_empty_outcome" />
 
 </RelativeLayout>
