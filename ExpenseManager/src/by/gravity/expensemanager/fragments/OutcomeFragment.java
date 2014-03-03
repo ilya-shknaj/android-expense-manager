@@ -17,12 +17,17 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class OutcomeFragment extends CommonSherlockFragment {
 
-	private boolean isGroupedByDate = true;
-
 	private ExpandableListAdapter adapter;
 
-	public static OutcomeFragment newInstance() {
-		return new OutcomeFragment();
+	private static final String ARG_IS_GROUPED_BY_DATE = "ARG_IS_GROUPED_BY_DATE";
+
+	public static OutcomeFragment newInstance(boolean isGroupedByDate) {
+		OutcomeFragment fragment = new OutcomeFragment();
+		Bundle bundle = new Bundle();
+		bundle.putBoolean(ARG_IS_GROUPED_BY_DATE, isGroupedByDate);
+		fragment.setArguments(bundle);
+
+		return fragment;
 
 	}
 
@@ -53,9 +58,9 @@ public class OutcomeFragment extends CommonSherlockFragment {
 		expandableListView.setDivider(getResources().getDrawable(R.color.divider));
 		expandableListView.setDividerHeight(1);
 		expandableListView.setGroupIndicator(null);
-		Cursor cursor = isGroupedByDate ? SQLDataManager.getInstance().getGroupedByDateCursor() : SQLDataManager.getInstance()
+		Cursor cursor = isGroupedByDate() ? SQLDataManager.getInstance().getGroupedByDateCursor() : SQLDataManager.getInstance()
 				.getGroupedByCategoryNameCursor();
-		adapter = new ExpandableListAdapter(getActivity(), cursor, R.layout.i_collapsed, R.layout.i_expanded, isGroupedByDate);
+		adapter = new ExpandableListAdapter(getActivity(), cursor, R.layout.i_collapsed, R.layout.i_expanded, isGroupedByDate());
 
 		expandableListView.setAdapter(adapter);
 		expandableListView.setOnChildClickListener(new OnChildClickListener() {
@@ -77,6 +82,10 @@ public class OutcomeFragment extends CommonSherlockFragment {
 
 	}
 
+	private boolean isGroupedByDate() {
+		return getArguments().getBoolean(ARG_IS_GROUPED_BY_DATE);
+	}
+
 	private void initBottomTabBar() {
 		View addExpenseButton = getView().findViewById(R.id.addButton);
 		addExpenseButton.setOnClickListener(new OnClickListener() {
@@ -92,12 +101,7 @@ public class OutcomeFragment extends CommonSherlockFragment {
 
 			@Override
 			public void onClick(View v) {
-				isGroupedByDate = !isGroupedByDate;
-				if (isGroupedByDate) {
-					adapter.changeCursor(SQLDataManager.getInstance().getGroupedByDateCursor(), isGroupedByDate);
-				} else {
-					adapter.changeCursor(SQLDataManager.getInstance().getGroupedByCategoryNameCursor(), isGroupedByDate);
-				}
+				((MainActivity) getActivity()).showOutcomeFragment(!isGroupedByDate());
 
 			}
 		});
