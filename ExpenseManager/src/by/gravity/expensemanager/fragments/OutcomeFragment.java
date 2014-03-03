@@ -3,6 +3,7 @@ package by.gravity.expensemanager.fragments;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewStub;
 import android.view.View.OnClickListener;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
@@ -52,6 +53,11 @@ public class OutcomeFragment extends CommonSherlockFragment {
 		});
 	}
 
+	private void hidePeriod() {
+		View periodLayout = getView().findViewById(R.id.root);
+		periodLayout.setVisibility(View.GONE);
+	}
+
 	private void initListView() {
 		ExpandableListView expandableListView = (ExpandableListView) getView().findViewById(R.id.expandableListView);
 		expandableListView.setChildDivider(getResources().getDrawable(R.color.divider));
@@ -60,26 +66,37 @@ public class OutcomeFragment extends CommonSherlockFragment {
 		expandableListView.setGroupIndicator(null);
 		Cursor cursor = isGroupedByDate() ? SQLDataManager.getInstance().getGroupedByDateCursor() : SQLDataManager.getInstance()
 				.getGroupedByCategoryNameCursor();
-		adapter = new ExpandableListAdapter(getActivity(), cursor, R.layout.i_collapsed, R.layout.i_expanded, isGroupedByDate());
+		if (cursor.getCount() != 0) {
+			adapter = new ExpandableListAdapter(getActivity(), cursor, R.layout.i_collapsed, R.layout.i_expanded, isGroupedByDate());
 
-		expandableListView.setAdapter(adapter);
-		expandableListView.setOnChildClickListener(new OnChildClickListener() {
+			expandableListView.setAdapter(adapter);
+			expandableListView.setOnChildClickListener(new OnChildClickListener() {
 
-			@Override
-			public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-				((MainActivity) getActivity()).showAddPaymentFragment(id);
-				return false;
-			}
-		});
+				@Override
+				public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+					((MainActivity) getActivity()).showAddPaymentFragment(id);
+					return false;
+				}
+			});
 
-		// View pinnedHeaderView =
-		// LayoutInflater.from(getActivity()).inflate(R.layout.i_collapsed,
-		// (ViewGroup) getView().findViewById(R.id.root), false);
-		// expandableListView.setPinnedHeaderView(pinnedHeaderView);
-		// expandableListView.setOnScrollListener((OnScrollListener) adapter);
+			// View pinnedHeaderView =
+			// LayoutInflater.from(getActivity()).inflate(R.layout.i_collapsed,
+			// (ViewGroup) getView().findViewById(R.id.root), false);
+			// expandableListView.setPinnedHeaderView(pinnedHeaderView);
+			// expandableListView.setOnScrollListener((OnScrollListener)
+			// adapter);
 
-		expandableListView.setAdapter(adapter);
+			expandableListView.setAdapter(adapter);
+		} else {
+			hidePeriod();
+			initEmptyOtcome();
+		}
 
+	}
+
+	private void initEmptyOtcome() {
+		ViewStub viewStub = (ViewStub) getView().findViewById(R.id.stub);
+		viewStub.inflate();
 	}
 
 	private boolean isGroupedByDate() {

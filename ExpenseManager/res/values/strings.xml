@@ -4,10 +4,12 @@
     <string name="app_name">Expense Manager</string>
     <string name="action_settings">Настройки</string>
     
+    <!-- menu -->
     <string name="main">Главная</string>
     <string name="outcome">Расходы</string>
     <string name="income">Доходы</string>
 	
+    <!-- periods -->
     <string name="choose_period">Выберите период</string>
     <string name="period_current_month">Текущий месяц</string>
     <string name="period_prev_month">Предыдущий месяц</string>
@@ -18,7 +20,7 @@
     <string name="periodStart">С</string>
     <string name="periodFinish">По</string>
     
-    
+    <!-- tab bar -->
     <string name="cancel">Отмена</string>
     <string name="save">Сохранить</string>
     <string name="ok">ОК</string>
@@ -34,10 +36,13 @@
     <string name="date">Дата</string>
     <string name="note">Заметка</string>
     
+    <!-- errors -->
     <string name="parseNumberError">Произошла ошибка во время обработки введенного значения</string>
     <string name="emptyPaymentMethods">Отсутсвуют способы оплаты</string>
     <string name="emptyAmount">Введите сумму</string>
     <string name="emptyCategory">Введите хотя бы одну категорию</string>
+    <string name="emptyOutcome">Отсутсвуют расходы</string>
     
+    <!-- settings -->
     <string name="settingCurrentPeriod">Выбранный период</string>
 </resources>
