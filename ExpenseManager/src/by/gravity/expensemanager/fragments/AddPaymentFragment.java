@@ -44,15 +44,15 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 	private static final int SHOW_CATEGORIES_COUNT = 3;
 
-	private static final String ARG_PAYMENT_ID = "ARG_PAYMENT_ID";
+	private static final String ARG_EXPENSE_ID = "ARG_PAYMENT_ID";
 
 	private ExpenseModel expenseModel;
 
-	public static AddPaymentFragment newInstance(Long paymentId) {
+	public static AddPaymentFragment newInstance(Long expenseId) {
 		AddPaymentFragment fragment = new AddPaymentFragment();
-		if (paymentId != null) {
+		if (expenseId != null) {
 			Bundle bundle = new Bundle();
-			bundle.putLong(ARG_PAYMENT_ID, paymentId);
+			bundle.putLong(ARG_EXPENSE_ID, expenseId);
 			fragment.setArguments(bundle);
 		}
 
@@ -62,7 +62,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		if (getPaymentId() != null) {
+		if (getExpenseId() != null) {
 			loadExpenseModel();
 		}
 		if (expenseModel == null) {
@@ -76,16 +76,16 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		initBottomTabBar();
 	}
 
-	private Long getPaymentId() {
-		if (getArguments() != null && getArguments().getLong(ARG_PAYMENT_ID) != 0) {
-			return getArguments().getLong(ARG_PAYMENT_ID);
+	private Long getExpenseId() {
+		if (getArguments() != null && getArguments().getLong(ARG_EXPENSE_ID) != 0) {
+			return getArguments().getLong(ARG_EXPENSE_ID);
 		}
 
 		return null;
 	}
 
 	private void loadExpenseModel() {
-		Cursor cursor = SQLDataManager.getInstance().getExpenseById(getPaymentId());
+		Cursor cursor = SQLDataManager.getInstance().getExpenseById(getExpenseId());
 		if (cursor != null && cursor.moveToFirst()) {
 			expenseModel = new ExpenseModel();
 			expenseModel.setAmount(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
@@ -122,8 +122,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 					return;
 				}
 
-				final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(
-						R.id.categoriesEditText);
+				final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(R.id.categoriesEditText);
 				final Spinner spinner = (Spinner) getView().findViewById(R.id.currency);
 				final TextView dateTextView = (TextView) getView().findViewById(R.id.date);
 				final TextView timeTextView = (TextView) getView().findViewById(R.id.time);
@@ -132,25 +131,41 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 				Long date = (Long) dateTextView.getTag();
 				Long time = (Long) timeTextView.getTag();
 
-				SQLDataManager.getInstance().addExpense(costEditText.getText().toString(), spinner.getSelectedItem().toString(), date,
-						time, getEnteredCategoriesList(categoriesEditText.getText().toString()), noteEditText.getText().toString(), null,
-						new OnLoadCompleteListener<Boolean>() {
+				if (categoriesEditText.getText().length() != 0) {
+					if (getExpenseId() == null) {
+						SQLDataManager.getInstance().addExpense(costEditText.getText().toString(), spinner.getSelectedItem().toString(), date, time,
+								getEnteredCategoriesList(categoriesEditText.getText().toString()), noteEditText.getText().toString(), null,
+								new OnLoadCompleteListener<Boolean>() {
 
-							@Override
-							public void onComplete(Boolean result) {
-								if (categoriesEditText.getText().length() == 0) {
-									Toast.makeText(getActivity(), R.string.emptyCategory, Toast.LENGTH_SHORT).show();
-									categoriesEditText.requestFocus();
-								} else {
-									GlobalUtil.hideSoftKeyboard(getActivity());
-									// ((MainActivity)
-									// getActivity()).notifyOutcomeFragmentStateChanged();
-									getActivity().getSupportFragmentManager().popBackStack();
-								}
-							}
-						});
+									@Override
+									public void onComplete(Boolean result) {
+										GlobalUtil.hideSoftKeyboard(getActivity());
+										// ((MainActivity)
+										// getActivity()).notifyOutcomeFragmentStateChanged();
+										getActivity().getSupportFragmentManager().popBackStack();
+									}
+								});
 
+					} else {
+						SQLDataManager.getInstance().updateExpense(getExpenseId(), costEditText.getText().toString(),
+								spinner.getSelectedItem().toString(), date, time, getEnteredCategoriesList(categoriesEditText.getText().toString()),
+								noteEditText.getText().toString(), null, new OnLoadCompleteListener<Void>() {
+
+									@Override
+									public void onComplete(Void result) {
+										GlobalUtil.hideSoftKeyboard(getActivity());
+										getActivity().getSupportFragmentManager().popBackStack();
+									}
+
+								});
+					}
+
+				} else {
+					Toast.makeText(getActivity(), R.string.emptyCategory, Toast.LENGTH_SHORT).show();
+					categoriesEditText.requestFocus();
+				}
 			}
+
 		});
 	}
 
@@ -177,8 +192,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 			@Override
 			public void onComplete(List<String> result) {
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
-						(List<String>) result);
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, (List<String>) result);
 
 				adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 				spinner.setAdapter(adapter);
@@ -314,8 +328,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 			public void onComplete(List<String> result) {
 				final LinearLayout categoriesLayout = (LinearLayout) getView().findViewById(R.id.categoriesLayout);
 				final List<String> allCategoriesList = result;
-				final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(
-						R.id.categoriesEditText);
+				final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(R.id.categoriesEditText);
 				final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line,
 						allCategoriesList);
 				categoriesEditText.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
@@ -327,8 +340,8 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 					@Override
 					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 						if (hasEnteredCategory(buttonView.getText().toString(), categoriesEditText.getText().toString())) {
-							categoriesEditText.setText(getEditableCategoryTextAfterRemove(buttonView.getText().toString(),
-									categoriesEditText.getText().toString()));
+							categoriesEditText.setText(getEditableCategoryTextAfterRemove(buttonView.getText().toString(), categoriesEditText
+									.getText().toString()));
 						} else {
 							categoriesEditText.append(buttonView.getText().toString() + Constants.CATEGORY_SPLITTER);
 						}
@@ -403,8 +416,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 
 	}
 
-	private void checkCategory(LinearLayout categoriesLayout, OnCheckedChangeListener checkedChangeListener, String currentCategoryText,
-			boolean check) {
+	private void checkCategory(LinearLayout categoriesLayout, OnCheckedChangeListener checkedChangeListener, String currentCategoryText, boolean check) {
 		int index = currentCategoryText.lastIndexOf(Constants.COMMA_STRING);
 		String word = null;
 		if (index != -1) {
