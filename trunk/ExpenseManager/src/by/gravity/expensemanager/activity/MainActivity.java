@@ -29,7 +29,7 @@ public class MainActivity extends DrawerActivity {
 		String action = getIntent().getAction();
 		if (action.equals(Intent.ACTION_MAIN)) {
 			// showMainFragment();
-			showOutcomeFragment();
+			showOutcomeFragment(true);
 		} else if (action.equals(ChoosePeriodFragment.class.getSimpleName())) {
 			showChoosePeriodFragment();
 		}
@@ -66,7 +66,7 @@ public class MainActivity extends DrawerActivity {
 
 			@Override
 			public void run() {
-				showOutcomeFragment();
+				showOutcomeFragment(true);
 			}
 		}, SHOW_FRAGMENT_DELAY);
 	}
@@ -76,8 +76,8 @@ public class MainActivity extends DrawerActivity {
 
 	}
 
-	public void showOutcomeFragment() {
-		getSupportFragmentManager().beginTransaction().replace(R.id.content, OutcomeFragment.newInstance()).commit();
+	public void showOutcomeFragment(boolean isGroupedByDate) {
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, OutcomeFragment.newInstance(isGroupedByDate)).commit();
 
 	}
 

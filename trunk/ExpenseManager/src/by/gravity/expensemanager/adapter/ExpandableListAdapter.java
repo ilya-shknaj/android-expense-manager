@@ -173,9 +173,4 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 		return null;
 	}
 
-	public void changeCursor(Cursor cursor, boolean isGroupedByDate) {
-		this.isGroupedByDate = isGroupedByDate;
-		super.changeCursor(cursor);
-	}
-
 }
