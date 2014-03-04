@@ -32,6 +32,7 @@ public class MainActivity extends DrawerActivity {
 			showOutcomeFragment(true);
 		} else if (action.equals(ChoosePeriodFragment.class.getSimpleName())) {
 			showChoosePeriodFragment();
+
 		}
 	}
 
