@@ -28,6 +28,7 @@
     <string name="paymentsMethods">Способы оплаты</string>
     <string name="paymentMethod">Способ оплаты</string>
     <string name="addPayment">Добавить покупку</string>
+    <string name="addPaymentMethod">Добавить способ оплаты</string>
     <string name="enterAmount">Введите сумму</string>
     <string name="rememberCurrency">Запомнить валюту</string>
     <string name="categories">Категории</string>
