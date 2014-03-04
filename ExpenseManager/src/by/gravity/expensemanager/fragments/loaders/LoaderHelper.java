@@ -12,6 +12,8 @@ public class LoaderHelper {
 	
 	public static final int ADD_PAYMENT_CATEGORIES_ID = -6;
 	
+	public static final int GET_PAYMENT_METHODS_ID = -7;
+	
 	
 	
 	public static final String ARG_EXPENSE_DATA = "ARG_EXPENSE_DATA";

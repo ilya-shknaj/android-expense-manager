@@ -36,9 +36,9 @@ import by.gravity.expensemanager.data.SQLDataManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.NumberDialog.OnInputCompleteListener;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
+import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
 import by.gravity.expensemanager.fragments.loaders.addPayment.CategoriesLoader;
 import by.gravity.expensemanager.fragments.loaders.addPayment.CurrencyLoader;
-import by.gravity.expensemanager.fragments.loaders.addPayment.PaymentMethodsLoader;
 import by.gravity.expensemanager.model.ExpenseModel;
 import by.gravity.expensemanager.util.Constants;
 

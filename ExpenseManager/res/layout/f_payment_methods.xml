@@ -4,18 +4,18 @@
     android:layout_height="fill_parent"
     android:background="@color/cards_backgroud" >
 
-    <include
+    <ListView
+        android:id="@+id/listView"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
         android:layout_marginBottom="50dp"
-        layout="@layout/i_payments_methods_info" />
+        android:layout_height="wrap_content" >
+    </ListView>
 
     <include
         android:id="@+id/addPayment"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        layout="@layout/i_add_payment" />
+        layout="@layout/i_add_payment_method" />
 
 </RelativeLayout>

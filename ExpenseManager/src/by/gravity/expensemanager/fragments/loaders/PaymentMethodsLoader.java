@@ -1,4 +1,4 @@
-package by.gravity.expensemanager.fragments.loaders.addPayment;
+package by.gravity.expensemanager.fragments.loaders;
 
 import by.gravity.expensemanager.data.SQLDataManager;
 import android.content.Context;
@@ -13,7 +13,7 @@ public class PaymentMethodsLoader extends CursorLoader {
 
 	@Override
 	public Cursor loadInBackground() {
-		return SQLDataManager.getInstance().getPaymentsMethodsCursor();
+		return SQLDataManager.getInstance().getPaymentMethods();
 	}
 
 }
