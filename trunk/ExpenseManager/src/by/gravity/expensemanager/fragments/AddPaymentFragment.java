@@ -1,11 +1,14 @@
 package by.gravity.expensemanager.fragments;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -32,6 +35,10 @@ import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.data.SQLDataManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.NumberDialog.OnInputCompleteListener;
+import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
+import by.gravity.expensemanager.fragments.loaders.addPayment.CategoriesLoader;
+import by.gravity.expensemanager.fragments.loaders.addPayment.CurrencyLoader;
+import by.gravity.expensemanager.fragments.loaders.addPayment.PaymentMethodsLoader;
 import by.gravity.expensemanager.model.ExpenseModel;
 import by.gravity.expensemanager.util.Constants;
 
@@ -40,7 +47,7 @@ import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog.OnTimeSetListener;
 
-public class AddPaymentFragment extends CommonSherlockFragment {
+public class AddPaymentFragment extends CommonSherlockFragment implements LoaderCallbacks<Cursor> {
 
 	private static final int SHOW_CATEGORIES_COUNT = 3;
 
@@ -68,12 +75,17 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		if (expenseModel == null) {
 			showNumberDialog(null);
 		}
+		startLoaders();
+
 		initCostEditText();
-		initCurrency();
-		initPaymentsMethods();
-		initCategories();
 		initDate();
 		initBottomTabBar();
+	}
+
+	private void startLoaders() {
+		getLoaderManager().initLoader(LoaderHelper.ADD_PAYMENT_CURRENCIES_ID, null, this);
+		getLoaderManager().initLoader(LoaderHelper.ADD_PAYMENT_PAYMENT_METHODS_ID, null, this);
+		getLoaderManager().initLoader(LoaderHelper.ADD_PAYMENT_CATEGORIES_ID, null, this);
 	}
 
 	private Long getExpenseId() {
@@ -85,7 +97,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 	}
 
 	private void loadExpenseModel() {
-		Cursor cursor = SQLDataManager.getInstance().getExpenseById(getExpenseId());
+		Cursor cursor = SQLDataManager.getInstance().getExpenseByIdCursor(getExpenseId());
 		if (cursor != null && cursor.moveToFirst()) {
 			expenseModel = new ExpenseModel();
 			expenseModel.setAmount(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
@@ -107,7 +119,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 			@Override
 			public void onClick(View v) {
 				GlobalUtil.hideSoftKeyboard(getActivity());
-				getActivity().getSupportFragmentManager().popBackStack();
+				getFragmentManager().popBackStack();
 			}
 		});
 
@@ -142,7 +154,7 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 										GlobalUtil.hideSoftKeyboard(getActivity());
 										// ((MainActivity)
 										// getActivity()).notifyOutcomeFragmentStateChanged();
-										getActivity().getSupportFragmentManager().popBackStack();
+										getFragmentManager().popBackStack();
 									}
 								});
 
@@ -186,50 +198,35 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		}
 	}
 
-	private void initCurrency() {
+	private void initCurrency(List<String> currencyList) {
 		final Spinner spinner = (Spinner) getView().findViewById(R.id.currency);
-		SQLDataManager.getInstance().getCurrenciesShort(new OnLoadCompleteListener<List<String>>() {
-
-			@Override
-			public void onComplete(List<String> result) {
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, (List<String>) result);
-
-				adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-				spinner.setAdapter(adapter);
-				if (expenseModel != null) {
-					int position = adapter.getPosition(expenseModel.getCurrency());
-					if (position != -1) {
-						spinner.setSelection(position);
-					}
-				}
-
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, currencyList);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner.setAdapter(adapter);
+		if (expenseModel != null) {
+			int position = adapter.getPosition(expenseModel.getCurrency());
+			if (position != -1) {
+				spinner.setSelection(position);
 			}
-		});
+		}
+
 	}
 
-	private void initPaymentsMethods() {
+	private void initPaymentsMethods(List<String> paymentMethods) {
 
 		final RadioGroup paymentsMethodGroup = (RadioGroup) getView().findViewById(R.id.paymentMethodsGroup);
 
 		paymentsMethodGroup.removeAllViews();
-		SQLDataManager.getInstance().getPaymentsMethodsShort(new OnLoadCompleteListener<List<String>>() {
-
-			@Override
-			public void onComplete(List<String> result) {
-				List<String> paymentMethodsList = (List<String>) result;
-				if (paymentMethodsList.size() > 0) {
-					for (int i = 0; i < paymentMethodsList.size(); i++) {
-						RadioButton radioButton = new RadioButton(getActivity());
-						radioButton.setText(paymentMethodsList.get(i));
-						paymentsMethodGroup.addView(radioButton, i);
-					}
-				} else {
-					View emptyPaymentMethods = getView().findViewById(R.id.emptyPaymentMethods);
-					emptyPaymentMethods.setVisibility(View.VISIBLE);
-				}
-
+		if (paymentMethods.size() > 0) {
+			for (int i = 0; i < paymentMethods.size(); i++) {
+				RadioButton radioButton = new RadioButton(getActivity());
+				radioButton.setText(paymentMethods.get(i));
+				paymentsMethodGroup.addView(radioButton, i);
 			}
-		});
+		} else {
+			View emptyPaymentMethods = getView().findViewById(R.id.emptyPaymentMethods);
+			emptyPaymentMethods.setVisibility(View.VISIBLE);
+		}
 
 	}
 
@@ -321,98 +318,90 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 		return calendar;
 	}
 
-	private void initCategories() {
-		SQLDataManager.getInstance().getCategoriesPopular(new OnLoadCompleteListener<List<String>>() {
+	private void initCategories(List<String> categories) {
+		final LinearLayout categoriesLayout = (LinearLayout) getView().findViewById(R.id.categoriesLayout);
+		final List<String> allCategoriesList = categories;
+		final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(R.id.categoriesEditText);
+		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, allCategoriesList);
+		categoriesEditText.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+		categoriesEditText.setAdapter(adapter);
+		final List<String> popularCategories = allCategoriesList.size() > SHOW_CATEGORIES_COUNT ? allCategoriesList.subList(0, SHOW_CATEGORIES_COUNT)
+				: allCategoriesList;
+		final OnCheckedChangeListener checkedChangeListener = new OnCheckedChangeListener() {
 
 			@Override
-			public void onComplete(List<String> result) {
-				final LinearLayout categoriesLayout = (LinearLayout) getView().findViewById(R.id.categoriesLayout);
-				final List<String> allCategoriesList = result;
-				final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(R.id.categoriesEditText);
-				final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line,
-						allCategoriesList);
-				categoriesEditText.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-				categoriesEditText.setAdapter(adapter);
-				final List<String> popularCategories = allCategoriesList.size() > SHOW_CATEGORIES_COUNT ? allCategoriesList.subList(0,
-						SHOW_CATEGORIES_COUNT) : allCategoriesList;
-				final OnCheckedChangeListener checkedChangeListener = new OnCheckedChangeListener() {
-
-					@Override
-					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-						if (hasEnteredCategory(buttonView.getText().toString(), categoriesEditText.getText().toString())) {
-							categoriesEditText.setText(getEditableCategoryTextAfterRemove(buttonView.getText().toString(), categoriesEditText
-									.getText().toString()));
-						} else {
-							categoriesEditText.append(buttonView.getText().toString() + Constants.CATEGORY_SPLITTER);
-						}
-					}
-				};
-				categoriesEditText.addTextChangedListener(new TextWatcher() {
-
-					@Override
-					public void onTextChanged(CharSequence s, int start, int before, int count) {
-						if (count > 0) {
-							checkCategory(categoriesLayout, checkedChangeListener, s.toString(), true);
-						} else if (before > 0) {
-							if (start > 1 && (s.charAt(start - 1) == Constants.COMMA_CHAR || s.charAt(start - 1) == Constants.SPACE_CHAR)) {
-								return;
-							}
-							checkCategory(categoriesLayout, checkedChangeListener, s.toString(), false);
-						}
-					}
-
-					@Override
-					public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-					}
-
-					@Override
-					public void afterTextChanged(Editable s) {
-
-					}
-				});
-				categoriesLayout.removeAllViews();
-
-				for (int i = 0; i < popularCategories.size(); i++) {
-					CheckBox checkBox = new CheckBox(getActivity());
-					checkBox.setText(popularCategories.get(i));
-					checkBox.setTag(popularCategories.get(i).toLowerCase());
-					checkBox.setOnCheckedChangeListener(checkedChangeListener);
-					categoriesLayout.addView(checkBox, i);
-				}
-
-				final View showAllCategoriesButton = getView().findViewById(R.id.showAllCategoriesButton);
-				if (allCategoriesList.size() > popularCategories.size()) {
-					showAllCategoriesButton.setOnClickListener(new OnClickListener() {
-
-						@Override
-						public void onClick(View v) {
-							List<String> enteredCategories = getEnteredCategoriesList(categoriesEditText.getText().toString());
-							for (int i = popularCategories.size(); i < allCategoriesList.size(); i++) {
-								CheckBox checkBox = new CheckBox(getActivity());
-								checkBox.setText(allCategoriesList.get(i));
-								checkBox.setTag(allCategoriesList.get(i).toLowerCase());
-								if (enteredCategories.contains(allCategoriesList.get(i))) {
-									checkBox.setChecked(true);
-								}
-								checkBox.setOnCheckedChangeListener(checkedChangeListener);
-								categoriesLayout.addView(checkBox, i);
-							}
-							showAllCategoriesButton.setVisibility(View.GONE);
-						}
-					});
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (hasEnteredCategory(buttonView.getText().toString(), categoriesEditText.getText().toString())) {
+					categoriesEditText.setText(getEditableCategoryTextAfterRemove(buttonView.getText().toString(), categoriesEditText.getText()
+							.toString()));
 				} else {
-					showAllCategoriesButton.setVisibility(View.GONE);
+					categoriesEditText.append(buttonView.getText().toString() + Constants.CATEGORY_SPLITTER);
 				}
+			}
+		};
+		categoriesEditText.addTextChangedListener(new TextWatcher() {
 
-				if (expenseModel != null) {
-					for (int i = 0; i < expenseModel.getCategories().size(); i++) {
-						categoriesEditText.append(expenseModel.getCategories().get(i) + Constants.CATEGORY_SPLITTER);
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				if (count > 0) {
+					checkCategory(categoriesLayout, checkedChangeListener, s.toString(), true);
+				} else if (before > 0) {
+					if (start > 1 && (s.charAt(start - 1) == Constants.COMMA_CHAR || s.charAt(start - 1) == Constants.SPACE_CHAR)) {
+						return;
 					}
+					checkCategory(categoriesLayout, checkedChangeListener, s.toString(), false);
 				}
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
 
 			}
 		});
+		categoriesLayout.removeAllViews();
+
+		for (int i = 0; i < popularCategories.size(); i++) {
+			CheckBox checkBox = new CheckBox(getActivity());
+			checkBox.setText(popularCategories.get(i));
+			checkBox.setTag(popularCategories.get(i).toLowerCase());
+			checkBox.setOnCheckedChangeListener(checkedChangeListener);
+			categoriesLayout.addView(checkBox, i);
+		}
+
+		final View showAllCategoriesButton = getView().findViewById(R.id.showAllCategoriesButton);
+		if (allCategoriesList.size() > popularCategories.size()) {
+			showAllCategoriesButton.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					List<String> enteredCategories = getEnteredCategoriesList(categoriesEditText.getText().toString());
+					for (int i = popularCategories.size(); i < allCategoriesList.size(); i++) {
+						CheckBox checkBox = new CheckBox(getActivity());
+						checkBox.setText(allCategoriesList.get(i));
+						checkBox.setTag(allCategoriesList.get(i).toLowerCase());
+						if (enteredCategories.contains(allCategoriesList.get(i))) {
+							checkBox.setChecked(true);
+						}
+						checkBox.setOnCheckedChangeListener(checkedChangeListener);
+						categoriesLayout.addView(checkBox, i);
+					}
+					showAllCategoriesButton.setVisibility(View.GONE);
+				}
+			});
+		} else {
+			showAllCategoriesButton.setVisibility(View.GONE);
+		}
+
+		if (expenseModel != null) {
+			for (int i = 0; i < expenseModel.getCategories().size(); i++) {
+				categoriesEditText.append(expenseModel.getCategories().get(i) + Constants.CATEGORY_SPLITTER);
+			}
+		}
 
 	}
 
@@ -500,6 +489,80 @@ public class AddPaymentFragment extends CommonSherlockFragment {
 			}
 		});
 		numberDialog.show(getActivity().getSupportFragmentManager(), Number.class.getSimpleName());
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+		if (id == LoaderHelper.ADD_PAYMENT_CURRENCIES_ID) {
+			return new CurrencyLoader(getActivity());
+		} else if (id == LoaderHelper.ADD_PAYMENT_PAYMENT_METHODS_ID) {
+			return new PaymentMethodsLoader(getActivity());
+		} else if (id == LoaderHelper.ADD_PAYMENT_CATEGORIES_ID) {
+			return new CategoriesLoader(getActivity());
+		}
+		return null;
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		if (loader.getId() == LoaderHelper.ADD_PAYMENT_CURRENCIES_ID) {
+			List<String> currencyList = parseCurrency(cursor);
+			initCurrency(currencyList);
+		} else if (loader.getId() == LoaderHelper.ADD_PAYMENT_PAYMENT_METHODS_ID) {
+			List<String> paymentMethodsList = parsePaymentMethods(cursor);
+			initPaymentsMethods(paymentMethodsList);
+		} else if (loader.getId() == LoaderHelper.ADD_PAYMENT_CATEGORIES_ID) {
+			List<String> categoriesList = parseCategories(cursor);
+			initCategories(categoriesList);
+		}
+	}
+
+	private List<String> parseCurrency(Cursor cursor) {
+		List<String> currencyList = new ArrayList<String>();
+		if (cursor != null && cursor.getCount() > 0) {
+			for (int i = 0; i < cursor.getCount(); i++) {
+				cursor.moveToPosition(i);
+				currencyList.add(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE)));
+			}
+
+			cursor.close();
+		}
+		return currencyList;
+	}
+
+	private List<String> parsePaymentMethods(Cursor cursor) {
+		List<String> paymentMethodsList = new ArrayList<String>();
+		if (cursor != null && cursor.getCount() > 0) {
+			for (int i = 0; i < cursor.getCount(); i++) {
+				cursor.moveToPosition(i);
+				paymentMethodsList.add(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
+			}
+			cursor.close();
+
+		}
+
+		return paymentMethodsList;
+
+	}
+
+	private List<String> parseCategories(Cursor cursor) {
+		List<String> categories = new ArrayList<String>();
+		if (cursor != null && cursor.getCount() > 0) {
+			for (int i = 0; i < cursor.getCount(); i++) {
+				cursor.moveToPosition(i);
+				categories.add(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
+			}
+
+			cursor.close();
+		}
+
+		return categories;
+
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> arg0) {
+
 	}
 
 }

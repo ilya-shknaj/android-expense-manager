@@ -41,23 +41,23 @@ public class SQLDataManager {
 		new AsyncTask<Void, Void, Boolean>(onLoadCompleteListener) {
 			@Override
 			protected Boolean doInBackground(Void... params) {
-				updateCategoriesAsync(categories);
+				updateCategories(categories);
 
 				ContentValues values = new ContentValues();
 				values.put(SQLConstants.FIELD_AMOUNT, amount.replaceAll(Constants.SPACE_PATTERN, Constants.EMPTY_STRING));
-				values.put(SQLConstants.FIELD_CURRENCY, getCurrencyIdAsync(currency));
+				values.put(SQLConstants.FIELD_CURRENCY, getCurrencyId(currency));
 				values.put(SQLConstants.FIELD_DATE, date);
 				values.put(SQLConstants.FIELD_TIME, time);
 				if (!StringUtil.isEmpty(note)) {
 					values.put(SQLConstants.FIELD_NOTE, note);
 				}
-				Long paymentMethodId = getPaymentMethodIdAsync(paymentMethod);
+				Long paymentMethodId = getPaymentMethodId(paymentMethod);
 				if (paymentMethodId != null) {
 					values.put(SQLConstants.FIELD_PAYMENT_METHOD, paymentMethodId);
 				}
 				long expenseId = database.insert(SQLConstants.TABLE_EXPENSE, null, values);
-				addExpenseCategoriesAsync(categories, expenseId);
-				updateUsageCategoryCountAsync(categories);
+				addExpenseCategories(categories, expenseId);
+				updateUsageCategoryCount(categories);
 				return null;
 
 			}
@@ -70,19 +70,19 @@ public class SQLDataManager {
 
 			@Override
 			protected Void doInBackground(Void... params) {
-				updateCategoriesAsync(categories);
+				updateCategories(categories);
 
 				ContentValues values = new ContentValues();
 				values.put(SQLConstants.FIELD_AMOUNT, amount.replaceAll(Constants.SPACE_PATTERN, Constants.EMPTY_STRING));
-				values.put(SQLConstants.FIELD_CURRENCY, getCurrencyIdAsync(currency));
+				values.put(SQLConstants.FIELD_CURRENCY, getCurrencyId(currency));
 				values.put(SQLConstants.FIELD_DATE, date);
 				values.put(SQLConstants.FIELD_TIME, time);
 				values.put(SQLConstants.FIELD_NOTE, note);
 
 				long expenseId = database.update(SQLConstants.TABLE_EXPENSE, values, SQLConstants.FIELD_ID + "=?",
 						new String[] { String.valueOf(id) });
-				deleteExpenseCategoriesAsync(expenseId);
-				addExpenseCategoriesAsync(categories, expenseId);
+				deleteExpenseCategories(expenseId);
+				addExpenseCategories(categories, expenseId);
 
 				return null;
 			}
@@ -90,69 +90,16 @@ public class SQLDataManager {
 
 	}
 
-	public void getCurrenciesShort(final OnLoadCompleteListener<List<String>> loadCompleteListener) {
-		new AsyncTask<Void, Void, List<String>>(loadCompleteListener) {
-
-			@Override
-			protected List<String> doInBackground(Void... params) {
-				Cursor cursor = database.query(SQLConstants.TABLE_CURRENCY, null, SQLConstants.FIELD_IS_SHOW + "=?", new String[] { "1" }, null,
-						null, null);
-				List<String> currencyList = new ArrayList<String>();
-				if (cursor != null && cursor.getCount() > 0) {
-					for (int i = 0; i < cursor.getCount(); i++) {
-						cursor.moveToPosition(i);
-						currencyList.add(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE)));
-					}
-
-					cursor.close();
-				}
-				return currencyList;
-			}
-
-		}.start();
+	public Cursor getCurrenciesShortCursor() {
+		return database.query(SQLConstants.TABLE_CURRENCY, null, SQLConstants.FIELD_IS_SHOW + "=?", new String[] { "1" }, null, null, null);
 	}
 
-	public void getPaymentsMethodsShort(final OnLoadCompleteListener<List<String>> onLoadCompleteListener) {
-		new AsyncTask<Void, Void, List<String>>(onLoadCompleteListener) {
-
-			@Override
-			protected List<String> doInBackground(Void... params) {
-				Cursor cursor = database.query(SQLConstants.TABLE_PAYMENT_METHODS, new String[] { SQLConstants.FIELD_NAME }, null, null, null, null,
-						null);
-				List<String> paymentMethodsList = new ArrayList<String>();
-				if (cursor != null && cursor.getCount() > 0) {
-					for (int i = 0; i < cursor.getCount(); i++) {
-						cursor.moveToPosition(i);
-						paymentMethodsList.add(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
-					}
-					cursor.close();
-				}
-				return paymentMethodsList;
-			}
-
-		}.start();
+	public Cursor getPaymentsMethodsCursor() {
+		return database.query(SQLConstants.TABLE_PAYMENT_METHODS, new String[] { SQLConstants.FIELD_NAME }, null, null, null, null, null);
 	}
 
-	public void getCategoriesPopular(final OnLoadCompleteListener<List<String>> loadCompleteListener) {
-		new AsyncTask<Void, Void, List<String>>(loadCompleteListener) {
-
-			@Override
-			protected List<String> doInBackground(Void... params) {
-				Cursor cursor = database.query(SQLConstants.TABLE_CATEGORY, null, null, null, null, null, SQLConstants.FIELD_USAGE_COUNT + " DESC");
-				List<String> categories = new ArrayList<String>();
-				if (cursor != null && cursor.getCount() > 0) {
-					for (int i = 0; i < cursor.getCount(); i++) {
-						cursor.moveToPosition(i);
-						categories.add(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
-					}
-
-					cursor.close();
-				}
-
-				return categories;
-			}
-
-		}.start();
+	public Cursor getCategoriesCursor() {
+		return database.query(SQLConstants.TABLE_CATEGORY, null, null, null, null, null, SQLConstants.FIELD_USAGE_COUNT + " DESC");
 	}
 
 	private static final String EXPENSE_GROUPED_BY_DATE_AND_AMOUNT_QUERY = "SELECT " + SQLConstants.FIELD_ID + "," + SQLConstants.FIELD_DATE
@@ -187,7 +134,7 @@ public class SQLDataManager {
 		return database.rawQuery(EXPENSE_GROUPED_BY_CATEGORY_NAME_QUERY, new String[] { periodDate.getStartDate(), periodDate.getEndDate() });
 	}
 
-	private static final String GET_DAY_EXPENSE_QUERY = "SELECT " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_ID + ","
+	private static final String GET_CHILD_GROUPED_BY_DATE_QUERY = "SELECT " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_ID + ","
 			+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_TIME + "," + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_AMOUNT
 			+ " || ' ' || " + SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_CODE + " AS " + SQLConstants.FIELD_AMOUNT + ","
 			+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_NOTE + "," + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_PAYMENT_METHOD
@@ -195,8 +142,8 @@ public class SQLDataManager {
 			+ SQLConstants.FIELD_CURRENCY + "=" + SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE
 			+ "." + SQLConstants.FIELD_DATE + "=?";
 
-	public Cursor getDayExpense(Long date) {
-		return database.rawQuery(GET_DAY_EXPENSE_QUERY, new String[] { String.valueOf(date) });
+	public Cursor getChildGroupedByDateExpenseCursor(Long date) {
+		return database.rawQuery(GET_CHILD_GROUPED_BY_DATE_QUERY, new String[] { String.valueOf(date) });
 	}
 
 	private static final String GET_EXPENSE_BY_ID_QUERY = "SELECT " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_ID + ","
@@ -210,7 +157,7 @@ public class SQLDataManager {
 			+ SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE_CATEGORY + "." + SQLConstants.FIELD_CATEGORY_ID + "="
 			+ SQLConstants.TABLE_CATEGORY + "." + SQLConstants.FIELD_ID;
 
-	public Cursor getExpenseById(Long id) {
+	public Cursor getExpenseByIdCursor(Long id) {
 		return database.rawQuery(GET_EXPENSE_BY_ID_QUERY, new String[] { String.valueOf(id) });
 	}
 
@@ -224,20 +171,20 @@ public class SQLDataManager {
 			+ SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_CURRENCY + "=" + SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_ID
 			+ " AND " + SQLConstants.TABLE_EXPENSE + "." + SQLConstants.FIELD_DATE + " BETWEEN ? AND ?";
 
-	public Cursor getCategoryExpense(Long category) {
+	public Cursor getGroupedByCategoryNameChildCursor(int category) {
 		PeriodDate periodDate = SettingsManager.getCurrentPeriodDates();
 		return database.rawQuery(GET_CATEGORY_EXPENSE_QUERY,
 				new String[] { String.valueOf(category), periodDate.getStartDate(), periodDate.getEndDate() });
 	}
 
-	public Cursor getExpenseCategories(Long expenseId) {
+	public Cursor getGrouperdByCategoryNameCategoriesCursor(long expenseId) {
 		return database.query(SQLConstants.TABLE_CATEGORY + "," + SQLConstants.TABLE_EXPENSE_CATEGORY, new String[] { SQLConstants.FIELD_NAME },
 				SQLConstants.TABLE_EXPENSE_CATEGORY + "." + SQLConstants.FIELD_CATEGORY_ID + "=" + SQLConstants.TABLE_CATEGORY + "."
 						+ SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE_CATEGORY + "." + SQLConstants.FIELD_EXPENSE_ID + "=?",
 				new String[] { String.valueOf(expenseId) }, null, null, null);
 	}
 
-	private Long getCategoryIdAsync(final String name) {
+	private Long getCategoryId(final String name) {
 		Cursor cursor = database.query(SQLConstants.TABLE_CATEGORY, new String[] { SQLConstants.FIELD_ID }, SQLConstants.FIELD_NAME + "=?",
 				new String[] { name }, null, null, null);
 		Long id = null;
@@ -253,7 +200,7 @@ public class SQLDataManager {
 
 	}
 
-	private List<Long> getCategoriesIdAsync(final List<String> categories) {
+	private List<Long> getCategoriesId(final List<String> categories) {
 		Cursor cursor = database.query(SQLConstants.TABLE_CATEGORY, new String[] { SQLConstants.FIELD_ID }, SQLConstants.FIELD_NAME + " IN("
 				+ makePlaceholders(categories.size()) + ")", categories.toArray(new String[] {}), null, null, null);
 		List<Long> categoriesId = new ArrayList<Long>();
@@ -281,23 +228,23 @@ public class SQLDataManager {
 		}
 	}
 
-	private void addCategoryAsync(final String name) {
+	private void addCategory(final String name) {
 		ContentValues values = new ContentValues();
 		values.put(SQLConstants.FIELD_NAME, name);
 		database.insert(SQLConstants.TABLE_CATEGORY, null, values);
 	}
 
-	private void updateCategoriesAsync(final List<String> categories) {
+	private void updateCategories(final List<String> categories) {
 		for (int i = 0; i < categories.size(); i++) {
-			if (getCategoryIdAsync(categories.get(i)) == null) {
+			if (getCategoryId(categories.get(i)) == null) {
 				categories.set(i, StringUtil.uppercaseFirstLetter(categories.get(i)));
-				addCategoryAsync(categories.get(i));
+				addCategory(categories.get(i));
 			}
 		}
 	}
 
-	private void addExpenseCategoriesAsync(final List<String> categories, final long expenseId) {
-		List<Long> categoriesId = getCategoriesIdAsync(categories);
+	private void addExpenseCategories(final List<String> categories, final long expenseId) {
+		List<Long> categoriesId = getCategoriesId(categories);
 		ContentValues values = null;
 		for (int i = 0; i < categoriesId.size(); i++) {
 			values = new ContentValues();
@@ -307,11 +254,11 @@ public class SQLDataManager {
 		}
 	}
 
-	private void deleteExpenseCategoriesAsync(final long expenseId) {
+	private void deleteExpenseCategories(final long expenseId) {
 		database.delete(SQLConstants.TABLE_EXPENSE_CATEGORY, SQLConstants.FIELD_EXPENSE_ID + "=?", new String[] { String.valueOf(expenseId) });
 	}
 
-	private Long getCurrencyIdAsync(final String currency) {
+	private Long getCurrencyId(final String currency) {
 		Cursor cursor = database.query(SQLConstants.TABLE_CURRENCY, new String[] { SQLConstants.FIELD_ID }, SQLConstants.FIELD_CODE + "=?",
 				new String[] { currency }, null, null, null);
 		Long id = null;
@@ -325,7 +272,7 @@ public class SQLDataManager {
 		return id;
 	}
 
-	private Long getPaymentMethodIdAsync(final String accountName) {
+	private Long getPaymentMethodId(final String accountName) {
 		if (StringUtil.isEmpty(accountName)) {
 			return null;
 		}
@@ -341,7 +288,7 @@ public class SQLDataManager {
 		return id;
 	}
 
-	private void updateUsageCategoryCountAsync(final List<String> categories) {
+	private void updateUsageCategoryCount(final List<String> categories) {
 		Cursor cursor = database.query(SQLConstants.TABLE_CATEGORY, null, SQLConstants.FIELD_NAME + " IN(" + makePlaceholders(categories.size())
 				+ ")", categories.toArray(new String[] {}), null, null, null);
 		if (cursor != null && cursor.getCount() > 0) {

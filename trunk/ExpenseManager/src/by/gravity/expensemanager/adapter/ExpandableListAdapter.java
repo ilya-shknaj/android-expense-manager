@@ -2,6 +2,10 @@ package by.gravity.expensemanager.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
+import android.util.SparseIntArray;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageView;
@@ -11,6 +15,8 @@ import android.widget.TextView;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.data.SQLDataManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
+import by.gravity.expensemanager.fragments.OutcomeFragment;
+import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
 import by.gravity.expensemanager.model.CollapsedModelGroupedByCategoryName;
 import by.gravity.expensemanager.model.CollapsedModelGroupedByDate;
 import by.gravity.expensemanager.model.ExpenseGroupedByCategoryNameModel;
@@ -20,9 +26,16 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 
 	private boolean isGroupedByDate;
 
-	public ExpandableListAdapter(Context context, Cursor cursor, int groupLayout, int childLayout, boolean isGroupedByDate) {
-		super(context, cursor, groupLayout, childLayout);
+	private OutcomeFragment fragment;
+
+	private final SparseIntArray groupMap;
+
+	public ExpandableListAdapter(OutcomeFragment fragment, int groupLayout, int childLayout, boolean isGroupedByDate) {
+		super(fragment.getActivity(), null, groupLayout, childLayout);
 		this.isGroupedByDate = isGroupedByDate;
+		this.fragment = fragment;
+		groupMap = new SparseIntArray();
+
 	}
 
 	public boolean isChildSelectable(int groupPosition, int childPosition) {
@@ -88,6 +101,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 
 	@Override
 	protected void bindGroupView(View view, Context context, Cursor cursor, boolean isExpanded) {
+		
 		ImageView indicator = (ImageView) view.findViewById(R.id.indicator);
 		if (isExpanded) {
 			indicator.setBackgroundResource(R.drawable.ic_action_expand);
@@ -135,7 +149,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 		expenseModel.setAmount(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
 		expenseModel.setNote(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NOTE)));
 		expenseModel.setTime(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_TIME)));
-		Cursor expenseCategoryCursor = SQLDataManager.getInstance().getExpenseCategories(expenseModel.getId());
+		Cursor expenseCategoryCursor = SQLDataManager.getInstance().getGrouperdByCategoryNameCategoriesCursor(expenseModel.getId());
 		if (expenseCategoryCursor != null && expenseCategoryCursor.getCount() > 0) {
 			for (int i = 0; i < expenseCategoryCursor.getCount(); i++) {
 				expenseCategoryCursor.moveToPosition(i);
@@ -159,18 +173,45 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 
 	@Override
 	protected Cursor getChildrenCursor(Cursor groupCursor) {
+		Bundle bundle = new Bundle();
+		int id = groupCursor.getInt(groupCursor.getColumnIndex(SQLConstants.FIELD_ID));
+		if (getLoaderManager() == null) {
+			return null;
+		}
 		if (isGroupedByDate) {
+
+			Loader<Cursor> loader = getLoaderManager().getLoader(id);
 			Long date = groupCursor.getLong(groupCursor.getColumnIndex(SQLConstants.FIELD_DATE));
-			if (date != null) {
-				return SQLDataManager.getInstance().getDayExpense(date);
+			bundle.putLong(LoaderHelper.ARG_EXPENSE_DATA, date);
+			if (loader != null && !loader.isReset() && !loader.isAbandoned()) {
+				getLoaderManager().restartLoader(id, bundle, fragment);
+			} else {
+				getLoaderManager().initLoader(id, bundle, fragment);
 			}
 		} else {
-			Long categoryId = groupCursor.getLong(groupCursor.getColumnIndex(SQLConstants.FIELD_ID));
-			if (categoryId != null) {
-				return SQLDataManager.getInstance().getCategoryExpense(categoryId);
+			Loader<Cursor> loader = getLoaderManager().getLoader(id);
+			int categoryId = groupCursor.getInt(groupCursor.getColumnIndex(SQLConstants.FIELD_ID));
+			bundle.putInt(LoaderHelper.ARG_CATEGORY_ID, categoryId);
+			if (loader != null && !loader.isReset() && !loader.isAbandoned()) {
+				getLoaderManager().restartLoader(id, bundle, fragment);
+			} else {
+				getLoaderManager().initLoader(id, bundle, fragment);
 			}
 		}
+
+		groupMap.put(id, groupCursor.getPosition());
 		return null;
+	}
+
+	private LoaderManager getLoaderManager() {
+		if (fragment.getActivity() != null) {
+			return fragment.getActivity().getSupportLoaderManager();
+		}
+		return null;
+	}
+
+	public SparseIntArray getGroupMap() {
+		return groupMap;
 	}
 
 }
