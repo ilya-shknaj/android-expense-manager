@@ -4,6 +4,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ListView;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.adapter.PaymentMethodsAdapter;
@@ -22,6 +24,17 @@ public class PaymentMethodsFragment extends CommonProgressSherlockFragment imple
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		startLoader();
+		initBottomBar();
+	}
+
+	private void initBottomBar() {
+		View addButton = getView().findViewById(R.id.addButton);
+		addButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+			}
+		});
 	}
 
 	private void startLoader() {
