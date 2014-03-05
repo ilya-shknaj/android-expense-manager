@@ -47,7 +47,7 @@ import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog.OnTimeSetListener;
 
-public class AddPaymentFragment extends CommonSherlockFragment implements LoaderCallbacks<Cursor> {
+public class AddPaymentFragment extends CommonProgressSherlockFragment implements LoaderCallbacks<Cursor> {
 
 	private static final int SHOW_CATEGORIES_COUNT = 3;
 
@@ -515,6 +515,17 @@ public class AddPaymentFragment extends CommonSherlockFragment implements Loader
 			List<String> categoriesList = parseCategories(cursor);
 			initCategories(categoriesList);
 		}
+
+		if (isLoaderFinished(LoaderHelper.ADD_PAYMENT_CURRENCIES_ID) && isLoaderFinished(LoaderHelper.ADD_PAYMENT_CATEGORIES_ID)
+				&& isLoaderFinished(LoaderHelper.ADD_PAYMENT_PAYMENT_METHODS_ID)) {
+			setContentShown(true);
+		}
+
+	}
+
+	private boolean isLoaderFinished(int id) {
+		return getLoaderManager().getLoader(id) != null && getLoaderManager().getLoader(id).isStarted()
+				&& !getLoaderManager().getLoader(id).isAbandoned();
 	}
 
 	private List<String> parseCurrency(Cursor cursor) {

@@ -1,50 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="@dimen/item_margin" >
 
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@color/blue" />
-
-    <LinearLayout
+    <include
+        android:layout_centerInParent="true"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:orientation="horizontal" >
+        layout="@layout/i_progress_small" />
+
+    <LinearLayout
+        android:id="@+id/content_container"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@color/blue" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/time"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="15:53" />
+            android:layout_marginLeft="10dp"
+            android:orientation="horizontal" >
 
             <LinearLayout
-                android:id="@+id/categoryLayout"
-                android:layout_width="fill_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="vertical" />
-        </LinearLayout>
+                android:layout_weight="0.5"
+                android:orientation="vertical" >
 
-        <TextView
-            android:textStyle="bold"
-            android:id="@+id/price"
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="0.5"
-            android:gravity="right|center_vertical"
-            android:text="123 $" />
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="15:53" />
+
+                <LinearLayout
+                    android:id="@+id/categoryLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="0.5"
+                android:gravity="right|center_vertical"
+                android:text="123 $"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

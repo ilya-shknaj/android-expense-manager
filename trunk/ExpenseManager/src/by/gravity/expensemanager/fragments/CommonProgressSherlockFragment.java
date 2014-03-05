@@ -5,9 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.actionbarsherlock.app.SherlockFragment;
-
-public abstract class CommonSherlockFragment extends SherlockFragment {
+public abstract class CommonProgressSherlockFragment extends SherlockProgressFragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -23,4 +21,5 @@ public abstract class CommonSherlockFragment extends SherlockFragment {
 	public abstract int getViewId();
 
 	public abstract int getTitleResource();
+
 }
