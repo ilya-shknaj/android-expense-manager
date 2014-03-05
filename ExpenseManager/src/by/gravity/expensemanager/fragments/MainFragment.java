@@ -12,7 +12,7 @@ import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.model.PaymentDetail;
 import by.gravity.expensemanager.model.PaymentModel;
 
-public class MainFragment extends CommonSherlockFragment {
+public class MainFragment extends CommonProgressSherlockFragment {
 
 	public static MainFragment newInstance() {
 		return new MainFragment();

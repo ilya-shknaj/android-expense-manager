@@ -6,43 +6,54 @@
     android:background="@color/white"
     android:orientation="vertical" >
 
-    <LinearLayout
-        android:id="@+id/root"
+    <include
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:layout_height="fill_parent"
+        layout="@layout/i_progress_large" />
 
-        <include
+    <RelativeLayout
+        android:id="@+id/content_container"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <LinearLayout
+            android:id="@+id/root"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            layout="@layout/i_period_title" />
+            android:orientation="vertical" >
 
-        <View
+            <include
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                layout="@layout/i_period_title" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="@color/divider" />
+        </LinearLayout>
+
+        <ExpandableListView
+            android:id="@+id/expandableListView"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@id/root"
+            android:layout_marginBottom="50dp" >
+        </ExpandableListView>
+
+        <include
+            android:id="@+id/bottomBarLayout"
             android:layout_width="fill_parent"
-            android:layout_height="1px"
-            android:background="@color/divider" />
-    </LinearLayout>
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            layout="@layout/i_outcome_tab_bar" />
 
-    <ExpandableListView
-        android:id="@+id/expandableListView"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/root"
-        android:layout_marginBottom="50dp" >
-    </ExpandableListView>
-
-    <include
-        android:id="@+id/bottomBarLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        layout="@layout/i_outcome_tab_bar" />
-
-    <ViewStub
-        android:id="@+id/stub"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:inflatedId="@+id/subTree"
-        android:layout="@layout/i_empty_outcome" />
+        <ViewStub
+            android:id="@+id/stub"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:inflatedId="@+id/subTree"
+            android:layout="@layout/i_empty_outcome" />
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -7,6 +7,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.util.SparseIntArray;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +22,7 @@ import by.gravity.expensemanager.model.CollapsedModelGroupedByCategoryName;
 import by.gravity.expensemanager.model.CollapsedModelGroupedByDate;
 import by.gravity.expensemanager.model.ExpenseGroupedByCategoryNameModel;
 import by.gravity.expensemanager.model.ExpenseGroupedByDateModel;
+import by.gravity.expensemanager.util.EmptyCursor;
 
 public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 
@@ -64,44 +66,58 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 
 	@Override
 	protected void bindChildView(View view, Context context, Cursor cursor, boolean isLastChild) {
-		if (isGroupedByDate) {
-			final ExpenseGroupedByDateModel expenseModel = getExpenseGroupedByDateModel(cursor);
 
-			TextView time = (TextView) view.findViewById(R.id.time);
-			time.setText(expenseModel.getTime());
+		if (!(cursor instanceof EmptyCursor)) {
 
-			TextView amount = (TextView) view.findViewById(R.id.price);
-			amount.setText(expenseModel.getAmount());
+			if (isGroupedByDate) {
+				final ExpenseGroupedByDateModel expenseModel = getExpenseGroupedByDateModel(cursor);
 
-			LinearLayout categoryLayout = (LinearLayout) view.findViewById(R.id.categoryLayout);
-			categoryLayout.removeAllViews();
-			for (int i = 0; i < expenseModel.getCategories().size(); i++) {
-				TextView category = new TextView(context);
-				category.setText(expenseModel.getCategories().get(i));
-				categoryLayout.addView(category, i);
+				TextView time = (TextView) view.findViewById(R.id.time);
+				time.setText(expenseModel.getTime());
+
+				TextView amount = (TextView) view.findViewById(R.id.price);
+				amount.setText(expenseModel.getAmount());
+
+				LinearLayout categoryLayout = (LinearLayout) view.findViewById(R.id.categoryLayout);
+				categoryLayout.removeAllViews();
+				for (int i = 0; i < expenseModel.getCategories().size(); i++) {
+					TextView category = new TextView(context);
+					category.setText(expenseModel.getCategories().get(i));
+					categoryLayout.addView(category, i);
+				}
+			} else {
+				final ExpenseGroupedByCategoryNameModel expenseModel = getExpenseGroupedByCategoryNameModel(cursor);
+
+				TextView date = (TextView) view.findViewById(R.id.time);
+				date.setText(expenseModel.getDate());
+
+				TextView amount = (TextView) view.findViewById(R.id.price);
+				amount.setText(expenseModel.getAmount());
+
+				LinearLayout categoryLayout = (LinearLayout) view.findViewById(R.id.categoryLayout);
+				categoryLayout.removeAllViews();
+
+				TextView time = new TextView(context);
+				time.setText(expenseModel.getTime());
+				categoryLayout.addView(time);
 			}
-		} else {
-			final ExpenseGroupedByCategoryNameModel expenseModel = getExpenseGroupedByCategoryNameModel(cursor);
 
-			TextView date = (TextView) view.findViewById(R.id.time);
-			date.setText(expenseModel.getDate());
+			View contentContainer = view.findViewById(R.id.content_container);
+			if (contentContainer.getVisibility() == View.GONE) {
+				View progress = view.findViewById(R.id.progress_container);
+				progress.startAnimation(AnimationUtils.loadAnimation(fragment.getActivity(), android.R.anim.fade_out));
+				contentContainer.startAnimation(AnimationUtils.loadAnimation(fragment.getActivity(), android.R.anim.fade_in));
 
-			TextView amount = (TextView) view.findViewById(R.id.price);
-			amount.setText(expenseModel.getAmount());
+				progress.setVisibility(View.GONE);
+				contentContainer.setVisibility(View.VISIBLE);
 
-			LinearLayout categoryLayout = (LinearLayout) view.findViewById(R.id.categoryLayout);
-			categoryLayout.removeAllViews();
-
-			TextView time = new TextView(context);
-			time.setText(expenseModel.getTime());
-			categoryLayout.addView(time);
+			}
 		}
-
 	}
 
 	@Override
 	protected void bindGroupView(View view, Context context, Cursor cursor, boolean isExpanded) {
-		
+
 		ImageView indicator = (ImageView) view.findViewById(R.id.indicator);
 		if (isExpanded) {
 			indicator.setBackgroundResource(R.drawable.ic_action_expand);
@@ -200,7 +216,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 		}
 
 		groupMap.put(id, groupCursor.getPosition());
-		return null;
+		return new EmptyCursor();
 	}
 
 	private LoaderManager getLoaderManager() {

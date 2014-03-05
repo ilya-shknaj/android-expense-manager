@@ -22,7 +22,7 @@ import by.gravity.expensemanager.fragments.loaders.outcome.GroupedByDateCursorLo
 
 import com.actionbarsherlock.view.MenuItem;
 
-public class OutcomeFragment extends CommonSherlockFragment implements LoaderCallbacks<Cursor> {
+public class OutcomeFragment extends CommonProgressSherlockFragment implements LoaderCallbacks<Cursor> {
 
 	private ExpandableListAdapter adapter;
 
@@ -60,7 +60,7 @@ public class OutcomeFragment extends CommonSherlockFragment implements LoaderCal
 	}
 
 	private void hidePeriod() {
-		View periodLayout = getView().findViewById(R.id.root);
+		View periodLayout = getView().findViewById(R.id.content_container);
 		periodLayout.setVisibility(View.GONE);
 	}
 
@@ -178,6 +178,8 @@ public class OutcomeFragment extends CommonSherlockFragment implements LoaderCal
 				hidePeriod();
 				initEmptyOtcome();
 			}
+
+			setContentShown(true);
 		} else {
 			adapter.setChildrenCursor(adapter.getGroupMap().get(id), cursor);
 		}
