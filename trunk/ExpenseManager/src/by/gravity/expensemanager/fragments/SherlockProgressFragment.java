@@ -18,11 +18,8 @@ package by.gravity.expensemanager.fragments;
  */
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.TextView;
 import by.gravity.expensemanager.R;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -39,7 +36,6 @@ public class SherlockProgressFragment extends SherlockFragment {
 
 	private View mProgressContainer;
 	private View mContentContainer;
-	private View mContentView;
 	private View mEmptyView;
 	private boolean mContentShown;
 	private boolean mIsContentEmpty;
@@ -66,10 +62,11 @@ public class SherlockProgressFragment extends SherlockFragment {
 	 * of SherlockProgressFragment. In particular, this is currently the only
 	 * way to have the built-in indeterminant progress state be shown.
 	 */
-//	@Override
-//	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//		return inflater.inflate(R.layout.f_progress, container, false);
-//	}
+	// @Override
+	// public View onCreateView(LayoutInflater inflater, ViewGroup container,
+	// Bundle savedInstanceState) {
+	// return inflater.inflate(R.layout.f_progress, container, false);
+	// }
 
 	/**
 	 * Attach to view once the view hierarchy has been created.
@@ -87,96 +84,8 @@ public class SherlockProgressFragment extends SherlockFragment {
 	public void onDestroyView() {
 		mContentShown = false;
 		mIsContentEmpty = false;
-		mProgressContainer = mContentContainer = mContentView = mEmptyView = null;
+		mProgressContainer = mContentContainer = mEmptyView = null;
 		super.onDestroyView();
-	}
-
-	/**
-	 * Return content view or null if the content view has not been initialized.
-	 * 
-	 * @return content view or null
-	 * @see #setContentView(android.view.View)
-	 * @see #setContentView(int)
-	 */
-	public View getContentView() {
-		return mContentView;
-	}
-
-	/**
-	 * Set the content content from a layout resource.
-	 * 
-	 * @param layoutResId
-	 *            Resource ID to be inflated.
-	 * @see #setContentView(android.view.View)
-	 * @see #getContentView()
-	 */
-	public void setContentView(int layoutResId) {
-		LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-		View contentView = layoutInflater.inflate(layoutResId, null);
-		setContentView(contentView);
-	}
-
-	/**
-	 * Set the content view to an explicit view. If the content view was
-	 * installed earlier, the content will be replaced with a new view.
-	 * 
-	 * @param view
-	 *            The desired content to display. Value can't be null.
-	 * @see #setContentView(int)
-	 * @see #getContentView()
-	 */
-	public void setContentView(View view) {
-		ensureContent();
-		if (view == null) {
-			throw new IllegalArgumentException("Content view can't be null");
-		}
-		if (mContentContainer instanceof ViewGroup) {
-			ViewGroup contentContainer = (ViewGroup) mContentContainer;
-			if (mContentView == null) {
-				contentContainer.addView(view);
-			} else {
-				int index = contentContainer.indexOfChild(mContentView);
-				// replace content view
-				contentContainer.removeView(mContentView);
-				contentContainer.addView(view, index);
-			}
-			mContentView = view;
-		} else {
-			throw new IllegalStateException("Can't be used with a custom content view");
-		}
-	}
-
-	/**
-	 * The default content for a SherlockProgressFragment has a TextView that
-	 * can be shown when the content is empty {@link #setContentEmpty(boolean)}.
-	 * If you would like to have it shown, call this method to supply the text
-	 * it should use.
-	 * 
-	 * @param resId
-	 *            Identification of string from a resources
-	 * @see #setEmptyText(CharSequence)
-	 */
-	public void setEmptyText(int resId) {
-		setEmptyText(getString(resId));
-	}
-
-	/**
-	 * The default content for a SherlockProgressFragment has a TextView that
-	 * can be shown when the content is empty {@link #setContentEmpty(boolean)}.
-	 * If you would like to have it shown, call this method to supply the text
-	 * it should use.
-	 * 
-	 * @param text
-	 *            Text for empty view
-	 * @see #setEmptyText(int)
-	 */
-	public void setEmptyText(CharSequence text) {
-		ensureContent();
-		if (mEmptyView != null && mEmptyView instanceof TextView) {
-			((TextView) mEmptyView).setText(text);
-		} else {
-			throw new IllegalStateException("Can't be used with a custom content view");
-		}
 	}
 
 	/**
@@ -228,22 +137,36 @@ public class SherlockProgressFragment extends SherlockFragment {
 			if (animate) {
 				mProgressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
 				mContentContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
+				if (mEmptyView != null && mEmptyView.getVisibility() == View.VISIBLE) {
+					mEmptyView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+				}
 			} else {
 				mProgressContainer.clearAnimation();
 				mContentContainer.clearAnimation();
+				mEmptyView.clearAnimation();
 			}
 			mProgressContainer.setVisibility(View.GONE);
 			mContentContainer.setVisibility(View.VISIBLE);
+			if (mEmptyView != null && mEmptyView.getVisibility() == View.VISIBLE) {
+				mEmptyView.setVisibility(View.GONE);
+			}
 		} else {
 			if (animate) {
 				mProgressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
 				mContentContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+				if (mEmptyView != null && mEmptyView.getVisibility() == View.VISIBLE) {
+					mEmptyView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+				}
 			} else {
 				mProgressContainer.clearAnimation();
 				mContentContainer.clearAnimation();
+				mEmptyView.clearAnimation();
 			}
 			mProgressContainer.setVisibility(View.VISIBLE);
 			mContentContainer.setVisibility(View.GONE);
+			if (mEmptyView != null && mEmptyView.getVisibility() == View.VISIBLE) {
+				mEmptyView.setVisibility(View.GONE);
+			}
 		}
 	}
 
@@ -269,15 +192,25 @@ public class SherlockProgressFragment extends SherlockFragment {
 	 */
 	public void setContentEmpty(boolean isEmpty) {
 		ensureContent();
-		if (mContentView == null) {
-			throw new IllegalStateException("Content view must be initialized before");
-		}
+
 		if (isEmpty) {
+			mProgressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+			mContentContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+			mEmptyView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
+
 			mEmptyView.setVisibility(View.VISIBLE);
-			mContentView.setVisibility(View.GONE);
+			mContentContainer.setVisibility(View.GONE);
+			if (mProgressContainer.getVisibility() == View.VISIBLE) {
+				mProgressContainer.setVisibility(View.GONE);
+			}
 		} else {
+			mProgressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+			mContentContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
+			mEmptyView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+
 			mEmptyView.setVisibility(View.GONE);
-			mContentView.setVisibility(View.VISIBLE);
+			mContentContainer.setVisibility(View.VISIBLE);
+			mProgressContainer.setVisibility(View.GONE);
 		}
 		mIsContentEmpty = isEmpty;
 	}
@@ -301,16 +234,10 @@ public class SherlockProgressFragment extends SherlockFragment {
 		if (mContentContainer == null) {
 			throw new RuntimeException("Your content must have a ViewGroup whose id attribute is 'R.id.content_container'");
 		}
-		mEmptyView = root.findViewById(android.R.id.empty);
-		if (mEmptyView != null) {
-			mEmptyView.setVisibility(View.GONE);
-		}
-		mContentShown = true;
-		// We are starting without a content, so assume we won't
-		// have our data right away and start with the progress indicator.
-		if (mContentView == null) {
-			setContentShown(false, false);
-		}
+		mEmptyView = root.findViewById(R.id.empty);
+
+		mContentShown = false;
+
 	}
 
 }

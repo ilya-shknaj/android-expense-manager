@@ -7,6 +7,7 @@
     android:orientation="horizontal" >
 
     <RelativeLayout
+        android:id="@+id/addExpenseButton"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@drawable/btn_tab_bar"
@@ -17,11 +18,11 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@+id/addButton"
+            android:layout_toLeftOf="@+id/text"
             android:background="@drawable/ic_action_new" />
 
         <TextView
-            android:id="@+id/addButton"
+            android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

@@ -6,10 +6,22 @@
 
     <include
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginBottom="50dp"
-        layout="@layout/i_payments_methods_info" />
+        android:layout_height="fill_parent"
+        layout="@layout/i_progress_large"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/content_container"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="50dp" >
+
+        <include
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            layout="@layout/i_payments_methods_info" />
+    </RelativeLayout>
 
     <include
         android:id="@+id/addPayment"

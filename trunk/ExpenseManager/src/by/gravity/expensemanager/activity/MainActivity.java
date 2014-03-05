@@ -8,6 +8,7 @@ import by.gravity.expensemanager.fragments.AddPaymentFragment;
 import by.gravity.expensemanager.fragments.ChoosePeriodFragment;
 import by.gravity.expensemanager.fragments.MainFragment;
 import by.gravity.expensemanager.fragments.OutcomeFragment;
+import by.gravity.expensemanager.fragments.PaymentMethodsFragment;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -29,7 +30,8 @@ public class MainActivity extends DrawerActivity {
 		String action = getIntent().getAction();
 		if (action.equals(Intent.ACTION_MAIN)) {
 			// showMainFragment();
-			showOutcomeFragment(true);
+			 showOutcomeFragment(true);
+//			showPaymentMethodsFragment();
 		} else if (action.equals(ChoosePeriodFragment.class.getSimpleName())) {
 			showChoosePeriodFragment();
 
@@ -58,7 +60,7 @@ public class MainActivity extends DrawerActivity {
 		} else if (item.equals(getString(R.string.main))) {
 			showMainFragment();
 		} else if (item.equals(getString(R.string.paymentsMethods))) {
-
+			showPaymentMethodsFragment();
 		}
 	}
 
@@ -93,7 +95,11 @@ public class MainActivity extends DrawerActivity {
 
 	public void showAddPaymentFragment(Long paymentId) {
 		getSupportFragmentManager().beginTransaction().replace(R.id.content, AddPaymentFragment.newInstance(paymentId))
-				.addToBackStack(AddPaymentFragment.class.getSimpleName()).addToBackStack(AddPaymentFragment.class.getSimpleName()).commit();
+				.addToBackStack(AddPaymentFragment.class.getSimpleName()).commit();
+	}
+
+	public void showPaymentMethodsFragment() {
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, PaymentMethodsFragment.newInstance()).commit();
 	}
 
 	public void showSelectDateDialog(int year, int month, int day, OnDateSetListener dateSetListener) {

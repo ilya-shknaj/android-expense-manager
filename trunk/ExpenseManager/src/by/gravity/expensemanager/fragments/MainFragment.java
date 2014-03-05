@@ -9,10 +9,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
-import by.gravity.expensemanager.model.PaymentDetail;
+import by.gravity.expensemanager.model.PaymentMethodDetailModel;
 import by.gravity.expensemanager.model.PaymentModel;
 
-public class MainFragment extends CommonProgressSherlockFragment {
+public class MainFragment extends CommonSherlockFragment {
 
 	public static MainFragment newInstance() {
 		return new MainFragment();
@@ -61,9 +61,9 @@ public class MainFragment extends CommonProgressSherlockFragment {
 
 	private PaymentModel getPaymentModel() {
 		PaymentModel paymentModel = new PaymentModel();
-		paymentModel.getListPaymensDetail().add(new PaymentDetail("Prior зарплата", "3 200 000"));
-		paymentModel.getListPaymensDetail().add(new PaymentDetail("Prior быстрый депозит", "4 200 000"));
-		paymentModel.getListPaymensDetail().add(new PaymentDetail("Наличные", "600 000"));
+		paymentModel.getListPaymensDetail().add(new PaymentMethodDetailModel("Prior зарплата", "3 200 000"));
+		paymentModel.getListPaymensDetail().add(new PaymentMethodDetailModel("Prior быстрый депозит", "4 200 000"));
+		paymentModel.getListPaymensDetail().add(new PaymentMethodDetailModel("Наличные", "600 000"));
 
 		paymentModel.setBalance("8 000 000");
 

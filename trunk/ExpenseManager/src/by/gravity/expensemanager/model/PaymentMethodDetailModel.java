@@ -1,12 +1,16 @@
 package by.gravity.expensemanager.model;
 
-public class PaymentDetail {
+public class PaymentMethodDetailModel {
 
 	private String name;
 
 	private String balance;
 
-	public PaymentDetail(String name, String balance) {
+	public PaymentMethodDetailModel() {
+
+	}
+
+	public PaymentMethodDetailModel(String name, String balance) {
 		this.name = name;
 		this.balance = balance;
 	}

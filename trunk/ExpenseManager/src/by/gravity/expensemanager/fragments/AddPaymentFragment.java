@@ -37,6 +37,7 @@ import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.NumberDialog.OnInputCompleteListener;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
 import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
+import by.gravity.expensemanager.fragments.loaders.LoaderHelper.LoaderStatus;
 import by.gravity.expensemanager.fragments.loaders.addPayment.CategoriesLoader;
 import by.gravity.expensemanager.fragments.loaders.addPayment.CurrencyLoader;
 import by.gravity.expensemanager.model.ExpenseModel;
@@ -48,6 +49,8 @@ import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog.OnTimeSetListener;
 
 public class AddPaymentFragment extends CommonProgressSherlockFragment implements LoaderCallbacks<Cursor> {
+
+	private static final String TAG = AddPaymentFragment.class.getSimpleName();
 
 	private static final int SHOW_CATEGORIES_COUNT = 3;
 
@@ -493,6 +496,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+		LoaderHelper.getIntance().putLoaderStatus(TAG, id, LoaderStatus.STARTED);
 		if (id == LoaderHelper.ADD_PAYMENT_CURRENCIES_ID) {
 			return new CurrencyLoader(getActivity());
 		} else if (id == LoaderHelper.ADD_PAYMENT_PAYMENT_METHODS_ID) {
@@ -505,6 +509,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		LoaderHelper.getIntance().putLoaderStatus(TAG, loader.getId(), LoaderStatus.FINISHED);
 		if (loader.getId() == LoaderHelper.ADD_PAYMENT_CURRENCIES_ID) {
 			List<String> currencyList = parseCurrency(cursor);
 			initCurrency(currencyList);
@@ -525,7 +530,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 
 	private boolean isLoaderFinished(int id) {
 		return getLoaderManager().getLoader(id) != null && getLoaderManager().getLoader(id).isStarted()
-				&& !getLoaderManager().getLoader(id).isAbandoned();
+				&& LoaderHelper.getIntance().getLoaderStatus(TAG, id) == LoaderStatus.FINISHED;
 	}
 
 	private List<String> parseCurrency(Cursor cursor) {

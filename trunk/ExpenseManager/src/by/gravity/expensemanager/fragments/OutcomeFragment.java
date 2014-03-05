@@ -6,7 +6,6 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewStub;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.TextView;
@@ -59,11 +58,6 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 		});
 	}
 
-	private void hidePeriod() {
-		View periodLayout = getView().findViewById(R.id.content_container);
-		periodLayout.setVisibility(View.GONE);
-	}
-
 	private void initListView() {
 		ExpandableListView expandableListView = (ExpandableListView) getView().findViewById(R.id.expandableListView);
 		expandableListView.setChildDivider(getResources().getDrawable(R.color.divider));
@@ -103,11 +97,6 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 
 	}
 
-	private void initEmptyOtcome() {
-		ViewStub viewStub = (ViewStub) getView().findViewById(R.id.stub);
-		viewStub.inflate();
-	}
-
 	private boolean isGroupedByDate() {
 		return getArguments().getBoolean(ARG_IS_GROUPED_BY_DATE);
 	}
@@ -119,6 +108,16 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 			@Override
 			public void onClick(View v) {
 				((MainActivity) getActivity()).showAddPaymentFragment();
+			}
+		});
+
+		View emptyAddExpenseButton = getView().findViewById(R.id.addExpenseButton);
+		emptyAddExpenseButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				((MainActivity) getActivity()).showAddPaymentFragment();
+
 			}
 		});
 
@@ -172,14 +171,13 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 		int id = loader.getId();
 		if (id == LoaderHelper.OUTCOME_GROUP_BY_CATEGORY_NAME_ID || id == LoaderHelper.OUTCOME_GROUP_BY_DATE_ID) {
-			if (cursor.getCount() != 0) {
+			if (cursor.getCount() > 0) {
 				adapter.setGroupCursor(cursor);
+				setContentShown(true);
 			} else {
-				hidePeriod();
-				initEmptyOtcome();
+				setContentEmpty(true);
 			}
 
-			setContentShown(true);
 		} else {
 			adapter.setChildrenCursor(adapter.getGroupMap().get(id), cursor);
 		}
