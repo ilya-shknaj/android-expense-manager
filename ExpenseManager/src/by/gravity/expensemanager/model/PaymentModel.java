@@ -7,17 +7,17 @@ public class PaymentModel {
 
 	private String balance;
 
-	private List<PaymentDetail> listPaymensDetail;
+	private List<PaymentMethodDetailModel> listPaymensDetail;
 
 	public PaymentModel() {
-		listPaymensDetail = new ArrayList<PaymentDetail>();
+		listPaymensDetail = new ArrayList<PaymentMethodDetailModel>();
 	}
 
-	public List<PaymentDetail> getListPaymensDetail() {
+	public List<PaymentMethodDetailModel> getListPaymensDetail() {
 		return listPaymensDetail;
 	}
 
-	public void setListPaymensDetail(List<PaymentDetail> listPaymensDetail) {
+	public void setListPaymensDetail(List<PaymentMethodDetailModel> listPaymensDetail) {
 		this.listPaymensDetail = listPaymensDetail;
 	}
 

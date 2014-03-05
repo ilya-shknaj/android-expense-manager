@@ -2,18 +2,37 @@ package by.gravity.expensemanager.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.widget.ResourceCursorAdapter;
 import android.view.View;
+import android.widget.TextView;
+import by.gravity.expensemanager.R;
+import by.gravity.expensemanager.data.helper.SQLConstants;
+import by.gravity.expensemanager.model.PaymentMethodDetailModel;
 
-public class PaymentMethodsAdapter extends SimpleCursorAdapter {
+public class PaymentMethodsAdapter extends ResourceCursorAdapter {
 
-	public PaymentMethodsAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
-		super(context, layout, c, from, to, flags);
+	public PaymentMethodsAdapter(Context context, int layout, Cursor c) {
+		super(context, layout, c, true);
 	}
 
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
-		super.bindView(view, context, cursor);
+		PaymentMethodDetailModel model = getPaymentMethodModel(cursor);
+
+		TextView name = (TextView) view.findViewById(R.id.name);
+		name.setText(model.getName());
+
+		TextView balance = (TextView) view.findViewById(R.id.balance);
+		balance.setText(model.getBalance());
+
+	}
+
+	private PaymentMethodDetailModel getPaymentMethodModel(Cursor cursor) {
+		PaymentMethodDetailModel paymentDetail = new PaymentMethodDetailModel();
+		paymentDetail.setName(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
+		paymentDetail.setBalance(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
+
+		return paymentDetail;
 	}
 
 }
