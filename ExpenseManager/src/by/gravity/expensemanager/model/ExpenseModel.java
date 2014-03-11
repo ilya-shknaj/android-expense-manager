@@ -16,6 +16,8 @@ public class ExpenseModel {
 
 	private List<String> categories;
 
+	private String paymentMethod;
+
 	public String getAmount() {
 		return amount;
 	}
@@ -62,6 +64,14 @@ public class ExpenseModel {
 
 	public void setCategories(List<String> categories) {
 		this.categories = categories;
+	}
+
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
 	}
 
 }

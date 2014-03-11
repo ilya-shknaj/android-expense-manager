@@ -109,6 +109,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 			expenseModel.setNote(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NOTE)));
 			String categories = cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME));
 			expenseModel.setCategories(Arrays.asList(categories.split(Constants.COMMA_STRING)));
+			expenseModel.setPaymentMethod(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_PAYMENT_METHOD)));
 
 			cursor.close();
 		}
@@ -149,8 +150,8 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 				if (categoriesEditText.getText().length() != 0) {
 					if (getExpenseId() == null) {
 						SQLDataManager.getInstance().addExpense(costEditText.getText().toString(), spinner.getSelectedItem().toString(), date, time,
-								getEnteredCategoriesList(categoriesEditText.getText().toString()), noteEditText.getText().toString(), null,
-								new OnLoadCompleteListener<Boolean>() {
+								getEnteredCategoriesList(categoriesEditText.getText().toString()), noteEditText.getText().toString(),
+								getPaymentMethod(), new OnLoadCompleteListener<Boolean>() {
 
 									@Override
 									public void onComplete(Boolean result) {
@@ -164,7 +165,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 					} else {
 						SQLDataManager.getInstance().updateExpense(getExpenseId(), costEditText.getText().toString(),
 								spinner.getSelectedItem().toString(), date, time, getEnteredCategoriesList(categoriesEditText.getText().toString()),
-								noteEditText.getText().toString(), null, new OnLoadCompleteListener<Void>() {
+								noteEditText.getText().toString(), getPaymentMethod(), new OnLoadCompleteListener<Void>() {
 
 									@Override
 									public void onComplete(Void result) {
@@ -211,10 +212,16 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 
 	private void selectExpenseCurrency() {
 		final Spinner spinner = (Spinner) getView().findViewById(R.id.currency);
-		int count = spinner.getAdapter().getCount();
-		for (int i = 0; i < count; i++) {
-			if (spinner.getItemAtPosition(i).toString().equals(expenseModel.getCurrency())) {
-				spinner.setSelection(i);
+		if (expenseModel == null) {
+			// TODO load from settings
+			spinner.setSelection(0);
+		} else {
+			int count = spinner.getAdapter().getCount();
+			for (int i = 0; i < count; i++) {
+				if (spinner.getItemAtPosition(i).toString().equals(expenseModel.getCurrency())) {
+					spinner.setSelection(i);
+					return;
+				}
 			}
 		}
 	}
@@ -235,6 +242,37 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 			emptyPaymentMethods.setVisibility(View.VISIBLE);
 		}
 
+	}
+
+	private void selectPaymentMethod() {
+		final RadioGroup paymentsMethodGroup = (RadioGroup) getView().findViewById(R.id.paymentMethodsGroup);
+		if (expenseModel == null) {
+			// TODO load from setting
+			((RadioButton) paymentsMethodGroup.getChildAt(0)).setChecked(true);
+		} else {
+			int count = paymentsMethodGroup.getChildCount();
+			for (int i = 0; i < count; i++) {
+				RadioButton radioButton = (RadioButton) paymentsMethodGroup.getChildAt(i);
+				if (radioButton.getText().toString().equals(expenseModel.getPaymentMethod())) {
+					radioButton.setChecked(true);
+					return;
+				}
+			}
+		}
+	}
+
+	private String getPaymentMethod() {
+		final RadioGroup paymentsMethodGroup = (RadioGroup) getView().findViewById(R.id.paymentMethodsGroup);
+		int count = paymentsMethodGroup.getChildCount();
+		for (int i = 0; i < count; i++) {
+			RadioButton radioButton = ((RadioButton) paymentsMethodGroup.getChildAt(i));
+			if (radioButton.isChecked()) {
+				return radioButton.getText().toString();
+			}
+
+		}
+
+		return null;
 	}
 
 	private void initDate() {
@@ -404,12 +442,13 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 			showAllCategoriesButton.setVisibility(View.GONE);
 		}
 
-		if (expenseModel != null) {
-			for (int i = 0; i < expenseModel.getCategories().size(); i++) {
-				categoriesEditText.append(expenseModel.getCategories().get(i) + Constants.CATEGORY_SPLITTER);
-			}
-		}
+	}
 
+	private void setExpenseCategories() {
+		final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(R.id.categoriesEditText);
+		for (int i = 0; i < expenseModel.getCategories().size(); i++) {
+			categoriesEditText.append(expenseModel.getCategories().get(i) + Constants.CATEGORY_SPLITTER);
+		}
 	}
 
 	private void checkCategory(LinearLayout categoriesLayout, OnCheckedChangeListener checkedChangeListener, String currentCategoryText, boolean check) {
@@ -535,6 +574,10 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 			initCostEditText();
 			initDate();
 			selectExpenseCurrency();
+			selectPaymentMethod();
+			if (expenseModel != null) {
+				setExpenseCategories();
+			}
 			setContentShown(true);
 		}
 
