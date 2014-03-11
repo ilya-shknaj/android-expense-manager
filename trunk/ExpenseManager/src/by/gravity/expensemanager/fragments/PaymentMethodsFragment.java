@@ -6,8 +6,11 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import by.gravity.expensemanager.R;
+import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.adapter.PaymentMethodsAdapter;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
 import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
@@ -25,6 +28,7 @@ public class PaymentMethodsFragment extends CommonProgressSherlockFragment imple
 		super.onActivityCreated(savedInstanceState);
 		startLoader();
 		initBottomBar();
+
 	}
 
 	private void initBottomBar() {
@@ -33,28 +37,31 @@ public class PaymentMethodsFragment extends CommonProgressSherlockFragment imple
 
 			@Override
 			public void onClick(View v) {
+				((MainActivity) getActivity()).showAddPaymentMethodFragment();
 			}
 		});
-	}
-
-	private void startLoader() {
-		getLoaderManager().initLoader(LoaderHelper.GET_PAYMENT_METHODS_ID, null, this);
 	}
 
 	private void initListView(Cursor cursor) {
 		ListView listView = (ListView) getView().findViewById(R.id.listView);
 		PaymentMethodsAdapter adapter = new PaymentMethodsAdapter(getActivity(), R.layout.i_payments_methods_detail_pay, cursor);
 		listView.setAdapter(adapter);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
+				((MainActivity)getActivity()).showAddPaymentMethodFragment(id);
+			}
+		});
 	}
 
-	@Override
-	public int getViewId() {
-		return R.layout.f_payment_methods;
-	}
-
-	@Override
-	public int getTitleResource() {
-		return R.string.paymentsMethods;
+	private void startLoader() {
+		if (getLoaderManager().getLoader(LoaderHelper.GET_PAYMENT_METHODS_ID) != null
+				&& !getLoaderManager().getLoader(LoaderHelper.GET_PAYMENT_METHODS_ID).isAbandoned()) {
+			getLoaderManager().restartLoader(LoaderHelper.GET_PAYMENT_METHODS_ID, null, this);
+		} else {
+			getLoaderManager().initLoader(LoaderHelper.GET_PAYMENT_METHODS_ID, null, this);
+		}
 	}
 
 	@Override
@@ -82,6 +89,16 @@ public class PaymentMethodsFragment extends CommonProgressSherlockFragment imple
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 
+	}
+
+	@Override
+	public int getViewId() {
+		return R.layout.f_payment_methods;
+	}
+
+	@Override
+	public int getTitleResource() {
+		return R.string.paymentsMethods;
 	}
 
 }

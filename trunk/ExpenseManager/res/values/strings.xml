@@ -36,6 +36,8 @@
     <string name="showAll">Показать все</string>
     <string name="date">Дата</string>
     <string name="note">Заметка</string>
+    <string name="name">Название</string>
+    <string name="balance">Баланс</string>
     
     <!-- errors -->
     <string name="parseNumberError">Произошла ошибка во время обработки введенного значения</string>
@@ -43,6 +45,7 @@
     <string name="emptyAmount">Введите сумму</string>
     <string name="emptyCategory">Введите хотя бы одну категорию</string>
     <string name="emptyOutcome">Отсутсвуют расходы</string>
+    <string name="emptyName">Введите название</string>
     
     <!-- settings -->
     <string name="settingCurrentPeriod">Выбранный период</string>

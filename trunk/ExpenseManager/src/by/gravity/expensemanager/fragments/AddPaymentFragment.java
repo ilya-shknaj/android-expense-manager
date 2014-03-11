@@ -35,11 +35,12 @@ import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.data.SQLDataManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.NumberDialog.OnInputCompleteListener;
+import by.gravity.expensemanager.fragments.loaders.CurrencyLoader;
+import by.gravity.expensemanager.fragments.loaders.ExpenseLoader;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
-import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper.LoaderStatus;
+import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
 import by.gravity.expensemanager.fragments.loaders.addPayment.CategoriesLoader;
-import by.gravity.expensemanager.fragments.loaders.addPayment.CurrencyLoader;
 import by.gravity.expensemanager.model.ExpenseModel;
 import by.gravity.expensemanager.util.Constants;
 
@@ -72,16 +73,11 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		if (getExpenseId() != null) {
-			loadExpenseModel();
-		}
-		if (expenseModel == null) {
+		if (getExpenseId() == null) {
 			showNumberDialog(null);
 		}
 		startLoaders();
 
-		initCostEditText();
-		initDate();
 		initBottomTabBar();
 	}
 
@@ -89,6 +85,10 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		getLoaderManager().initLoader(LoaderHelper.ADD_PAYMENT_CURRENCIES_ID, null, this);
 		getLoaderManager().initLoader(LoaderHelper.ADD_PAYMENT_PAYMENT_METHODS_ID, null, this);
 		getLoaderManager().initLoader(LoaderHelper.ADD_PAYMENT_CATEGORIES_ID, null, this);
+
+		if (getExpenseId() != null) {
+			getLoaderManager().initLoader(LoaderHelper.ADD_PAYMENT_EXPENSE_ID, null, this);
+		}
 	}
 
 	private Long getExpenseId() {
@@ -99,9 +99,8 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		return null;
 	}
 
-	private void loadExpenseModel() {
-		Cursor cursor = SQLDataManager.getInstance().getExpenseByIdCursor(getExpenseId());
-		if (cursor != null && cursor.moveToFirst()) {
+	private void parseExpenseModel(Cursor cursor) {
+		if (cursor.moveToFirst()) {
 			expenseModel = new ExpenseModel();
 			expenseModel.setAmount(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
 			expenseModel.setCurrency(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE)));
@@ -113,6 +112,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 
 			cursor.close();
 		}
+
 	}
 
 	private void initBottomTabBar() {
@@ -206,13 +206,17 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, currencyList);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
-		if (expenseModel != null) {
-			int position = adapter.getPosition(expenseModel.getCurrency());
-			if (position != -1) {
-				spinner.setSelection(position);
+
+	}
+
+	private void selectExpenseCurrency() {
+		final Spinner spinner = (Spinner) getView().findViewById(R.id.currency);
+		int count = spinner.getAdapter().getCount();
+		for (int i = 0; i < count; i++) {
+			if (spinner.getItemAtPosition(i).toString().equals(expenseModel.getCurrency())) {
+				spinner.setSelection(i);
 			}
 		}
-
 	}
 
 	private void initPaymentsMethods(List<String> paymentMethods) {
@@ -491,7 +495,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 				costEditText.setText(value);
 			}
 		});
-		numberDialog.show(getActivity().getSupportFragmentManager(), Number.class.getSimpleName());
+		numberDialog.show(getFragmentManager(), Number.class.getSimpleName());
 	}
 
 	@Override
@@ -503,6 +507,8 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 			return new PaymentMethodsLoader(getActivity());
 		} else if (id == LoaderHelper.ADD_PAYMENT_CATEGORIES_ID) {
 			return new CategoriesLoader(getActivity());
+		} else if (id == LoaderHelper.ADD_PAYMENT_EXPENSE_ID) {
+			return new ExpenseLoader(getActivity(), getExpenseId());
 		}
 		return null;
 	}
@@ -519,18 +525,19 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		} else if (loader.getId() == LoaderHelper.ADD_PAYMENT_CATEGORIES_ID) {
 			List<String> categoriesList = parseCategories(cursor);
 			initCategories(categoriesList);
+		} else if (loader.getId() == LoaderHelper.ADD_PAYMENT_EXPENSE_ID) {
+			parseExpenseModel(cursor);
 		}
 
-		if (isLoaderFinished(LoaderHelper.ADD_PAYMENT_CURRENCIES_ID) && isLoaderFinished(LoaderHelper.ADD_PAYMENT_CATEGORIES_ID)
-				&& isLoaderFinished(LoaderHelper.ADD_PAYMENT_PAYMENT_METHODS_ID)) {
+		if (isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_CURRENCIES_ID) && isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_CATEGORIES_ID)
+				&& isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_PAYMENT_METHODS_ID)
+				&& (getExpenseId() == null ? true : isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_EXPENSE_ID))) {
+			initCostEditText();
+			initDate();
+			selectExpenseCurrency();
 			setContentShown(true);
 		}
 
-	}
-
-	private boolean isLoaderFinished(int id) {
-		return getLoaderManager().getLoader(id) != null && getLoaderManager().getLoader(id).isStarted()
-				&& LoaderHelper.getIntance().getLoaderStatus(TAG, id) == LoaderStatus.FINISHED;
 	}
 
 	private List<String> parseCurrency(Cursor cursor) {
@@ -579,6 +586,12 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
 
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		LoaderHelper.getIntance().clearLoaderStatus(TAG);
 	}
 
 }
