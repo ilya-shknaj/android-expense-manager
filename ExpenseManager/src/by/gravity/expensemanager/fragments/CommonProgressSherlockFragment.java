@@ -1,5 +1,7 @@
 package by.gravity.expensemanager.fragments;
 
+import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
+import by.gravity.expensemanager.fragments.loaders.LoaderHelper.LoaderStatus;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,13 @@ public abstract class CommonProgressSherlockFragment extends SherlockProgressFra
 		getSherlockActivity().getSupportActionBar().setTitle(getTitleResource());
 	}
 
+	protected boolean isLoaderFinished(String name, int id) {
+		return getLoaderManager().getLoader(id) != null && getLoaderManager().getLoader(id).isStarted()
+				&& LoaderHelper.getIntance().getLoaderStatus(name, id) == LoaderStatus.FINISHED;
+	}
+
+
+	
 	public abstract int getViewId();
 
 	public abstract int getTitleResource();

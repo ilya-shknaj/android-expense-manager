@@ -8,6 +8,7 @@ import android.widget.TextView;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.model.PaymentMethodDetailModel;
+import by.gravity.expensemanager.util.Constants;
 
 public class PaymentMethodsAdapter extends ResourceCursorAdapter {
 
@@ -23,14 +24,15 @@ public class PaymentMethodsAdapter extends ResourceCursorAdapter {
 		name.setText(model.getName());
 
 		TextView balance = (TextView) view.findViewById(R.id.balance);
-		balance.setText(model.getBalance());
+		balance.setText(model.getBalance() + Constants.SPACE_STRING + model.getCurrency());
 
 	}
 
 	private PaymentMethodDetailModel getPaymentMethodModel(Cursor cursor) {
 		PaymentMethodDetailModel paymentDetail = new PaymentMethodDetailModel();
 		paymentDetail.setName(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
-		paymentDetail.setBalance(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
+		paymentDetail.setBalance(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_BALANCE)));
+		paymentDetail.setCurrency(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE)));
 
 		return paymentDetail;
 	}

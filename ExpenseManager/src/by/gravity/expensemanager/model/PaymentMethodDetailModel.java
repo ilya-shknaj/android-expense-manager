@@ -6,6 +6,10 @@ public class PaymentMethodDetailModel {
 
 	private String balance;
 
+	private String note;
+
+	private String currency;
+
 	public PaymentMethodDetailModel() {
 
 	}
@@ -23,12 +27,28 @@ public class PaymentMethodDetailModel {
 		this.name = name;
 	}
 
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
 	public String getBalance() {
 		return balance;
 	}
 
 	public void setBalance(String balance) {
 		this.balance = balance;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
 	}
 
 }

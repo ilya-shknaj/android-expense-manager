@@ -90,6 +90,46 @@ public class SQLDataManager {
 
 	}
 
+	public void addPaymentMethod(final String name, final String note, final String balance, final String currency,
+			final OnLoadCompleteListener<Void> onCompleteListener) {
+		new AsyncTask<Void, Void, Void>(onCompleteListener) {
+
+			@Override
+			protected Void doInBackground(Void... arg0) {
+				ContentValues values = new ContentValues();
+				values.put(SQLConstants.FIELD_NAME, name);
+				values.put(SQLConstants.FIELD_NOTE, note);
+				values.put(SQLConstants.FIELD_BALANCE, balance);
+
+				Long currencyID = getCurrencyId(currency);
+				values.put(SQLConstants.FIELD_CURRENCY, currencyID);
+				database.insert(SQLConstants.TABLE_PAYMENT_METHODS, null, values);
+				return null;
+			}
+		}.start();
+
+	}
+
+	public void updatePaymentMethod(final Long id, final String name, final String note, final String balance, final String currency,
+			final OnLoadCompleteListener<Void> onCompleteListener) {
+		new AsyncTask<Void, Void, Void>(onCompleteListener) {
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				ContentValues values = new ContentValues();
+				values.put(SQLConstants.FIELD_NAME, name);
+				values.put(SQLConstants.FIELD_NOTE, note);
+				values.put(SQLConstants.FIELD_BALANCE, balance);
+
+				Long currencyID = getCurrencyId(currency);
+				values.put(SQLConstants.FIELD_CURRENCY, currencyID);
+
+				database.update(SQLConstants.TABLE_PAYMENT_METHODS, values, SQLConstants.FIELD_ID + "=?", new String[] { String.valueOf(id) });
+				return null;
+			}
+		}.start();
+	}
+
 	public Cursor getCurrenciesShortCursor() {
 		return database.query(SQLConstants.TABLE_CURRENCY, null, SQLConstants.FIELD_IS_SHOW + "=?", new String[] { "1" }, null, null, null);
 	}
@@ -182,13 +222,23 @@ public class SQLDataManager {
 
 	private static final String GET_PAYMENT_METHODS_QUERY = "SELECT " + SQLConstants.TABLE_PAYMENT_METHODS + "." + SQLConstants.FIELD_ID + ","
 			+ SQLConstants.TABLE_PAYMENT_METHODS + "." + SQLConstants.FIELD_NAME + "," + SQLConstants.TABLE_PAYMENT_METHODS + "."
-			+ SQLConstants.FIELD_BALANCE + " || ' ' || " + SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_CODE + " AS "
-			+ SQLConstants.FIELD_AMOUNT + " FROM " + SQLConstants.TABLE_PAYMENT_METHODS + "," + SQLConstants.TABLE_CURRENCY + " WHERE "
-			+ SQLConstants.TABLE_PAYMENT_METHODS + "." + SQLConstants.FIELD_CURRENCY + "=" + SQLConstants.TABLE_CURRENCY + "."
-			+ SQLConstants.FIELD_ID;
+			+ SQLConstants.FIELD_BALANCE + "," + SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_CODE + " FROM "
+			+ SQLConstants.TABLE_PAYMENT_METHODS + "," + SQLConstants.TABLE_CURRENCY + " WHERE " + SQLConstants.TABLE_PAYMENT_METHODS + "."
+			+ SQLConstants.FIELD_CURRENCY + "=" + SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_ID;
 
 	public Cursor getPaymentMethods() {
 		return database.rawQuery(GET_PAYMENT_METHODS_QUERY, null);
+	}
+
+	private static final String GET_PAYMENT_METHODS_BY_ID_QUERY = "SELECT " + SQLConstants.TABLE_PAYMENT_METHODS + "." + SQLConstants.FIELD_ID + ","
+			+ SQLConstants.TABLE_PAYMENT_METHODS + "." + SQLConstants.FIELD_NAME + "," + SQLConstants.TABLE_PAYMENT_METHODS + "."
+			+ SQLConstants.FIELD_BALANCE + "," + SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_CODE + "," + SQLConstants.FIELD_NOTE
+			+ " FROM " + SQLConstants.TABLE_PAYMENT_METHODS + "," + SQLConstants.TABLE_CURRENCY + " WHERE " + SQLConstants.TABLE_PAYMENT_METHODS
+			+ "." + SQLConstants.FIELD_CURRENCY + "=" + SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_ID + " AND "
+			+ SQLConstants.TABLE_PAYMENT_METHODS + "." + SQLConstants.FIELD_ID + "=?";
+
+	public Cursor getPaymentMethod(Long id) {
+		return database.rawQuery(GET_PAYMENT_METHODS_BY_ID_QUERY, new String[] { String.valueOf(id) });
 	}
 
 	private Long getCategoryId(final String name) {

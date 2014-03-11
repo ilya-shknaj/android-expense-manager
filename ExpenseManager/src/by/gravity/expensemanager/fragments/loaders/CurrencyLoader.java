@@ -1,4 +1,4 @@
-package by.gravity.expensemanager.fragments.loaders.addPayment;
+package by.gravity.expensemanager.fragments.loaders;
 
 import android.content.Context;
 import android.database.Cursor;

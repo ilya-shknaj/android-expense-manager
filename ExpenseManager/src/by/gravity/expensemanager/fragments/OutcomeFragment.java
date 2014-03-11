@@ -43,6 +43,7 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 		initPeriod();
 		initListView();
 		initBottomTabBar();
+		startLoader();
 	}
 
 	private void initPeriod() {
@@ -86,6 +87,10 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 
 		expandableListView.setAdapter(adapter);
 
+		
+	}
+	
+	private void startLoader(){
 		int loaderId = isGroupedByDate() ? LoaderHelper.OUTCOME_GROUP_BY_DATE_ID : LoaderHelper.OUTCOME_GROUP_BY_CATEGORY_NAME_ID;
 
 		if (getLoaderManager().getLoader(loaderId) != null && !getLoaderManager().getLoader(loaderId).isAbandoned()) {

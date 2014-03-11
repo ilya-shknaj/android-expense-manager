@@ -14,7 +14,13 @@ public class LoaderHelper {
 
 	public static final int ADD_PAYMENT_CATEGORIES_ID = -6;
 
-	public static final int GET_PAYMENT_METHODS_ID = -7;
+	public static final int ADD_PAYMENT_EXPENSE_ID = -7;
+
+	public static final int GET_PAYMENT_METHODS_ID = -8;
+
+	public static final int ADD_PAYMENT_METHOD_CURENCIES_ID = -9;
+	
+	public static final int PAYMENT_METHOD_BY_ID = -10;
 
 	public static final String ARG_EXPENSE_DATA = "ARG_EXPENSE_DATA";
 
@@ -47,5 +53,11 @@ public class LoaderHelper {
 			return LoaderStatus.NOT_STARTED;
 		}
 		return loaderStatusMap.get(fragmentName).get(loaderId);
+	}
+
+	public void clearLoaderStatus(String fragmentName) {
+		if (loaderStatusMap.get(fragmentName) != null) {
+			loaderStatusMap.put(fragmentName, null);
+		}
 	}
 }
