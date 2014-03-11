@@ -19,6 +19,8 @@ public class ExpenseGroupedByCategoryNameModel {
 
 	private String date;
 
+	private String paymentMethod;
+
 	public ExpenseGroupedByCategoryNameModel() {
 	}
 
@@ -66,6 +68,14 @@ public class ExpenseGroupedByCategoryNameModel {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(time);
 		date = calendar.get(Calendar.DAY_OF_MONTH) + Constants.SPACE_STRING + CalendarUtil.getMonth(calendar.get(Calendar.MONTH));
+	}
+
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
 	}
 
 }

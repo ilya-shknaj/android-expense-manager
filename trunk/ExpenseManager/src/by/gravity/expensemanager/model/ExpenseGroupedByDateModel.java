@@ -16,6 +16,8 @@ public class ExpenseGroupedByDateModel {
 
 	private String note;
 
+	private String paymentMethod;
+
 	private List<String> categories;
 
 	public ExpenseGroupedByDateModel() {
@@ -64,6 +66,14 @@ public class ExpenseGroupedByDateModel {
 
 	public void setCategories(List<String> categories) {
 		this.categories = categories;
+	}
+
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
 	}
 
 }

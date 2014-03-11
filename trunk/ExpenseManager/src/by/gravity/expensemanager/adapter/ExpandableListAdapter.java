@@ -85,6 +85,9 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 					category.setText(expenseModel.getCategories().get(i));
 					categoryLayout.addView(category, i);
 				}
+				
+				TextView paymentMethod = (TextView) view.findViewById(R.id.paymentMethod);
+				paymentMethod.setText(expenseModel.getPaymentMethod());
 			} else {
 				final ExpenseGroupedByCategoryNameModel expenseModel = getExpenseGroupedByCategoryNameModel(cursor);
 
@@ -100,7 +103,13 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 				TextView time = new TextView(context);
 				time.setText(expenseModel.getTime());
 				categoryLayout.addView(time);
+				
+				TextView paymentMethod = (TextView) view.findViewById(R.id.paymentMethod);
+				paymentMethod.setText(expenseModel.getPaymentMethod());
 			}
+			
+			
+			
 
 			View contentContainer = view.findViewById(R.id.content_container);
 			if (contentContainer.getVisibility() == View.GONE) {
@@ -165,6 +174,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 		expenseModel.setAmount(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
 		expenseModel.setNote(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NOTE)));
 		expenseModel.setTime(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_TIME)));
+		expenseModel.setPaymentMethod(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_PAYMENT_METHOD)));
 		Cursor expenseCategoryCursor = SQLDataManager.getInstance().getGrouperdByCategoryNameCategoriesCursor(expenseModel.getId());
 		if (expenseCategoryCursor != null && expenseCategoryCursor.getCount() > 0) {
 			for (int i = 0; i < expenseCategoryCursor.getCount(); i++) {
@@ -183,6 +193,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 		expenseModel.setNote(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NOTE)));
 		expenseModel.setTime(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_TIME)));
 		expenseModel.setDate(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_DATE)));
+		expenseModel.setPaymentMethod(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_PAYMENT_METHOD)));
 
 		return expenseModel;
 	}

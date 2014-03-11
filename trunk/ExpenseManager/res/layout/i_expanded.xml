@@ -6,9 +6,9 @@
     android:padding="@dimen/item_margin" >
 
     <include
-        android:layout_centerInParent="true"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         layout="@layout/i_progress_small" />
 
     <LinearLayout
@@ -50,14 +50,28 @@
                     android:orientation="vertical" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/price"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
                 android:layout_weight="0.5"
                 android:gravity="right|center_vertical"
-                android:text="123 $"
-                android:textStyle="bold" />
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/paymentMethod"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right|center_vertical"
+                    android:text="123 $" />
+
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right|center_vertical"
+                    android:text="123 $"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
