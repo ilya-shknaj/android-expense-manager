@@ -292,7 +292,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 								date.set(Calendar.YEAR, year);
 								date.set(Calendar.MONTH, month);
 								date.set(Calendar.DAY_OF_MONTH, day);
-								date.set(Calendar.HOUR, 0);
+								date.set(Calendar.HOUR_OF_DAY, 0);
 								date.set(Calendar.MINUTE, 0);
 								date.set(Calendar.SECOND, 0);
 								date.set(Calendar.MILLISECOND, 0);
@@ -350,7 +350,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 
 	private Calendar getCurrentDate() {
 		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
