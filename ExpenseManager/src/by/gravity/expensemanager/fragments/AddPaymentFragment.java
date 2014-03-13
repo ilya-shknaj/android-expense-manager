@@ -554,7 +554,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-		LoaderHelper.getIntance().putLoaderStatus(TAG, loader.getId(), LoaderStatus.FINISHED);
+		super.onLoadFinished(loader, cursor);
 		if (loader.getId() == LoaderHelper.ADD_PAYMENT_CURRENCIES_ID) {
 			List<String> currencyList = parseCurrency(cursor);
 			initCurrency(currencyList);

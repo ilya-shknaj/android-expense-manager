@@ -30,9 +30,9 @@ public class MainActivity extends DrawerActivity {
 		super.onCreate(savedInstanceState);
 		String action = getIntent().getAction();
 		if (action.equals(Intent.ACTION_MAIN)) {
-			// showMainFragment();
-			 showOutcomeFragment(true);
-//			showPaymentMethodsFragment();
+			showMainFragment();
+			// showOutcomeFragment(true);
+			// showPaymentMethodsFragment();
 		} else if (action.equals(ChoosePeriodFragment.class.getSimpleName())) {
 			showChoosePeriodFragment();
 
@@ -55,24 +55,22 @@ public class MainActivity extends DrawerActivity {
 	}
 
 	@Override
-	public void onDrawerItemClick(String item) {
-		if (item.equals(getString(R.string.outcome))) {
-			showOutcomeFragmentDelayed();
-		} else if (item.equals(getString(R.string.main))) {
-			showMainFragment();
-		} else if (item.equals(getString(R.string.paymentsMethods))) {
-			showPaymentMethodsFragment();
-		}
-	}
+	public void onDrawerItemClick(final String item) {
 
-	private void showOutcomeFragmentDelayed() {
 		handler.postDelayed(new Runnable() {
 
 			@Override
 			public void run() {
-				showOutcomeFragment(true);
+				if (item.equals(getString(R.string.outcome))) {
+					showOutcomeFragment(true);
+				} else if (item.equals(getString(R.string.main))) {
+					showMainFragment();
+				} else if (item.equals(getString(R.string.paymentsMethods))) {
+					showPaymentMethodsFragment();
+				}
 			}
 		}, SHOW_FRAGMENT_DELAY);
+
 	}
 
 	public void showMainFragment() {
@@ -102,11 +100,11 @@ public class MainActivity extends DrawerActivity {
 	public void showPaymentMethodsFragment() {
 		getSupportFragmentManager().beginTransaction().replace(R.id.content, PaymentMethodsFragment.newInstance()).commit();
 	}
-	
-	public void showAddPaymentMethodFragment(){
+
+	public void showAddPaymentMethodFragment() {
 		showAddPaymentMethodFragment(null);
 	}
-	
+
 	public void showAddPaymentMethodFragment(Long paymentMethodId) {
 		getSupportFragmentManager().beginTransaction().replace(R.id.content, AddPaymentMethodsFragment.newInstance(paymentMethodId))
 				.addToBackStack(AddPaymentMethodsFragment.class.getSimpleName()).commit();
