@@ -1,18 +1,31 @@
 package by.gravity.expensemanager.fragments;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
-import by.gravity.expensemanager.model.PaymentMethodDetailModel;
-import by.gravity.expensemanager.model.PaymentModel;
+import by.gravity.expensemanager.data.helper.SQLConstants;
+import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
+import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
+import by.gravity.expensemanager.fragments.loaders.SumBalanceLoader;
+import by.gravity.expensemanager.model.PaymentMethodModel;
+import by.gravity.expensemanager.util.Constants;
 
-public class MainFragment extends CommonSherlockFragment {
+public class MainFragment extends CommonProgressSherlockFragment implements LoaderCallbacks<Cursor> {
+
+	private static final String TAG = MainFragment.class.getSimpleName();
 
 	public static MainFragment newInstance() {
 		return new MainFragment();
@@ -22,34 +35,46 @@ public class MainFragment extends CommonSherlockFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		initPaymentsMethods();
+		startLoaders();
 		initBottomBar();
 
 	}
 
-	private void initPaymentsMethods() {
+	private void startLoaders() {
+		LoaderHelper.getIntance().startLoader(this, LoaderHelper.GET_PAYMENT_METHODS_ID, this);
+		LoaderHelper.getIntance().startLoader(this, LoaderHelper.SUM_BALANCE_ID, this);
+	}
+
+	private void initPaymentsMethods(List<PaymentMethodModel> paymentMethods) {
 		LinearLayout paymentsMethodLayout = (LinearLayout) getView().findViewById(R.id.paymentsMethodLayout);
 
 		paymentsMethodLayout.removeAllViews();
-		PaymentModel paymentModel = getPaymentModel();
 
-		for (int i = 0; i < paymentModel.getListPaymensDetail().size(); i++) {
+		for (int i = 0; i < paymentMethods.size(); i++) {
 			RelativeLayout paymentDetailLayout = (RelativeLayout) LayoutInflater.from(getActivity()).inflate(R.layout.i_payments_methods_detail_pay,
 					null);
 			TextView name = (TextView) paymentDetailLayout.findViewById(R.id.name);
-			name.setText(paymentModel.getListPaymensDetail().get(i).getName());
+			name.setText(paymentMethods.get(i).getName());
 
 			TextView balance = (TextView) paymentDetailLayout.findViewById(R.id.balance);
-			balance.setText(paymentModel.getListPaymensDetail().get(i).getBalance());
+			balance.setText(paymentMethods.get(i).getBalance() + Constants.SPACE_STRING + paymentMethods.get(i).getCurrency());
 			paymentsMethodLayout.addView(paymentDetailLayout, i);
 		}
 
-		TextView balance = (TextView) getView().findViewById(R.id.balanceLayout).findViewById(R.id.balance);
-		balance.setText(paymentModel.getBalance());
+	}
+
+	private boolean hasPaymentMethods() {
+		LinearLayout paymentsMethodLayout = (LinearLayout) getView().findViewById(R.id.paymentsMethodLayout);
+		return paymentsMethodLayout.getChildCount() > 0;
+	}
+
+	private void initBalance(String balance) {
+		TextView balanceTextView = (TextView) getView().findViewById(R.id.balanceLayout).findViewById(R.id.balance);
+		balanceTextView.setText(balance);
 	}
 
 	private void initBottomBar() {
-		LinearLayout addPayment = (LinearLayout) getView().findViewById(R.id.addPayment);
+		View addPayment = getView().findViewById(R.id.addPayment);
 		addPayment.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -57,17 +82,15 @@ public class MainFragment extends CommonSherlockFragment {
 				((MainActivity) getActivity()).showAddPaymentFragment();
 			}
 		});
-	}
 
-	private PaymentModel getPaymentModel() {
-		PaymentModel paymentModel = new PaymentModel();
-		paymentModel.getListPaymensDetail().add(new PaymentMethodDetailModel("Prior зарплата", "3 200 000"));
-		paymentModel.getListPaymensDetail().add(new PaymentMethodDetailModel("Prior быстрый депозит", "4 200 000"));
-		paymentModel.getListPaymensDetail().add(new PaymentMethodDetailModel("Наличные", "600 000"));
+		View addPaymentLayout = getView().findViewById(R.id.emptyAddPaymentLayout);
+		addPaymentLayout.setOnClickListener(new OnClickListener() {
 
-		paymentModel.setBalance("8 000 000");
-
-		return paymentModel;
+			@Override
+			public void onClick(View v) {
+				((MainActivity) getActivity()).showAddPaymentMethodFragment();
+			}
+		});
 	}
 
 	@Override
@@ -78,6 +101,68 @@ public class MainFragment extends CommonSherlockFragment {
 	@Override
 	public int getTitleResource() {
 		return R.string.main;
+	}
+
+	private List<PaymentMethodModel> parsePaymentMethods(Cursor cursor) {
+		List<PaymentMethodModel> paymentMethods = new ArrayList<PaymentMethodModel>();
+		for (int i = 0; i < cursor.getCount(); i++) {
+			cursor.moveToPosition(i);
+
+			PaymentMethodModel paymentDetail = new PaymentMethodModel();
+			paymentDetail.setName(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
+			paymentDetail.setBalance(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_BALANCE)));
+			paymentDetail.setCurrency(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE)));
+
+			paymentMethods.add(paymentDetail);
+		}
+
+		return paymentMethods;
+	}
+
+	private String parseBalance(Cursor cursor) {
+		if (cursor.moveToFirst()) {
+
+			String balance = cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_BALANCE));
+			return StringUtil.convertNumberToHumanFriednly(balance);
+		}
+		return null;
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+		if (id == LoaderHelper.GET_PAYMENT_METHODS_ID) {
+			return new PaymentMethodsLoader(getActivity());
+		} else if (id == LoaderHelper.SUM_BALANCE_ID) {
+			return new SumBalanceLoader(getActivity());
+		}
+		return null;
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		super.onLoadFinished(loader, cursor);
+		if (loader.getId() == LoaderHelper.GET_PAYMENT_METHODS_ID) {
+			List<PaymentMethodModel> paymentMethods = parsePaymentMethods(cursor);
+			initPaymentsMethods(paymentMethods);
+		} else if (loader.getId() == LoaderHelper.SUM_BALANCE_ID) {
+			String balance = parseBalance(cursor);
+			if (!StringUtil.isEmpty(balance)) {
+				initBalance(balance);
+			}
+		}
+
+		if (isLoaderFinished(TAG, LoaderHelper.SUM_BALANCE_ID) && isLoaderFinished(TAG, LoaderHelper.GET_PAYMENT_METHODS_ID)) {
+			if (hasPaymentMethods()) {
+				setContentShown(true);
+			} else {
+				setContentEmpty(true);
+			}
+		}
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> arg0) {
+
 	}
 
 }

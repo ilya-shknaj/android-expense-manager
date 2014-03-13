@@ -25,7 +25,7 @@ import by.gravity.expensemanager.fragments.loaders.CurrencyLoader;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper.LoaderStatus;
 import by.gravity.expensemanager.fragments.loaders.PaymentMethodByIdLoader;
-import by.gravity.expensemanager.model.PaymentMethodDetailModel;
+import by.gravity.expensemanager.model.PaymentMethodModel;
 
 public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment implements LoaderCallbacks<Cursor> {
 
@@ -33,7 +33,7 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 
 	private static final String ARG_PAYMENT_METHOD_ID = "ARG_PAYMENT_METHOD_ID";
 
-	private PaymentMethodDetailModel paymentMethodModel = null;
+	private PaymentMethodModel paymentMethodModel = null;
 
 	public static AddPaymentMethodsFragment newInstance(Long paymentMethodId) {
 		AddPaymentMethodsFragment fragment = new AddPaymentMethodsFragment();
@@ -195,7 +195,7 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-		LoaderHelper.getIntance().putLoaderStatus(TAG, loader.getId(), LoaderStatus.FINISHED);
+		super.onLoadFinished(loader, cursor);
 		if (loader.getId() == LoaderHelper.ADD_PAYMENT_METHOD_CURENCIES_ID) {
 			List<String> currencyList = parseCurrency(cursor);
 			initCurrency(currencyList);
@@ -212,7 +212,7 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 	}
 
 	private void parsePaymentMethod(Cursor cursor) {
-		paymentMethodModel = new PaymentMethodDetailModel();
+		paymentMethodModel = new PaymentMethodModel();
 		if (cursor.moveToFirst()) {
 			paymentMethodModel.setBalance(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_BALANCE)));
 			paymentMethodModel.setCurrency(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE)));

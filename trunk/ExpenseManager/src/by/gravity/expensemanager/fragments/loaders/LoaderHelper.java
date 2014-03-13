@@ -2,6 +2,12 @@ package by.gravity.expensemanager.fragments.loaders;
 
 import java.util.HashMap;
 
+import android.database.Cursor;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+
 public class LoaderHelper {
 
 	public static final int OUTCOME_GROUP_BY_DATE_ID = -2;
@@ -19,8 +25,10 @@ public class LoaderHelper {
 	public static final int GET_PAYMENT_METHODS_ID = -8;
 
 	public static final int ADD_PAYMENT_METHOD_CURENCIES_ID = -9;
-	
+
 	public static final int PAYMENT_METHOD_BY_ID = -10;
+
+	public static final int SUM_BALANCE_ID = -11;
 
 	public static final String ARG_EXPENSE_DATA = "ARG_EXPENSE_DATA";
 
@@ -58,6 +66,15 @@ public class LoaderHelper {
 	public void clearLoaderStatus(String fragmentName) {
 		if (loaderStatusMap.get(fragmentName) != null) {
 			loaderStatusMap.put(fragmentName, null);
+		}
+	}
+
+	public void startLoader(Fragment fragment, int id, LoaderCallbacks<Cursor> loaderCallbacks) {
+		LoaderManager loaderManager = fragment.getLoaderManager();
+		if (loaderManager.getLoader(id) != null && !loaderManager.getLoader(id).isAbandoned()) {
+			loaderManager.restartLoader(id, null, loaderCallbacks);
+		} else {
+			loaderManager.initLoader(id, null, loaderCallbacks);
 		}
 	}
 }

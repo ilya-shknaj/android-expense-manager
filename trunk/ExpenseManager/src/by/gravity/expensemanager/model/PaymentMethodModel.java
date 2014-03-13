@@ -1,6 +1,8 @@
 package by.gravity.expensemanager.model;
 
-public class PaymentMethodDetailModel {
+import by.gravity.common.utils.StringUtil;
+
+public class PaymentMethodModel {
 
 	private String name;
 
@@ -10,11 +12,11 @@ public class PaymentMethodDetailModel {
 
 	private String currency;
 
-	public PaymentMethodDetailModel() {
+	public PaymentMethodModel() {
 
 	}
 
-	public PaymentMethodDetailModel(String name, String balance) {
+	public PaymentMethodModel(String name, String balance) {
 		this.name = name;
 		this.balance = balance;
 	}
@@ -40,7 +42,7 @@ public class PaymentMethodDetailModel {
 	}
 
 	public void setBalance(String balance) {
-		this.balance = balance;
+		this.balance = StringUtil.convertNumberToHumanFriednly(balance);
 	}
 
 	public String getCurrency() {
