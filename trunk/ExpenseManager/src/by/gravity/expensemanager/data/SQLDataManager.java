@@ -384,4 +384,29 @@ public class SQLDataManager {
 			cursor.close();
 		}
 	}
+
+	public void deletePayment(Long id) {
+		addToPaymentMethod(id);
+		database.delete(SQLConstants.TABLE_EXPENSE, SQLConstants.FIELD_ID + "=?", new String[] { String.valueOf(id) });
+	}
+
+	private static final String SUBSTRACT_FROM_PAYMENT_METHOD_QUERY = "UPDATE " + SQLConstants.TABLE_PAYMENT_METHODS + " SET "
+			+ SQLConstants.FIELD_BALANCE + "=" + SQLConstants.FIELD_BALANCE + " - (SELECT " + SQLConstants.FIELD_AMOUNT + " FROM "
+			+ SQLConstants.TABLE_EXPENSE + " WHERE " + SQLConstants.FIELD_ID + "= ?) WHERE " + SQLConstants.FIELD_ID + "= (SELECT "
+			+ SQLConstants.FIELD_PAYMENT_METHOD + " FROM " + SQLConstants.TABLE_EXPENSE + " WHERE " + SQLConstants.FIELD_ID + "= ?)";
+
+	public void substractFromPaymentMethod(Long paymentId) {
+		//TODO use this method not recomended
+		database.execSQL(SUBSTRACT_FROM_PAYMENT_METHOD_QUERY, new String[] { String.valueOf(paymentId), String.valueOf(paymentId) });
+	}
+
+	private static final String ADD_TO_PAYMENT_METHOD_QUERY = "UPDATE " + SQLConstants.TABLE_PAYMENT_METHODS + " SET " + SQLConstants.FIELD_BALANCE
+			+ "=" + SQLConstants.FIELD_BALANCE + " + (SELECT " + SQLConstants.FIELD_AMOUNT + " FROM " + SQLConstants.TABLE_EXPENSE + " WHERE "
+			+ SQLConstants.FIELD_ID + "= ?) WHERE " + SQLConstants.FIELD_ID + "= (SELECT " + SQLConstants.FIELD_PAYMENT_METHOD + " FROM "
+			+ SQLConstants.TABLE_EXPENSE + " WHERE " + SQLConstants.FIELD_ID + "= ?)";
+
+	public void addToPaymentMethod(Long paymentId) {
+		//TODO use this method not recomended
+		database.execSQL(ADD_TO_PAYMENT_METHOD_QUERY, new String[] { String.valueOf(paymentId), String.valueOf(paymentId) });
+	}
 }
