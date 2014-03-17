@@ -100,7 +100,7 @@ public class SQLDataManager {
 			@Override
 			protected Void doInBackground(Void... arg0) {
 				ContentValues values = new ContentValues();
-				values.put(SQLConstants.FIELD_NAME, name);
+				values.put(SQLConstants.FIELD_NAME, StringUtil.uppercaseFirstLetter(name));
 				values.put(SQLConstants.FIELD_NOTE, note);
 				values.put(SQLConstants.FIELD_BALANCE,
 						!StringUtil.isEmpty(balance) ? balance.replaceAll(Constants.SPACE_PATTERN, Constants.EMPTY_STRING) : "0");
@@ -121,7 +121,7 @@ public class SQLDataManager {
 			@Override
 			protected Void doInBackground(Void... params) {
 				ContentValues values = new ContentValues();
-				values.put(SQLConstants.FIELD_NAME, name);
+				values.put(SQLConstants.FIELD_NAME, StringUtil.uppercaseFirstLetter(name));
 				values.put(SQLConstants.FIELD_NOTE, note);
 				values.put(SQLConstants.FIELD_BALANCE, balance.replaceAll(Constants.SPACE_PATTERN, Constants.EMPTY_STRING));
 
