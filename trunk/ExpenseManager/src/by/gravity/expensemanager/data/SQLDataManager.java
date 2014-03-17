@@ -58,6 +58,7 @@ public class SQLDataManager {
 				long expenseId = database.insert(SQLConstants.TABLE_EXPENSE, null, values);
 				addExpenseCategories(categories, expenseId);
 				updateUsageCategoryCount(categories);
+				substractFromPaymentHistory(expenseId);
 				return null;
 
 			}
@@ -71,6 +72,7 @@ public class SQLDataManager {
 			@Override
 			protected Void doInBackground(Void... params) {
 				updateCategories(categories);
+				addToPaymentHistory(id);
 
 				ContentValues values = new ContentValues();
 				values.put(SQLConstants.FIELD_AMOUNT, amount.replaceAll(Constants.SPACE_PATTERN, Constants.EMPTY_STRING));
@@ -86,6 +88,7 @@ public class SQLDataManager {
 						new String[] { String.valueOf(id) });
 				deleteExpenseCategories(expenseId);
 				addExpenseCategories(categories, expenseId);
+				substractFromPaymentHistory(id);
 
 				return null;
 			}
@@ -386,7 +389,7 @@ public class SQLDataManager {
 	}
 
 	public void deletePayment(Long id) {
-		addToPaymentMethod(id);
+		addToPaymentHistory(id);
 		database.delete(SQLConstants.TABLE_EXPENSE, SQLConstants.FIELD_ID + "=?", new String[] { String.valueOf(id) });
 	}
 
@@ -395,8 +398,8 @@ public class SQLDataManager {
 			+ SQLConstants.TABLE_EXPENSE + " WHERE " + SQLConstants.FIELD_ID + "= ?) WHERE " + SQLConstants.FIELD_ID + "= (SELECT "
 			+ SQLConstants.FIELD_PAYMENT_METHOD + " FROM " + SQLConstants.TABLE_EXPENSE + " WHERE " + SQLConstants.FIELD_ID + "= ?)";
 
-	public void substractFromPaymentMethod(Long paymentId) {
-		//TODO use this method not recomended
+	public void substractFromPaymentHistory(Long paymentId) {
+		// TODO use this method not recomended
 		database.execSQL(SUBSTRACT_FROM_PAYMENT_METHOD_QUERY, new String[] { String.valueOf(paymentId), String.valueOf(paymentId) });
 	}
 
@@ -405,8 +408,8 @@ public class SQLDataManager {
 			+ SQLConstants.FIELD_ID + "= ?) WHERE " + SQLConstants.FIELD_ID + "= (SELECT " + SQLConstants.FIELD_PAYMENT_METHOD + " FROM "
 			+ SQLConstants.TABLE_EXPENSE + " WHERE " + SQLConstants.FIELD_ID + "= ?)";
 
-	public void addToPaymentMethod(Long paymentId) {
-		//TODO use this method not recomended
+	public void addToPaymentHistory(Long paymentId) {
+		// TODO use this method not recomended
 		database.execSQL(ADD_TO_PAYMENT_METHOD_QUERY, new String[] { String.valueOf(paymentId), String.valueOf(paymentId) });
 	}
 }
