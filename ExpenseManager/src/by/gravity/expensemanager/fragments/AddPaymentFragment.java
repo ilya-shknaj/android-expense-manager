@@ -32,10 +32,12 @@ import by.gravity.common.utils.GlobalUtil;
 import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
+import by.gravity.expensemanager.activity.MainActivity.OnPositiveButtonClickListener;
 import by.gravity.expensemanager.data.SQLDataManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.NumberDialog.OnInputCompleteListener;
 import by.gravity.expensemanager.fragments.loaders.CurrencyLoader;
+import by.gravity.expensemanager.fragments.loaders.DeletePaymentLoader;
 import by.gravity.expensemanager.fragments.loaders.ExpenseLoader;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper.LoaderStatus;
@@ -44,6 +46,9 @@ import by.gravity.expensemanager.fragments.loaders.addPayment.CategoriesLoader;
 import by.gravity.expensemanager.model.ExpenseModel;
 import by.gravity.expensemanager.util.Constants;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
@@ -73,12 +78,34 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		setHasOptionsMenu(true);
 		if (getExpenseId() == null) {
 			showNumberDialog(null);
 		}
 		startLoaders();
 
 		initBottomTabBar();
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.add_payment, menu);
+		menu.findItem(R.id.remove).setVisible(getExpenseId() != null);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getTitle().equals(getString(R.string.remove))) {
+			((MainActivity) getActivity()).showConfirmDialog(R.string.remove, R.string.removePaymentMessage, new OnPositiveButtonClickListener() {
+
+				@Override
+				public void onPositiveButtonClicked() {
+					setContentShown(false);
+					LoaderHelper.getIntance().startLoader(AddPaymentFragment.this, LoaderHelper.DELETE_PAYMENT_ID, AddPaymentFragment.this);
+				}
+			});
+		}
+		return false;
 	}
 
 	private void startLoaders() {
@@ -548,6 +575,8 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 			return new CategoriesLoader(getActivity());
 		} else if (id == LoaderHelper.ADD_PAYMENT_EXPENSE_ID) {
 			return new ExpenseLoader(getActivity(), getExpenseId());
+		} else if (id == LoaderHelper.DELETE_PAYMENT_ID) {
+			return new DeletePaymentLoader(getActivity(), getExpenseId());
 		}
 		return null;
 	}
@@ -566,6 +595,8 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 			initCategories(categoriesList);
 		} else if (loader.getId() == LoaderHelper.ADD_PAYMENT_EXPENSE_ID) {
 			parseExpenseModel(cursor);
+		} else if (loader.getId() == LoaderHelper.DELETE_PAYMENT_ID) {
+			((MainActivity)getActivity()).delayedPopBackStack();
 		}
 
 		if (isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_CURRENCIES_ID) && isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_CATEGORIES_ID)
@@ -582,6 +613,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		}
 
 	}
+	
 
 	private List<String> parseCurrency(Cursor cursor) {
 		List<String> currencyList = new ArrayList<String>();

@@ -38,6 +38,8 @@
     <string name="note">Заметка</string>
     <string name="name">Название</string>
     <string name="balance">Баланс</string>
+    <string name="remove">Удалить</string>
+    <string name="removePaymentMessage">Вы уверены что хотите удалить эту запись?</string>
     
     <!-- errors -->
     <string name="parseNumberError">Произошла ошибка во время обработки введенного значения</string>
