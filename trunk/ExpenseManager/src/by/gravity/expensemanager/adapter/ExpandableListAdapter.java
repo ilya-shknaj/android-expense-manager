@@ -5,6 +5,10 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.Layout.Alignment;
+import android.text.style.AlignmentSpan;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -13,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ResourceCursorTreeAdapter;
 import android.widget.TextView;
+import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.data.SQLDataManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
@@ -85,7 +90,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 					category.setText(expenseModel.getCategories().get(i));
 					categoryLayout.addView(category, i);
 				}
-				
+
 				TextView paymentMethod = (TextView) view.findViewById(R.id.paymentMethod);
 				paymentMethod.setText(expenseModel.getPaymentMethod());
 			} else {
@@ -103,13 +108,10 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 				TextView time = new TextView(context);
 				time.setText(expenseModel.getTime());
 				categoryLayout.addView(time);
-				
+
 				TextView paymentMethod = (TextView) view.findViewById(R.id.paymentMethod);
 				paymentMethod.setText(expenseModel.getPaymentMethod());
 			}
-			
-			
-			
 
 			View contentContainer = view.findViewById(R.id.content_container);
 			if (contentContainer.getVisibility() == View.GONE) {
@@ -141,7 +143,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 			date.setText(collapsedModel.getDate());
 
 			TextView price = (TextView) view.findViewById(R.id.price);
-			price.setText(collapsedModel.getAmount());
+			price.setText(StringUtil.alignToRight(collapsedModel.getAmount()));
 		} else {
 			CollapsedModelGroupedByCategoryName collapsedModel = getCollapsedByCategoryNameModel(cursor);
 
@@ -149,7 +151,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 			name.setText(collapsedModel.getName());
 
 			TextView price = (TextView) view.findViewById(R.id.price);
-			price.setText(collapsedModel.getAmount());
+			price.setText(StringUtil.alignToRight(collapsedModel.getAmount()));
 		}
 
 	}

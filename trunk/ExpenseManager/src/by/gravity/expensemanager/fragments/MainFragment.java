@@ -70,7 +70,7 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 
 	private void initBalance(String balance) {
 		TextView balanceTextView = (TextView) getView().findViewById(R.id.balanceLayout).findViewById(R.id.balance);
-		balanceTextView.setText(balance);
+		balanceTextView.setText(StringUtil.alignToRight(balance));
 	}
 
 	private void initBottomBar() {

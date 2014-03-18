@@ -30,8 +30,8 @@ public class MainActivity extends DrawerActivity {
 		super.onCreate(savedInstanceState);
 		String action = getIntent().getAction();
 		if (action.equals(Intent.ACTION_MAIN)) {
-//			showMainFragment();
-			 showOutcomeFragment(true);
+			showMainFragment();
+//			 showOutcomeFragment(true);
 			// showPaymentMethodsFragment();
 		} else if (action.equals(ChoosePeriodFragment.class.getSimpleName())) {
 			showChoosePeriodFragment();
