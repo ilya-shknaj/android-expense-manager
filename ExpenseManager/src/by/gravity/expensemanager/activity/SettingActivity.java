@@ -8,10 +8,15 @@ import android.preference.PreferenceActivity;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.data.SettingsManager;
 import by.gravity.expensemanager.fragments.ChoosePeriodFragment;
+import by.gravity.expensemanager.fragments.PaymentMethodsFragment;
 import by.gravity.expensemanager.util.DialogHelper;
 import by.gravity.expensemanager.util.DialogHelper.onEditCompleteListener;
 
 public class SettingActivity extends PreferenceActivity {
+
+	private static final int SELECT_PERIOD_REQUEST_CODE = 1;
+
+	private static final int SELECT_PAYMENT_METHOD_REQUEST_CODE = 2;
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -19,14 +24,14 @@ public class SettingActivity extends PreferenceActivity {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.preference);
 
-		Preference currentPeriodPreference = findPreference(getString(R.string.keyCurrentPeriod));
+		final Preference currentPeriodPreference = findPreference(getString(R.string.keyCurrentPeriod));
 		currentPeriodPreference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				Intent intent = new Intent(getBaseContext(), MainActivity.class);
+				Intent intent = new Intent(SettingActivity.this, MainActivity.class);
 				intent.setAction(ChoosePeriodFragment.class.getSimpleName());
-				startActivityForResult(intent, 22);
+				startActivityForResult(intent, SELECT_PERIOD_REQUEST_CODE);
 				return false;
 			}
 		});
@@ -37,7 +42,7 @@ public class SettingActivity extends PreferenceActivity {
 
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				DialogHelper.showNumberEditDialog(SettingActivity.this, R.string.categoriesCount, 0, SettingsManager.getCategoriesShowCount(),
+				DialogHelper.showNumberEditDialog(SettingActivity.this, R.string.settingCategoriesCount, 0, SettingsManager.getCategoriesShowCount(),
 						new onEditCompleteListener() {
 
 							@Override
@@ -50,6 +55,37 @@ public class SettingActivity extends PreferenceActivity {
 			}
 		});
 		categoriesShowCount.setSummary(SettingsManager.getCategoriesShowCount());
+
+		final Preference paymentMethod = findPreference(getString(R.string.keyPaymentMethod));
+		paymentMethod.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Intent intent = new Intent(SettingActivity.this, MainActivity.class);
+				intent.setAction(PaymentMethodsFragment.class.getSimpleName());
+				startActivityForResult(intent, SELECT_PAYMENT_METHOD_REQUEST_CODE);
+				return false;
+			}
+		});
+		setPaymentMethodSummary(SettingsManager.getPaymentMethod());
+	}
+
+	@SuppressWarnings("deprecation")
+	private void setPaymentMethodSummary(String text) {
+		final Preference paymentMethod = findPreference(getString(R.string.keyPaymentMethod));
+		paymentMethod.setSummary(text);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode != RESULT_OK) {
+			return;
+		}
+
+		if (requestCode == SELECT_PAYMENT_METHOD_REQUEST_CODE) {
+			SettingsManager.putPaymentMethod(data.getAction());
+			setPaymentMethodSummary(data.getAction());
+		}
 	}
 
 }

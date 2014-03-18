@@ -1,5 +1,7 @@
 package by.gravity.expensemanager.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -12,15 +14,25 @@ import android.widget.ListView;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.adapter.PaymentMethodsAdapter;
+import by.gravity.expensemanager.data.SettingsManager;
+import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
 import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
 
 public class PaymentMethodsFragment extends CommonProgressSherlockFragment implements LoaderCallbacks<Cursor> {
 
-	public static PaymentMethodsFragment newInstance() {
-		PaymentMethodsFragment fragment = new PaymentMethodsFragment();
+	private static final String ARG_START_FOR_RESULT = "ARG_START_FOR_RESULT";
 
+	public static PaymentMethodsFragment newInstance(boolean startForResult) {
+		PaymentMethodsFragment fragment = new PaymentMethodsFragment();
+		Bundle bundle = new Bundle();
+		bundle.putBoolean(ARG_START_FOR_RESULT, startForResult);
+		fragment.setArguments(bundle);
 		return fragment;
+	}
+
+	private boolean isStartForResult() {
+		return getArguments().getBoolean(ARG_START_FOR_RESULT);
 	}
 
 	@Override
@@ -43,14 +55,21 @@ public class PaymentMethodsFragment extends CommonProgressSherlockFragment imple
 	}
 
 	private void initListView(Cursor cursor) {
-		ListView listView = (ListView) getView().findViewById(R.id.listView);
-		PaymentMethodsAdapter adapter = new PaymentMethodsAdapter(getActivity(), R.layout.i_payments_methods_detail_pay, cursor);
+		final ListView listView = (ListView) getView().findViewById(R.id.listView);
+		final PaymentMethodsAdapter adapter = new PaymentMethodsAdapter(getActivity(), R.layout.i_payments_methods_detail_pay, cursor);
 		listView.setAdapter(adapter);
 		listView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
-				((MainActivity)getActivity()).showAddPaymentMethodFragment(id);
+				if (!isStartForResult()) {
+					((MainActivity) getActivity()).showAddPaymentMethodFragment(id);
+				} else {
+					Cursor cursor = (Cursor) adapter.getItem(position);
+					Intent intent = new Intent(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
+					getActivity().setResult(Activity.RESULT_OK, intent);
+					getActivity().finish();
+				}
 			}
 		});
 	}
