@@ -6,4 +6,5 @@
     <string name="keyUserPeriodEndDate">userPeriodEndDate</string>
     <string name="keyCategoriesShowCountByDefault">showCategoriesCountByDefault</string>
     <string name="keyPaymentMethod">keyPaymentMethod</string>
+    <string name="keyExchangeRates">keyExchangeRates</string>
 </resources>
