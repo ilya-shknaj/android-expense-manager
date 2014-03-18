@@ -61,6 +61,15 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 			paymentsMethodLayout.addView(paymentDetailLayout, i);
 		}
 
+		View paymentMethodCard = getView().findViewById(R.id.paymentMethodCard);
+		paymentMethodCard.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				((MainActivity) getActivity()).showPaymentMethodsFragment();
+			}
+		});
+
 	}
 
 	private boolean hasPaymentMethods() {
