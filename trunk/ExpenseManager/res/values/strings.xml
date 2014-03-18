@@ -38,7 +38,8 @@
     <string name="name">Название</string>
     <string name="balance">Баланс</string>
     <string name="remove">Удалить</string>
-    <string name="removePaymentMessage">Вы уверены что хотите удалить эту запись?</string>
+    <string name="removePaymentMessage">Вы уверены?</string>
+    <string name="removePayemntMethodMessage">Вы уверены? Все платежи осуществленные этим методом будут удалены!</string>
 
     <!-- errors -->
     <string name="parseNumberError">Произошла ошибка во время обработки введенного значения</string>
@@ -54,7 +55,7 @@
     <string name="settingCategoriesShowCountDefault">Количество показываемых категорий</string>
     <string name="settingCategoriesCount">Количество категорий</string>
     <string name="settingPaymentMethod">Cпособ оплаты</string>
-    
+
     <!-- settings category -->
     <string name="settingCategoryAddPayment">Добавление платежа</string>
 

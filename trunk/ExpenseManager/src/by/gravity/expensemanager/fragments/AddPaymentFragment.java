@@ -90,7 +90,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.add_payment, menu);
-		menu.findItem(R.id.remove).setVisible(getExpenseId() != null);
+		menu.findItem(R.id.remove).setVisible(getExpenseId() != 0);
 	}
 
 	@Override
@@ -119,11 +119,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 	}
 
 	private Long getExpenseId() {
-		if (getArguments() != null && getArguments().getLong(ARG_EXPENSE_ID) != 0) {
-			return getArguments().getLong(ARG_EXPENSE_ID);
-		}
-
-		return null;
+		return getArguments().getLong(ARG_EXPENSE_ID);
 	}
 
 	private void parseExpenseModel(Cursor cursor) {
