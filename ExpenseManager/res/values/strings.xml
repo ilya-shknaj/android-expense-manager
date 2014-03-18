@@ -52,6 +52,9 @@
     <!-- settings -->
     <string name="settingCurrentPeriod">Выбранный период</string>
     <string name="categoriesShowCountDefault">Количество показываемых категорий</string>
-    <string name="CategoriesCount">Количество категорий</string>
+    <string name="categoriesCount">Количество категорий</string>
+    
+    <!-- settings category -->
+    <string name="settingCategoryAddPayment">Добавление платежа</string>
 
 </resources>

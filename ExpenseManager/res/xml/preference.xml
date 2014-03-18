@@ -6,8 +6,13 @@
         android:summary="@string/period_current_month"
         android:title="@string/settingCurrentPeriod" >
     </MultilinePreference>
-    <MultilinePreference
-        android:key="@string/keyCategoriesShowCountByDefault"
-        android:title="@string/categoriesShowCountDefault" />
+
+    <PreferenceCategory
+        android:title="@string/settingCategoryAddPayment"
+        >
+        <MultilinePreference
+            android:key="@string/keyCategoriesShowCountByDefault"
+            android:title="@string/categoriesShowCountDefault" />
+    </PreferenceCategory>
 
 </PreferenceScreen>
