@@ -4,4 +4,5 @@
     <string name="keyCurrentPeriodRes">currentPeriodRes</string>
     <string name="keyUserPeriodStartDate">userPeriodStartDate</string>
     <string name="keyUserPeriodEndDate">userPeriodEndDate</string>
+    <string name="keyCategoriesShowCountByDefault">showCategoriesCountByDefault</string>
 </resources>

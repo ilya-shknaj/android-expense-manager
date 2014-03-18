@@ -15,12 +15,22 @@ public class SettingsManager extends PreferenceHelper {
 
 	private static int DEFAULT_PERIOD = R.string.period_current_month;
 
+	private static String CATEGORIES_SHOW_COUNT = "5";
+
 	public static void putCurrentPeriod(String value) {
 		putString(R.string.keyCurrentPeriod, value);
 	}
 
 	public static String getCurrentPeriod() {
 		return getString(R.string.keyCurrentPeriod, DEFAULT_PERIOD);
+	}
+
+	public static String getCategoriesShowCount() {
+		return getString(R.string.keyCategoriesShowCountByDefault, CATEGORIES_SHOW_COUNT);
+	}
+
+	public static void putCategoriesShowCount(String value) {
+		putString(R.string.keyCategoriesShowCountByDefault, value);
 	}
 
 	public static String getFriendlyCurrentPeriod() {
@@ -75,11 +85,11 @@ public class SettingsManager extends PreferenceHelper {
 		if (currentPeriod.equals(getString(R.string.period_current_month))) {
 			calendar.set(Calendar.DAY_OF_MONTH, 1);
 			periodDate.setStartDate(calendar.getTime());
-			
+
 			calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
 			calendar.add(Calendar.DAY_OF_MONTH, 1);
 			periodDate.setEndDate(calendar.getTime());
-			
+
 		} else if (currentPeriod.equals(getString(R.string.period_prev_month))) {
 			calendar.add(Calendar.MONTH, -1);
 			calendar.set(Calendar.DAY_OF_MONTH, 1);
@@ -87,7 +97,7 @@ public class SettingsManager extends PreferenceHelper {
 			calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
 			calendar.add(Calendar.DAY_OF_MONTH, 1);
 			periodDate.setEndDate(calendar.getTime());
-			
+
 		} else if (currentPeriod.equals(getString(R.string.period_week))) {
 			periodDate.setEndDate(calendar.getTime());
 			calendar.add(Calendar.DAY_OF_MONTH, -7);

@@ -5,8 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.EditText;
-import android.widget.Toast;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.fragments.AddPaymentFragment;
 import by.gravity.expensemanager.fragments.AddPaymentMethodsFragment;
@@ -122,34 +120,6 @@ public class MainActivity extends DrawerActivity {
 	public void showTimePickerDialog(int hourOfDay, int minute, OnTimeSetListener onTimeSetListener) {
 		final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(onTimeSetListener, hourOfDay, minute, true, false);
 		timePickerDialog.show(getSupportFragmentManager(), TimePickerDialog.class.getSimpleName());
-	}
-
-	public interface OnPositiveButtonClickListener {
-		public void onPositiveButtonClicked();
-	}
-
-	public void showConfirmDialog(int title, int message, final OnPositiveButtonClickListener onPositiveButtonClickListener) {
-		AlertDialog.Builder adb = new AlertDialog.Builder(this);
-
-		adb.setTitle(title);
-
-		adb.setMessage(message);
-
-		adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				if (onPositiveButtonClickListener != null) {
-					onPositiveButtonClickListener.onPositiveButtonClicked();
-				}
-			}
-		});
-
-		adb.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-
-				dialog.dismiss();
-			}
-		});
-		adb.show();
 	}
 
 	public void delayedPopBackStack() {

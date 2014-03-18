@@ -32,8 +32,8 @@ import by.gravity.common.utils.GlobalUtil;
 import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
-import by.gravity.expensemanager.activity.MainActivity.OnPositiveButtonClickListener;
 import by.gravity.expensemanager.data.SQLDataManager;
+import by.gravity.expensemanager.data.SettingsManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.NumberDialog.OnInputCompleteListener;
 import by.gravity.expensemanager.fragments.loaders.CurrencyLoader;
@@ -45,6 +45,8 @@ import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
 import by.gravity.expensemanager.fragments.loaders.addPayment.CategoriesLoader;
 import by.gravity.expensemanager.model.ExpenseModel;
 import by.gravity.expensemanager.util.Constants;
+import by.gravity.expensemanager.util.DialogHelper;
+import by.gravity.expensemanager.util.DialogHelper.OnPositiveButtonClickListener;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -57,8 +59,6 @@ import com.sleepbot.datetimepicker.time.TimePickerDialog.OnTimeSetListener;
 public class AddPaymentFragment extends CommonProgressSherlockFragment implements LoaderCallbacks<Cursor> {
 
 	private static final String TAG = AddPaymentFragment.class.getSimpleName();
-
-	private static final int SHOW_CATEGORIES_COUNT = 3;
 
 	private static final String ARG_EXPENSE_ID = "ARG_PAYMENT_ID";
 
@@ -96,7 +96,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getTitle().equals(getString(R.string.remove))) {
-			((MainActivity) getActivity()).showConfirmDialog(R.string.remove, R.string.removePaymentMessage, new OnPositiveButtonClickListener() {
+			DialogHelper.showConfirmDialog(getActivity(), R.string.remove, R.string.removePaymentMessage, new OnPositiveButtonClickListener() {
 
 				@Override
 				public void onPositiveButtonClicked() {
@@ -397,7 +397,8 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, allCategoriesList);
 		categoriesEditText.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 		categoriesEditText.setAdapter(adapter);
-		final List<String> popularCategories = allCategoriesList.size() > SHOW_CATEGORIES_COUNT ? allCategoriesList.subList(0, SHOW_CATEGORIES_COUNT)
+		int showCategoriesCount = Integer.parseInt(SettingsManager.getCategoriesShowCount());
+		final List<String> popularCategories = allCategoriesList.size() > showCategoriesCount ? allCategoriesList.subList(0, showCategoriesCount)
 				: allCategoriesList;
 		final OnCheckedChangeListener checkedChangeListener = new OnCheckedChangeListener() {
 
@@ -596,7 +597,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		} else if (loader.getId() == LoaderHelper.ADD_PAYMENT_EXPENSE_ID) {
 			parseExpenseModel(cursor);
 		} else if (loader.getId() == LoaderHelper.DELETE_PAYMENT_ID) {
-			((MainActivity)getActivity()).delayedPopBackStack();
+			((MainActivity) getActivity()).delayedPopBackStack();
 		}
 
 		if (isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_CURRENCIES_ID) && isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_CATEGORIES_ID)
@@ -613,7 +614,6 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		}
 
 	}
-	
 
 	private List<String> parseCurrency(Cursor cursor) {
 		List<String> currencyList = new ArrayList<String>();

@@ -8,6 +8,8 @@ import android.preference.PreferenceActivity;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.data.SettingsManager;
 import by.gravity.expensemanager.fragments.ChoosePeriodFragment;
+import by.gravity.expensemanager.util.DialogHelper;
+import by.gravity.expensemanager.util.DialogHelper.onEditCompleteListener;
 
 public class SettingActivity extends PreferenceActivity {
 
@@ -29,6 +31,25 @@ public class SettingActivity extends PreferenceActivity {
 			}
 		});
 		currentPeriodPreference.setSummary(SettingsManager.getCurrentPeriod());
+
+		final Preference categoriesShowCount = findPreference(getString(R.string.keyCategoriesShowCountByDefault));
+		categoriesShowCount.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				DialogHelper.showNumberEditDialog(SettingActivity.this, R.string.CategoriesCount, 0, SettingsManager.getCategoriesShowCount(),
+						new onEditCompleteListener() {
+
+							@Override
+							public void onEditCompelted(String text) {
+								SettingsManager.putCategoriesShowCount(text);
+								categoriesShowCount.setSummary(text);
+							}
+						});
+				return false;
+			}
+		});
+		categoriesShowCount.setSummary(SettingsManager.getCategoriesShowCount());
 	}
 
 }
