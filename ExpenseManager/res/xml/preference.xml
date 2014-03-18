@@ -1,10 +1,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="settings" >
 
-    <Preference
+    <MultilinePreference
         android:key="@string/keyCurrentPeriod"
         android:summary="@string/period_current_month"
         android:title="@string/settingCurrentPeriod" >
-    </Preference>
+    </MultilinePreference>
+    <MultilinePreference
+        android:key="@string/keyCategoriesShowCountByDefault"
+        android:title="@string/categoriesShowCountDefault" />
 
 </PreferenceScreen>
