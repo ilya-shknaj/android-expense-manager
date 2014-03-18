@@ -38,6 +38,17 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 	}
 
 	@Override
+	public void onResume() {
+		super.onResume();
+		if (!getCurrentPeriod().equals(SettingsManager.getFriendlyCurrentPeriod())) {
+			setContentShown(false);
+			initPeriod();
+			startLoader();
+		}
+
+	}
+
+	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		initPeriod();
@@ -57,6 +68,11 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 				((MainActivity) getActivity()).showChoosePeriodFragment();
 			}
 		});
+	}
+
+	private String getCurrentPeriod() {
+		TextView period = (TextView) getView().findViewById(R.id.period);
+		return period.getText().toString();
 	}
 
 	private void initListView() {
@@ -87,10 +103,9 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 
 		expandableListView.setAdapter(adapter);
 
-		
 	}
-	
-	private void startLoader(){
+
+	private void startLoader() {
 		int loaderId = isGroupedByDate() ? LoaderHelper.OUTCOME_GROUP_BY_DATE_ID : LoaderHelper.OUTCOME_GROUP_BY_CATEGORY_NAME_ID;
 
 		if (getLoaderManager().getLoader(loaderId) != null && !getLoaderManager().getLoader(loaderId).isAbandoned()) {
