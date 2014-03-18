@@ -18,14 +18,21 @@ import by.gravity.common.task.OnLoadCompleteListener;
 import by.gravity.common.utils.GlobalUtil;
 import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.R;
+import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.data.SQLDataManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.NumberDialog.OnInputCompleteListener;
 import by.gravity.expensemanager.fragments.loaders.CurrencyLoader;
+import by.gravity.expensemanager.fragments.loaders.DeletePaymentMethodLoader;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
-import by.gravity.expensemanager.fragments.loaders.LoaderHelper.LoaderStatus;
 import by.gravity.expensemanager.fragments.loaders.PaymentMethodByIdLoader;
 import by.gravity.expensemanager.model.PaymentMethodModel;
+import by.gravity.expensemanager.util.DialogHelper;
+import by.gravity.expensemanager.util.DialogHelper.OnPositiveButtonClickListener;
+
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment implements LoaderCallbacks<Cursor> {
 
@@ -52,8 +59,31 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		setHasOptionsMenu(true);
 		startLoaders();
 		initBottomTabBar();
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.add_payment, menu);
+		menu.findItem(R.id.remove).setVisible(getPaymentMethodId() != 0);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getTitle().equals(getString(R.string.remove))) {
+			DialogHelper.showConfirmDialog(getActivity(), R.string.remove, R.string.removePayemntMethodMessage, new OnPositiveButtonClickListener() {
+
+				@Override
+				public void onPositiveButtonClicked() {
+					setContentShown(false);
+					LoaderHelper.getIntance().startLoader(AddPaymentMethodsFragment.this, LoaderHelper.DELETE_PAYMENT_METHOD_ID,
+							AddPaymentMethodsFragment.this);
+				}
+			});
+		}
+		return false;
 	}
 
 	private void startLoaders() {
@@ -188,6 +218,8 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 			return new CurrencyLoader(getActivity());
 		} else if (id == LoaderHelper.PAYMENT_METHOD_BY_ID) {
 			return new PaymentMethodByIdLoader(getActivity(), getPaymentMethodId());
+		} else if (id == LoaderHelper.DELETE_PAYMENT_METHOD_ID) {
+			return new DeletePaymentMethodLoader(getActivity(), getPaymentMethodId());
 		}
 
 		return null;
@@ -201,6 +233,8 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 			initCurrency(currencyList);
 		} else if (loader.getId() == LoaderHelper.PAYMENT_METHOD_BY_ID) {
 			parsePaymentMethod(cursor);
+		} else if (loader.getId() == LoaderHelper.DELETE_PAYMENT_METHOD_ID) {
+			((MainActivity) getActivity()).delayedPopBackStack();
 		}
 
 		if (isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_METHOD_CURENCIES_ID)

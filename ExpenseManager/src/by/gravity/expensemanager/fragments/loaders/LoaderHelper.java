@@ -30,6 +30,8 @@ public class LoaderHelper {
 	public static final int SUM_BALANCE_ID = -11;
 	
 	public static final int DELETE_PAYMENT_ID = -12;
+	
+	public static final int DELETE_PAYMENT_METHOD_ID = -13;
 
 	public static final String ARG_EXPENSE_DATA = "ARG_EXPENSE_DATA";
 

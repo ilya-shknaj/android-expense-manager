@@ -412,4 +412,9 @@ public class SQLDataManager {
 		// TODO use this method not recomended
 		database.execSQL(ADD_TO_PAYMENT_METHOD_QUERY, new String[] { String.valueOf(paymentId), String.valueOf(paymentId) });
 	}
+
+	public void deletePaymentMethod(long id) {
+		database.delete(SQLConstants.TABLE_PAYMENT_METHODS, SQLConstants.FIELD_ID + "=?", new String[] { String.valueOf(id) });
+		database.delete(SQLConstants.TABLE_EXPENSE, SQLConstants.FIELD_PAYMENT_METHOD + "=?", new String[] { String.valueOf(id) });
+	}
 }
