@@ -66,11 +66,11 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 
 	public static AddPaymentFragment newInstance(Long expenseId) {
 		AddPaymentFragment fragment = new AddPaymentFragment();
+		Bundle bundle = new Bundle();
 		if (expenseId != null) {
-			Bundle bundle = new Bundle();
 			bundle.putLong(ARG_EXPENSE_ID, expenseId);
-			fragment.setArguments(bundle);
 		}
+		fragment.setArguments(bundle);
 
 		return fragment;
 	}
@@ -79,7 +79,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
-		if (getExpenseId() == null) {
+		if (getExpenseId() == 0) {
 			showNumberDialog(null);
 		}
 		startLoaders();
@@ -113,7 +113,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		getLoaderManager().initLoader(LoaderHelper.ADD_PAYMENT_PAYMENT_METHODS_ID, null, this);
 		getLoaderManager().initLoader(LoaderHelper.ADD_PAYMENT_CATEGORIES_ID, null, this);
 
-		if (getExpenseId() != null) {
+		if (getExpenseId() != 0) {
 			getLoaderManager().initLoader(LoaderHelper.ADD_PAYMENT_EXPENSE_ID, null, this);
 		}
 	}
@@ -171,7 +171,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 				Long time = (Long) timeTextView.getTag();
 
 				if (categoriesEditText.getText().length() != 0) {
-					if (getExpenseId() == null) {
+					if (getExpenseId() == 0) {
 						SQLDataManager.getInstance().addExpense(costEditText.getText().toString(), spinner.getSelectedItem().toString(), date, time,
 								getEnteredCategoriesList(categoriesEditText.getText().toString()), noteEditText.getText().toString(),
 								getPaymentMethod(), new OnLoadCompleteListener<Boolean>() {
@@ -613,7 +613,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 
 		if (isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_CURRENCIES_ID) && isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_CATEGORIES_ID)
 				&& isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_PAYMENT_METHODS_ID)
-				&& (getExpenseId() == null ? true : isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_EXPENSE_ID))) {
+				&& (getExpenseId() == 0 ? true : isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_EXPENSE_ID))) {
 			initCostEditText();
 			initDate();
 			initNote();
