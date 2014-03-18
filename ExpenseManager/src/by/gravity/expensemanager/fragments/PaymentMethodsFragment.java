@@ -14,25 +14,15 @@ import android.widget.ListView;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.adapter.PaymentMethodsAdapter;
-import by.gravity.expensemanager.data.SettingsManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
 import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
 
 public class PaymentMethodsFragment extends CommonProgressSherlockFragment implements LoaderCallbacks<Cursor> {
 
-	private static final String ARG_START_FOR_RESULT = "ARG_START_FOR_RESULT";
-
-	public static PaymentMethodsFragment newInstance(boolean startForResult) {
+	public static PaymentMethodsFragment newInstance() {
 		PaymentMethodsFragment fragment = new PaymentMethodsFragment();
-		Bundle bundle = new Bundle();
-		bundle.putBoolean(ARG_START_FOR_RESULT, startForResult);
-		fragment.setArguments(bundle);
 		return fragment;
-	}
-
-	private boolean isStartForResult() {
-		return getArguments().getBoolean(ARG_START_FOR_RESULT);
 	}
 
 	@Override
@@ -62,7 +52,7 @@ public class PaymentMethodsFragment extends CommonProgressSherlockFragment imple
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
-				if (!isStartForResult()) {
+				if (getActivity().getCallingActivity() == null) {
 					((MainActivity) getActivity()).showAddPaymentMethodFragment(id);
 				} else {
 					Cursor cursor = (Cursor) adapter.getItem(position);

@@ -30,14 +30,14 @@ public class MainActivity extends DrawerActivity {
 		super.onCreate(savedInstanceState);
 		String action = getIntent().getAction();
 		if (action.equals(Intent.ACTION_MAIN)) {
-			showMainFragment();
-			// showOutcomeFragment(true);
+//			showMainFragment();
+			 showOutcomeFragment(true);
 			// showPaymentMethodsFragment();
 		} else if (action.equals(ChoosePeriodFragment.class.getSimpleName())) {
 			showChoosePeriodFragment();
 
 		} else if (action.equals(PaymentMethodsFragment.class.getSimpleName())) {
-			showPaymentMethodsFragment(true);
+			showPaymentMethodsFragment();
 		}
 	}
 
@@ -68,7 +68,7 @@ public class MainActivity extends DrawerActivity {
 				} else if (item.equals(getString(R.string.main))) {
 					showMainFragment();
 				} else if (item.equals(getString(R.string.paymentsMethods))) {
-					showPaymentMethodsFragment(false);
+					showPaymentMethodsFragment();
 				}
 			}
 		}, SHOW_FRAGMENT_DELAY);
@@ -99,8 +99,8 @@ public class MainActivity extends DrawerActivity {
 				.addToBackStack(AddPaymentFragment.class.getSimpleName()).commit();
 	}
 
-	public void showPaymentMethodsFragment(boolean startForResult) {
-		getSupportFragmentManager().beginTransaction().replace(R.id.content, PaymentMethodsFragment.newInstance(startForResult)).commit();
+	public void showPaymentMethodsFragment() {
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, PaymentMethodsFragment.newInstance()).commit();
 	}
 
 	public void showAddPaymentMethodFragment() {

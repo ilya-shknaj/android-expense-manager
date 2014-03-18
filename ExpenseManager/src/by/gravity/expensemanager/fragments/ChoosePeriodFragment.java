@@ -24,7 +24,6 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 
 	public static ChoosePeriodFragment newInstanse() {
 		ChoosePeriodFragment fragment = new ChoosePeriodFragment();
-
 		return fragment;
 	}
 

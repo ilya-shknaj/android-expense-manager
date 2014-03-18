@@ -67,7 +67,7 @@ public class SettingActivity extends PreferenceActivity {
 				return false;
 			}
 		});
-		setPaymentMethodSummary(SettingsManager.getPaymentMethod());
+		paymentMethod.setSummary(SettingsManager.getPaymentMethod());
 	}
 
 	@SuppressWarnings("deprecation")
@@ -76,16 +76,31 @@ public class SettingActivity extends PreferenceActivity {
 		paymentMethod.setSummary(text);
 	}
 
+	@SuppressWarnings("deprecation")
+	private void setCurrentPerdiodSummary(String text) {
+		final Preference currentPeriodPreference = findPreference(getString(R.string.keyCurrentPeriod));
+		currentPeriodPreference.setSummary(SettingsManager.getCurrentPeriod());
+	}
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != RESULT_OK) {
 			return;
 		}
 
-		if (requestCode == SELECT_PAYMENT_METHOD_REQUEST_CODE) {
+		switch (requestCode) {
+		case SELECT_PAYMENT_METHOD_REQUEST_CODE:
 			SettingsManager.putPaymentMethod(data.getAction());
 			setPaymentMethodSummary(data.getAction());
+			break;
+
+		case SELECT_PERIOD_REQUEST_CODE:
+			setCurrentPerdiodSummary(SettingsManager.getCurrentPeriod());
+			break;
+		default:
+			break;
 		}
+
 	}
 
 }
