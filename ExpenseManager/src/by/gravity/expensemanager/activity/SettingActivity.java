@@ -68,6 +68,16 @@ public class SettingActivity extends PreferenceActivity {
 			}
 		});
 		paymentMethod.setSummary(SettingsManager.getPaymentMethod());
+
+		final Preference exchangeRates = findPreference(getString(R.string.keyExchangeRates));
+		exchangeRates.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		});
 	}
 
 	@SuppressWarnings("deprecation")

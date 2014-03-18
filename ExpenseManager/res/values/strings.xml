@@ -55,6 +55,7 @@
     <string name="settingCategoriesShowCountDefault">Количество показываемых категорий</string>
     <string name="settingCategoriesCount">Количество категорий</string>
     <string name="settingPaymentMethod">Cпособ оплаты</string>
+    <string name="settingExchangeRates">Курсы валют</string>
 
     <!-- settings category -->
     <string name="settingCategoryAddPayment">Добавление платежа</string>
