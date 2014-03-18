@@ -364,6 +364,13 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 
 	}
 
+	private void initNote() {
+		EditText note = (EditText) getView().findViewById(R.id.note);
+		if (expenseModel != null && !StringUtil.isEmpty(expenseModel.getNote())) {
+			note.setText(expenseModel.getNote());
+		}
+	}
+
 	private String getFriendlyDate(Calendar calendar) {
 		return CalendarUtil.getDay(calendar.get(Calendar.DAY_OF_MONTH)) + Constants.SPACE_STRING
 				+ CalendarUtil.getMonth(calendar.get(Calendar.MONTH));
@@ -605,6 +612,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 				&& (getExpenseId() == null ? true : isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_EXPENSE_ID))) {
 			initCostEditText();
 			initDate();
+			initNote();
 			selectExpenseCurrency();
 			selectPaymentMethod();
 			if (expenseModel != null) {
