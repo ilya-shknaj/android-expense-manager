@@ -417,4 +417,8 @@ public class SQLDataManager {
 		database.delete(SQLConstants.TABLE_PAYMENT_METHODS, SQLConstants.FIELD_ID + "=?", new String[] { String.valueOf(id) });
 		database.delete(SQLConstants.TABLE_EXPENSE, SQLConstants.FIELD_PAYMENT_METHOD + "=?", new String[] { String.valueOf(id) });
 	}
+
+	public Cursor getCodes() {
+		return database.query(SQLConstants.TABLE_CURRENCY, new String[] { SQLConstants.FIELD_ID, SQLConstants.FIELD_CODE }, null, null, null, null, null);
+	}
 }
