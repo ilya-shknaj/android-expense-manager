@@ -37,7 +37,7 @@ public class SettingActivity extends PreferenceActivity {
 
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				DialogHelper.showNumberEditDialog(SettingActivity.this, R.string.CategoriesCount, 0, SettingsManager.getCategoriesShowCount(),
+				DialogHelper.showNumberEditDialog(SettingActivity.this, R.string.categoriesCount, 0, SettingsManager.getCategoriesShowCount(),
 						new onEditCompleteListener() {
 
 							@Override
