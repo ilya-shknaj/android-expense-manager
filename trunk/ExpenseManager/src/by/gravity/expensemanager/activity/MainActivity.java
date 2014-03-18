@@ -1,7 +1,5 @@
 package by.gravity.expensemanager.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,6 +36,8 @@ public class MainActivity extends DrawerActivity {
 		} else if (action.equals(ChoosePeriodFragment.class.getSimpleName())) {
 			showChoosePeriodFragment();
 
+		} else if (action.equals(PaymentMethodsFragment.class.getSimpleName())) {
+			showPaymentMethodsFragment(true);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class MainActivity extends DrawerActivity {
 				} else if (item.equals(getString(R.string.main))) {
 					showMainFragment();
 				} else if (item.equals(getString(R.string.paymentsMethods))) {
-					showPaymentMethodsFragment();
+					showPaymentMethodsFragment(false);
 				}
 			}
 		}, SHOW_FRAGMENT_DELAY);
@@ -99,8 +99,8 @@ public class MainActivity extends DrawerActivity {
 				.addToBackStack(AddPaymentFragment.class.getSimpleName()).commit();
 	}
 
-	public void showPaymentMethodsFragment() {
-		getSupportFragmentManager().beginTransaction().replace(R.id.content, PaymentMethodsFragment.newInstance()).commit();
+	public void showPaymentMethodsFragment(boolean startForResult) {
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, PaymentMethodsFragment.newInstance(startForResult)).commit();
 	}
 
 	public void showAddPaymentMethodFragment() {

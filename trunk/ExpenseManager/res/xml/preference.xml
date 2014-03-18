@@ -7,12 +7,13 @@
         android:title="@string/settingCurrentPeriod" >
     </MultilinePreference>
 
-    <PreferenceCategory
-        android:title="@string/settingCategoryAddPayment"
-        >
+    <PreferenceCategory android:title="@string/settingCategoryAddPayment" >
         <MultilinePreference
             android:key="@string/keyCategoriesShowCountByDefault"
-            android:title="@string/categoriesShowCountDefault" />
+            android:title="@string/settingCategoriesShowCountDefault" />
+        <MultilinePreference
+            android:key="@string/keyPaymentMethod"
+            android:title="@string/settingPaymentMethod" />
     </PreferenceCategory>
 
 </PreferenceScreen>

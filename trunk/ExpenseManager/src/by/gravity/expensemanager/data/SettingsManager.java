@@ -33,6 +33,14 @@ public class SettingsManager extends PreferenceHelper {
 		putString(R.string.keyCategoriesShowCountByDefault, value);
 	}
 
+	public static String getPaymentMethod() {
+		return getString(R.string.keyPaymentMethod, R.string.emptyPaymentMethods);
+	}
+
+	public static void putPaymentMethod(String paymentMethod) {
+		putString(R.string.keyPaymentMethod, paymentMethod);
+	}
+
 	public static String getFriendlyCurrentPeriod() {
 		String currentPeriod = getCurrentPeriod();
 		Calendar calendar = Calendar.getInstance();

@@ -273,17 +273,25 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 
 	private void selectPaymentMethod() {
 		final RadioGroup paymentsMethodGroup = (RadioGroup) getView().findViewById(R.id.paymentMethodsGroup);
+		String paymentMethod = null;
 		if (expenseModel == null) {
-			// TODO load from setting
-			((RadioButton) paymentsMethodGroup.getChildAt(0)).setChecked(true);
+			paymentMethod = SettingsManager.getPaymentMethod();
+
 		} else {
-			int count = paymentsMethodGroup.getChildCount();
-			for (int i = 0; i < count; i++) {
-				RadioButton radioButton = (RadioButton) paymentsMethodGroup.getChildAt(i);
-				if (radioButton.getText().toString().equals(expenseModel.getPaymentMethod())) {
-					radioButton.setChecked(true);
-					return;
-				}
+			paymentMethod = expenseModel.getPaymentMethod();
+
+		}
+
+		if (paymentMethod.equals(getString(R.string.emptyPaymentMethods))) {
+			((RadioButton) paymentsMethodGroup.getChildAt(0)).setChecked(true);
+			return;
+		}
+		int count = paymentsMethodGroup.getChildCount();
+		for (int i = 0; i < count; i++) {
+			RadioButton radioButton = (RadioButton) paymentsMethodGroup.getChildAt(i);
+			if (radioButton.getText().toString().equals(paymentMethod)) {
+				radioButton.setChecked(true);
+				return;
 			}
 		}
 	}
