@@ -100,6 +100,7 @@ public class MainActivity extends DrawerActivity {
 	}
 
 	public void showPaymentMethodsFragment() {
+		
 		getSupportFragmentManager().beginTransaction().replace(R.id.content, PaymentMethodsFragment.newInstance()).commit();
 	}
 
