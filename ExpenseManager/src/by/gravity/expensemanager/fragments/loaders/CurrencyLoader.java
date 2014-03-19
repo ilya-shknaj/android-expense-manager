@@ -7,13 +7,21 @@ import by.gravity.expensemanager.data.SQLDataManager;
 
 public class CurrencyLoader extends CursorLoader {
 
-	public CurrencyLoader(Context context) {
+	private boolean loadOnlyShortCurrencies;
+
+	public CurrencyLoader(Context context, boolean loadOnlyShortCurrencies) {
 		super(context);
+		this.loadOnlyShortCurrencies = loadOnlyShortCurrencies;
 	}
 
 	@Override
 	public Cursor loadInBackground() {
-		return SQLDataManager.getInstance().getCurrenciesShortCursor();
+		if (loadOnlyShortCurrencies) {
+			return SQLDataManager.getInstance().getCurrenciesShortCursor();
+		} else {
+			return SQLDataManager.getInstance().getCurrenciesFullCursor();
+		}
+
 	}
 
 }

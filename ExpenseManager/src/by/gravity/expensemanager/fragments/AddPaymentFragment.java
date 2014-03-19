@@ -580,7 +580,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
 		LoaderHelper.getIntance().putLoaderStatus(TAG, id, LoaderStatus.STARTED);
 		if (id == LoaderHelper.ADD_PAYMENT_CURRENCIES_ID) {
-			return new CurrencyLoader(getActivity());
+			return new CurrencyLoader(getActivity(), true);
 		} else if (id == LoaderHelper.ADD_PAYMENT_PAYMENT_METHODS_ID) {
 			return new PaymentMethodsLoader(getActivity());
 		} else if (id == LoaderHelper.ADD_PAYMENT_CATEGORIES_ID) {

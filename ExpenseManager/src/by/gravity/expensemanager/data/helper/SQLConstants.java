@@ -16,6 +16,7 @@ public class SQLConstants {
 	public static final String FIELD_NOTE = "note";
 	public static final String FIELD_PAYMENT_METHOD = "paymentMethod";
 	public static final String FIELD_NAME = "name";
+	public static final String FIELD_NAME_EN = "name_en";
 	public static final String FIELD_EXPENSE_ID = "expenseId";
 	public static final String FIELD_CATEGORY_ID = "categoryId";
 	public static final String FIELD_CODE = "code";

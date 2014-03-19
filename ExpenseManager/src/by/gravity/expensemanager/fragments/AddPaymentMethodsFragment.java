@@ -215,7 +215,7 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle budle) {
 		if (id == LoaderHelper.ADD_PAYMENT_METHOD_CURENCIES_ID) {
-			return new CurrencyLoader(getActivity());
+			return new CurrencyLoader(getActivity(), true);
 		} else if (id == LoaderHelper.PAYMENT_METHOD_BY_ID) {
 			return new PaymentMethodByIdLoader(getActivity(), getPaymentMethodId());
 		} else if (id == LoaderHelper.DELETE_PAYMENT_METHOD_ID) {
