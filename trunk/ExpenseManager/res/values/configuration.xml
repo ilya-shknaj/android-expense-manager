@@ -5,4 +5,10 @@
     <string name="defaultCategoriesShowCount">5</string>
     <string name="defaultPeriod">@string/period_current_month</string>
 
+    <string-array name="defaultUseCurrencies">
+        <item>BYR</item>
+        <item>USD</item>
+        <item>EUR</item>
+    </string-array>
+
 </resources>

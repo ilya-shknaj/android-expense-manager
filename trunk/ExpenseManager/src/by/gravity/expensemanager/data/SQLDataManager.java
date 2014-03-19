@@ -141,6 +141,11 @@ public class SQLDataManager {
 		return database.query(SQLConstants.TABLE_CURRENCY, null, SQLConstants.FIELD_IS_SHOW + "=?", new String[] { "1" }, null, null, null);
 	}
 
+	public Cursor getCurrenciesFullCursor() {
+		return database.query(SQLConstants.TABLE_CURRENCY, new String[] { SQLConstants.FIELD_ID, SQLConstants.FIELD_CODE, SQLConstants.FIELD_NAME,
+				SQLConstants.FIELD_IS_SHOW }, null, null, null, null, null);
+	}
+
 	public Cursor getCategoriesCursor() {
 		return database.query(SQLConstants.TABLE_CATEGORY, null, null, null, null, null, SQLConstants.FIELD_USAGE_COUNT + " DESC");
 	}
@@ -419,6 +424,7 @@ public class SQLDataManager {
 	}
 
 	public Cursor getCodes() {
-		return database.query(SQLConstants.TABLE_CURRENCY, new String[] { SQLConstants.FIELD_ID, SQLConstants.FIELD_CODE }, null, null, null, null, null);
+		return database.query(SQLConstants.TABLE_CURRENCY, new String[] { SQLConstants.FIELD_ID, SQLConstants.FIELD_CODE }, null, null, null, null,
+				null);
 	}
 }

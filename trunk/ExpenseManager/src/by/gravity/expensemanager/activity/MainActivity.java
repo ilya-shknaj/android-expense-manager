@@ -40,7 +40,8 @@ public class MainActivity extends DrawerActivity {
 		} else if (action.equals(PaymentMethodsFragment.class.getSimpleName())) {
 			showPaymentMethodsFragment();
 		} else if (action.equals(ChooseCurrencyFragment.class.getSimpleName())) {
-			showChooseCurrencyFragment();
+			//TODO
+			showChooseCurrencyFragment(false);
 		}
 	}
 
@@ -126,8 +127,8 @@ public class MainActivity extends DrawerActivity {
 		timePickerDialog.show(getSupportFragmentManager(), TimePickerDialog.class.getSimpleName());
 	}
 
-	public void showChooseCurrencyFragment() {
-		getSupportFragmentManager().beginTransaction().replace(R.id.content, ChooseCurrencyFragment.newInstance()).commit();
+	public void showChooseCurrencyFragment(boolean showOnlyShortCurrencies) {
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, ChooseCurrencyFragment.newInstance(showOnlyShortCurrencies)).commit();
 	}
 
 	public void delayedPopBackStack() {

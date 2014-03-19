@@ -21,8 +21,18 @@ public class ChooseCurrencyFragment extends CommonProgressSherlockFragment {
 
 	private LayoutInflater inflater;
 
-	public static ChooseCurrencyFragment newInstance() {
-		return new ChooseCurrencyFragment();
+	private static final String ARG_SHOW_ONLY_SHORT_CURRENCIES = "ARG_SHOW_ONLY_SHORT_CURRENCIES";
+
+	public static ChooseCurrencyFragment newInstance(boolean showOnlyShortCurrencies) {
+		ChooseCurrencyFragment fragment = new ChooseCurrencyFragment();
+		Bundle bundle = new Bundle();
+		bundle.putBoolean(ARG_SHOW_ONLY_SHORT_CURRENCIES, showOnlyShortCurrencies);
+		fragment.setArguments(bundle);
+		return fragment;
+	}
+
+	private boolean getShowOnlyShortCurrencies() {
+		return getArguments().getBoolean(ARG_SHOW_ONLY_SHORT_CURRENCIES);
 	}
 
 	@Override
@@ -79,7 +89,7 @@ public class ChooseCurrencyFragment extends CommonProgressSherlockFragment {
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
 		if (id == LoaderHelper.ADD_PAYMENT_CURRENCIES_ID) {
-			return new CurrencyLoader(getActivity());
+			return new CurrencyLoader(getActivity(), getShowOnlyShortCurrencies());
 		}
 		return null;
 	}
