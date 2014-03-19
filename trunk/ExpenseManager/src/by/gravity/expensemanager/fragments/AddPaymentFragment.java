@@ -36,13 +36,13 @@ import by.gravity.expensemanager.data.SQLDataManager;
 import by.gravity.expensemanager.data.SettingsManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.NumberDialog.OnInputCompleteListener;
+import by.gravity.expensemanager.fragments.loaders.CategoriesLoader;
 import by.gravity.expensemanager.fragments.loaders.CurrencyLoader;
 import by.gravity.expensemanager.fragments.loaders.DeletePaymentLoader;
 import by.gravity.expensemanager.fragments.loaders.ExpenseLoader;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper.LoaderStatus;
 import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
-import by.gravity.expensemanager.fragments.loaders.addPayment.CategoriesLoader;
 import by.gravity.expensemanager.model.ExpenseModel;
 import by.gravity.expensemanager.util.Constants;
 import by.gravity.expensemanager.util.DialogHelper;
@@ -667,11 +667,6 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		}
 
 		return categories;
-
-	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> arg0) {
 
 	}
 

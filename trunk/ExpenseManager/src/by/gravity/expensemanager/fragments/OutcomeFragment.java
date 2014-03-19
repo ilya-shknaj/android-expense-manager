@@ -13,11 +13,11 @@ import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.adapter.ExpandableListAdapter;
 import by.gravity.expensemanager.data.SettingsManager;
+import by.gravity.expensemanager.fragments.loaders.ChildGroupedByCategoryNameLoader;
+import by.gravity.expensemanager.fragments.loaders.ChildGroupedByDateCursorLoader;
+import by.gravity.expensemanager.fragments.loaders.GroupedByCategoryNameCursorLoader;
+import by.gravity.expensemanager.fragments.loaders.GroupedByDateCursorLoader;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
-import by.gravity.expensemanager.fragments.loaders.outcome.ChildGroupedByCategoryNameLoader;
-import by.gravity.expensemanager.fragments.loaders.outcome.ChildGroupedByDateCursorLoader;
-import by.gravity.expensemanager.fragments.loaders.outcome.GroupedByCategoryNameCursorLoader;
-import by.gravity.expensemanager.fragments.loaders.outcome.GroupedByDateCursorLoader;
 
 import com.actionbarsherlock.view.MenuItem;
 
@@ -202,10 +202,6 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 			adapter.setChildrenCursor(adapter.getGroupMap().get(id), cursor);
 		}
 
-	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> arg0) {
 	}
 
 }

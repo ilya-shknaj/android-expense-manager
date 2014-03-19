@@ -13,20 +13,16 @@ import by.gravity.expensemanager.util.Constants;
 
 public class SettingsManager extends PreferenceHelper {
 
-	private static int DEFAULT_PERIOD = R.string.period_current_month;
-
-	private static String CATEGORIES_SHOW_COUNT = "5";
-
 	public static void putCurrentPeriod(String value) {
 		putString(R.string.keyCurrentPeriod, value);
 	}
 
 	public static String getCurrentPeriod() {
-		return getString(R.string.keyCurrentPeriod, DEFAULT_PERIOD);
+		return getString(R.string.keyCurrentPeriod, R.string.defaultPeriod);
 	}
 
 	public static String getCategoriesShowCount() {
-		return getString(R.string.keyCategoriesShowCountByDefault, CATEGORIES_SHOW_COUNT);
+		return getString(R.string.keyCategoriesShowCountByDefault, R.string.defaultCategoriesShowCount);
 	}
 
 	public static void putCategoriesShowCount(String value) {
@@ -39,6 +35,18 @@ public class SettingsManager extends PreferenceHelper {
 
 	public static void putPaymentMethod(String paymentMethod) {
 		putString(R.string.keyPaymentMethod, paymentMethod);
+	}
+
+	public static String getExchangeRatesLastUpdateTime() {
+		return getString(R.string.keyExchangeRates, R.string.never);
+	}
+
+	public static String getDefaultCurrency() {
+		return getString(R.string.keyDefautCurrency, R.string.defaultCurrency);
+	}
+
+	public static void putDefaultCurrency(String currency) {
+		putString(R.string.keyDefautCurrency, currency);
 	}
 
 	public static String getFriendlyCurrentPeriod() {

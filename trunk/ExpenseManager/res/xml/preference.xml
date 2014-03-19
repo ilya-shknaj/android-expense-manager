@@ -6,11 +6,17 @@
         android:summary="@string/period_current_month"
         android:title="@string/settingCurrentPeriod" >
     </MultilinePreference>
-    <MultilinePreference
-        android:key="@string/keyExchangeRates"
-        android:title="@string/settingExchangeRates" >
-    </MultilinePreference>
 
+    <PreferenceCategory android:title="@string/settingCategoryCurrency" >
+        <MultilinePreference
+            android:key="@string/keyDefautCurrency"
+            android:title="@string/settingDefaultCurrency" >
+        </MultilinePreference>
+        <MultilinePreference
+            android:key="@string/keyExchangeRates"
+            android:title="@string/settingExchangeRates" >
+        </MultilinePreference>
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/settingCategoryAddPayment" >
         <MultilinePreference
             android:key="@string/keyCategoriesShowCountByDefault"

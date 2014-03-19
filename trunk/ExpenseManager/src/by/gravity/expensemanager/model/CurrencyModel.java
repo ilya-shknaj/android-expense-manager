@@ -6,16 +6,13 @@ public class CurrencyModel {
 
 	private String name;
 
-	private String symbol;
-
 	public CurrencyModel() {
 
 	}
 
-	public CurrencyModel(String code, String name, String symbol) {
+	public CurrencyModel(String code, String name) {
 		this.code = code;
 		this.name = name;
-		this.symbol = symbol;
 	}
 
 	public String getCode() {
@@ -32,14 +29,6 @@ public class CurrencyModel {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getSymbol() {
-		return symbol;
-	}
-
-	public void setSymbol(String symbol) {
-		this.symbol = symbol;
 	}
 
 }

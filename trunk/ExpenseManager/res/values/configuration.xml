@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="defaultCurrency">USD</string>
+    <string name="defaultCategoriesShowCount">5</string>
+    <string name="defaultPeriod">@string/period_current_month</string>
+
+</resources>

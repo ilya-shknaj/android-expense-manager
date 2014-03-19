@@ -7,8 +7,10 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.data.SettingsManager;
+import by.gravity.expensemanager.fragments.ChooseCurrencyFragment;
 import by.gravity.expensemanager.fragments.ChoosePeriodFragment;
 import by.gravity.expensemanager.fragments.PaymentMethodsFragment;
+import by.gravity.expensemanager.util.Constants;
 import by.gravity.expensemanager.util.DialogHelper;
 import by.gravity.expensemanager.util.DialogHelper.onEditCompleteListener;
 
@@ -18,13 +20,23 @@ public class SettingActivity extends PreferenceActivity {
 
 	private static final int SELECT_PAYMENT_METHOD_REQUEST_CODE = 2;
 
+	private static final int SELECT_CURRENCY_REQUEST_CODE = 3;
+
+	private Preference currentPeriodPreference;
+
+	private Preference categoriesShowCount;
+
+	private Preference defaultCurrency;
+
+	private Preference exchangeRates;
+
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.preference);
 
-		final Preference currentPeriodPreference = findPreference(getString(R.string.keyCurrentPeriod));
+		currentPeriodPreference = findPreference(getString(R.string.keyCurrentPeriod));
 		currentPeriodPreference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
@@ -35,9 +47,9 @@ public class SettingActivity extends PreferenceActivity {
 				return false;
 			}
 		});
-		currentPeriodPreference.setSummary(SettingsManager.getCurrentPeriod());
+		updateCurrentPeriodSummary();
 
-		final Preference categoriesShowCount = findPreference(getString(R.string.keyCategoriesShowCountByDefault));
+		categoriesShowCount = findPreference(getString(R.string.keyCategoriesShowCountByDefault));
 		categoriesShowCount.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
@@ -48,13 +60,13 @@ public class SettingActivity extends PreferenceActivity {
 							@Override
 							public void onEditCompelted(String text) {
 								SettingsManager.putCategoriesShowCount(text);
-								categoriesShowCount.setSummary(text);
+								updateCategoriesShowCountSummary();
 							}
 						});
 				return false;
 			}
 		});
-		categoriesShowCount.setSummary(SettingsManager.getCategoriesShowCount());
+		updateCategoriesShowCountSummary();
 
 		final Preference paymentMethod = findPreference(getString(R.string.keyPaymentMethod));
 		paymentMethod.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -69,7 +81,7 @@ public class SettingActivity extends PreferenceActivity {
 		});
 		paymentMethod.setSummary(SettingsManager.getPaymentMethod());
 
-		final Preference exchangeRates = findPreference(getString(R.string.keyExchangeRates));
+		exchangeRates = findPreference(getString(R.string.keyExchangeRates));
 		exchangeRates.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
@@ -78,18 +90,41 @@ public class SettingActivity extends PreferenceActivity {
 				return false;
 			}
 		});
+		updateExchangeRateSummary();
+
+		defaultCurrency = findPreference(getString(R.string.keyDefautCurrency));
+		defaultCurrency.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Intent intent = new Intent(SettingActivity.this, MainActivity.class);
+				intent.setAction(ChooseCurrencyFragment.class.getSimpleName());
+				startActivityForResult(intent, SELECT_CURRENCY_REQUEST_CODE);
+				return false;
+			}
+		});
+		updateDefaultCurrency();
+
 	}
 
-	@SuppressWarnings("deprecation")
-	private void setPaymentMethodSummary(String text) {
-		final Preference paymentMethod = findPreference(getString(R.string.keyPaymentMethod));
-		paymentMethod.setSummary(text);
+	private void updatePaymentMethodSummary() {
+		categoriesShowCount.setSummary(SettingsManager.getPaymentMethod());
 	}
 
-	@SuppressWarnings("deprecation")
-	private void setCurrentPerdiodSummary(String text) {
-		final Preference currentPeriodPreference = findPreference(getString(R.string.keyCurrentPeriod));
+	private void updateCategoriesShowCountSummary() {
+		categoriesShowCount.setSummary(SettingsManager.getCategoriesShowCount());
+	}
+
+	private void updateCurrentPeriodSummary() {
 		currentPeriodPreference.setSummary(SettingsManager.getCurrentPeriod());
+	}
+
+	private void updateExchangeRateSummary() {
+		exchangeRates.setSummary(getString(R.string.lastTimeUpdate) + Constants.NEW_STRING + SettingsManager.getExchangeRatesLastUpdateTime());
+	}
+
+	private void updateDefaultCurrency() {
+		defaultCurrency.setSummary(SettingsManager.getDefaultCurrency());
 	}
 
 	@Override
@@ -101,11 +136,15 @@ public class SettingActivity extends PreferenceActivity {
 		switch (requestCode) {
 		case SELECT_PAYMENT_METHOD_REQUEST_CODE:
 			SettingsManager.putPaymentMethod(data.getAction());
-			setPaymentMethodSummary(data.getAction());
+			updatePaymentMethodSummary();
 			break;
 
 		case SELECT_PERIOD_REQUEST_CODE:
-			setCurrentPerdiodSummary(SettingsManager.getCurrentPeriod());
+			updateCurrentPeriodSummary();
+			break;
+			
+		case SELECT_CURRENCY_REQUEST_CODE:
+			updateDefaultCurrency();
 			break;
 		default:
 			break;
