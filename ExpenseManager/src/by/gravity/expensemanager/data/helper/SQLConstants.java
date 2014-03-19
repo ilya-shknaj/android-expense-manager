@@ -19,7 +19,6 @@ public class SQLConstants {
 	public static final String FIELD_EXPENSE_ID = "expenseId";
 	public static final String FIELD_CATEGORY_ID = "categoryId";
 	public static final String FIELD_CODE = "code";
-	public static final String FIELD_SYMBOL = "symbol";
 	public static final String FIELD_BALANCE = "balance";
 	public static final String FIELD_IS_SHOW = "isShow";
 	public static final String FIELD_USAGE_COUNT = "usageCount";

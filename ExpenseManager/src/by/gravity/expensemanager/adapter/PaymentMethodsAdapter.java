@@ -12,8 +12,8 @@ import by.gravity.expensemanager.util.Constants;
 
 public class PaymentMethodsAdapter extends ResourceCursorAdapter {
 
-	public PaymentMethodsAdapter(Context context, int layout, Cursor c) {
-		super(context, layout, c, true);
+	public PaymentMethodsAdapter(Context context, Cursor c) {
+		super(context, R.layout.i_payments_methods_detail_pay, c, true);
 	}
 
 	@Override

@@ -258,11 +258,6 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 
 	}
 
-	@Override
-	public void onLoaderReset(Loader<Cursor> arg0) {
-
-	}
-
 	private List<String> parseCurrency(Cursor cursor) {
 		List<String> currencyList = new ArrayList<String>();
 		if (cursor != null && cursor.getCount() > 0) {

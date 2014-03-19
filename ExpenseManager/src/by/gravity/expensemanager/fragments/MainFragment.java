@@ -169,9 +169,4 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 		}
 	}
 
-	@Override
-	public void onLoaderReset(Loader<Cursor> arg0) {
-
-	}
-
 }

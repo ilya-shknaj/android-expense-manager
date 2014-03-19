@@ -33,6 +33,11 @@ public abstract class CommonProgressSherlockFragment extends SherlockProgressFra
 		LoaderHelper.getIntance().putLoaderStatus(getClass().getSimpleName(), loader.getId(), LoaderStatus.FINISHED);
 	}
 
+	@Override
+	public void onLoaderReset(Loader<Cursor> arg0) {
+
+	}
+
 	public abstract int getViewId();
 
 	public abstract int getTitleResource();

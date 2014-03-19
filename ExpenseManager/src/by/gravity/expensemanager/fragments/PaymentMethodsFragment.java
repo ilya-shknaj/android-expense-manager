@@ -46,7 +46,7 @@ public class PaymentMethodsFragment extends CommonProgressSherlockFragment imple
 
 	private void initListView(Cursor cursor) {
 		final ListView listView = (ListView) getView().findViewById(R.id.listView);
-		final PaymentMethodsAdapter adapter = new PaymentMethodsAdapter(getActivity(), R.layout.i_payments_methods_detail_pay, cursor);
+		final PaymentMethodsAdapter adapter = new PaymentMethodsAdapter(getActivity(), cursor);
 		listView.setAdapter(adapter);
 		listView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -93,11 +93,6 @@ public class PaymentMethodsFragment extends CommonProgressSherlockFragment imple
 				setContentEmpty(true);
 			}
 		}
-	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> loader) {
-
 	}
 
 	@Override

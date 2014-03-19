@@ -66,8 +66,6 @@ public class SQLDataManagerHelper extends SQLiteOpenHelper {
 			+ " VARCHAR (10),"
 			+ SQLConstants.FIELD_NAME
 			+ " VARCHAR (100),"
-			+ SQLConstants.FIELD_SYMBOL
-			+ " VARCHAR (10),"
 			+ SQLConstants.FIELD_IS_SHOW
 			+ " INTEGER);";
 
@@ -98,9 +96,9 @@ public class SQLDataManagerHelper extends SQLiteOpenHelper {
 	
 	private void addCurrency(SQLiteDatabase database) {
 		List<CurrencyModel> currencyList = new ArrayList<CurrencyModel>();
-		currencyList.add(new CurrencyModel("BYR", "Беларусский рубль", "BYR"));
-		currencyList.add(new CurrencyModel("USD", "Доллар", "$"));
-		currencyList.add(new CurrencyModel("EUR", "Евро", "€"));
+		currencyList.add(new CurrencyModel("BYR", "Беларусский рубль"));
+		currencyList.add(new CurrencyModel("USD", "Доллар"));
+		currencyList.add(new CurrencyModel("EUR", "Евро"));
 
 		ContentValues values = null;
 		CurrencyModel currencyModel = null;
@@ -109,7 +107,6 @@ public class SQLDataManagerHelper extends SQLiteOpenHelper {
 			values = new ContentValues();
 			values.put(SQLConstants.FIELD_CODE, currencyModel.getCode());
 			values.put(SQLConstants.FIELD_NAME, currencyModel.getName());
-			values.put(SQLConstants.FIELD_SYMBOL, currencyModel.getSymbol());
 			values.put(SQLConstants.FIELD_IS_SHOW, "1");
 			database.insert(SQLConstants.TABLE_CURRENCY, null, values);
 		}

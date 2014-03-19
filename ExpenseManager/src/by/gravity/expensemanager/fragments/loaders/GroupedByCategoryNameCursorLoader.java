@@ -1,4 +1,4 @@
-package by.gravity.expensemanager.fragments.loaders.outcome;
+package by.gravity.expensemanager.fragments.loaders;
 
 import by.gravity.expensemanager.data.SQLDataManager;
 import android.content.Context;

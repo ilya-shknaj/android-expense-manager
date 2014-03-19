@@ -40,6 +40,8 @@
     <string name="remove">Удалить</string>
     <string name="removePaymentMessage">Вы уверены?</string>
     <string name="removePayemntMethodMessage">Вы уверены? Все платежи осуществленные этим методом будут удалены!</string>
+    <string name="never">Никогда</string>
+    
 
     <!-- errors -->
     <string name="parseNumberError">Произошла ошибка во время обработки введенного значения</string>
@@ -56,8 +58,12 @@
     <string name="settingCategoriesCount">Количество категорий</string>
     <string name="settingPaymentMethod">Cпособ оплаты</string>
     <string name="settingExchangeRates">Курсы валют</string>
+    <string name="settingDefaultCurrency">Текущая валюта</string>
+    <string name="lastTimeUpdate">Последнеее обновление</string>
+    
 
     <!-- settings category -->
     <string name="settingCategoryAddPayment">Добавление платежа</string>
-
+	<string name="settingCategoryCurrency">Валюта</string>
+	
 </resources>

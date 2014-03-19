@@ -6,6 +6,7 @@ import android.os.Handler;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.fragments.AddPaymentFragment;
 import by.gravity.expensemanager.fragments.AddPaymentMethodsFragment;
+import by.gravity.expensemanager.fragments.ChooseCurrencyFragment;
 import by.gravity.expensemanager.fragments.ChoosePeriodFragment;
 import by.gravity.expensemanager.fragments.MainFragment;
 import by.gravity.expensemanager.fragments.OutcomeFragment;
@@ -31,13 +32,15 @@ public class MainActivity extends DrawerActivity {
 		String action = getIntent().getAction();
 		if (action.equals(Intent.ACTION_MAIN)) {
 			showMainFragment();
-//			 showOutcomeFragment(true);
+			// showOutcomeFragment(true);
 			// showPaymentMethodsFragment();
 		} else if (action.equals(ChoosePeriodFragment.class.getSimpleName())) {
 			showChoosePeriodFragment();
 
 		} else if (action.equals(PaymentMethodsFragment.class.getSimpleName())) {
 			showPaymentMethodsFragment();
+		} else if (action.equals(ChooseCurrencyFragment.class.getSimpleName())) {
+			showChooseCurrencyFragment();
 		}
 	}
 
@@ -100,7 +103,7 @@ public class MainActivity extends DrawerActivity {
 	}
 
 	public void showPaymentMethodsFragment() {
-		
+
 		getSupportFragmentManager().beginTransaction().replace(R.id.content, PaymentMethodsFragment.newInstance()).commit();
 	}
 
@@ -121,6 +124,10 @@ public class MainActivity extends DrawerActivity {
 	public void showTimePickerDialog(int hourOfDay, int minute, OnTimeSetListener onTimeSetListener) {
 		final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(onTimeSetListener, hourOfDay, minute, true, false);
 		timePickerDialog.show(getSupportFragmentManager(), TimePickerDialog.class.getSimpleName());
+	}
+
+	public void showChooseCurrencyFragment() {
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, ChooseCurrencyFragment.newInstance()).commit();
 	}
 
 	public void delayedPopBackStack() {
