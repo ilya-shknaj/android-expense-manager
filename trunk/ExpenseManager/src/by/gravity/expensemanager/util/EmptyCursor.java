@@ -244,4 +244,10 @@ public class EmptyCursor implements Cursor{
 		
 	}
 
+	@Override
+	public Uri getNotificationUri() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
