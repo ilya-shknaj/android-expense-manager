@@ -9,24 +9,19 @@
         android:layout_height="fill_parent"
         layout="@layout/i_progress_large" />
 
-    <ScrollView
+    <LinearLayout
         android:id="@+id/content_container"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginBottom="50dp"
         android:visibility="gone" >
 
-        <RelativeLayout
+        <ListView
+            android:id="@+id/listView"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
-
-            <RadioGroup
-                android:id="@+id/radioGroup"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
-            </RadioGroup>
-        </RelativeLayout>
-    </ScrollView>
+        </ListView>
+    </LinearLayout>
 
     <include
         android:layout_width="fill_parent"

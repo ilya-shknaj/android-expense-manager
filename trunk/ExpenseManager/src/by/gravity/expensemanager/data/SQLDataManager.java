@@ -38,9 +38,12 @@ public class SQLDataManager {
 
 	public void addExpense(final String amount, final String currency, final Long date, final Long time, final List<String> categories,
 			final String note, final String paymentMethod, OnLoadCompleteListener<Boolean> onLoadCompleteListener) {
+
 		new AsyncTask<Void, Void, Boolean>(onLoadCompleteListener) {
+
 			@Override
 			protected Boolean doInBackground(Void... params) {
+
 				updateCategories(categories);
 
 				ContentValues values = new ContentValues();
@@ -67,10 +70,12 @@ public class SQLDataManager {
 
 	public void updateExpense(final long id, final String amount, final String currency, final Long date, final Long time,
 			final List<String> categories, final String note, final String paymentMethod, final OnLoadCompleteListener<Void> onCompletionListener) {
+
 		new AsyncTask<Void, Void, Void>(onCompletionListener) {
 
 			@Override
 			protected Void doInBackground(Void... params) {
+
 				updateCategories(categories);
 				addToPaymentHistory(id);
 
@@ -98,10 +103,12 @@ public class SQLDataManager {
 
 	public void addPaymentMethod(final String name, final String note, final String balance, final String currency,
 			final OnLoadCompleteListener<Void> onCompleteListener) {
+
 		new AsyncTask<Void, Void, Void>(onCompleteListener) {
 
 			@Override
 			protected Void doInBackground(Void... arg0) {
+
 				ContentValues values = new ContentValues();
 				values.put(SQLConstants.FIELD_NAME, StringUtil.uppercaseFirstLetter(name));
 				values.put(SQLConstants.FIELD_NOTE, note);
@@ -119,10 +126,12 @@ public class SQLDataManager {
 
 	public void updatePaymentMethod(final Long id, final String name, final String note, final String balance, final String currency,
 			final OnLoadCompleteListener<Void> onCompleteListener) {
+
 		new AsyncTask<Void, Void, Void>(onCompleteListener) {
 
 			@Override
 			protected Void doInBackground(Void... params) {
+
 				ContentValues values = new ContentValues();
 				values.put(SQLConstants.FIELD_NAME, StringUtil.uppercaseFirstLetter(name));
 				values.put(SQLConstants.FIELD_NOTE, note);
@@ -138,15 +147,18 @@ public class SQLDataManager {
 	}
 
 	public Cursor getCurrenciesShortCursor() {
-		return database.query(SQLConstants.TABLE_CURRENCY, null, SQLConstants.FIELD_IS_SHOW + "=?", new String[] { "1" }, null, null, null);
+
+		return database.query(SQLConstants.TABLE_CURRENCY, null, SQLConstants.FIELD_IS_USED + "=?", new String[] { "1" }, null, null, null);
 	}
 
 	public Cursor getCurrenciesFullCursor() {
+
 		return database.query(SQLConstants.TABLE_CURRENCY, new String[] { SQLConstants.FIELD_ID, SQLConstants.FIELD_CODE, SQLConstants.FIELD_NAME,
-				SQLConstants.FIELD_IS_SHOW }, null, null, null, null, null);
+				SQLConstants.FIELD_IS_USED }, null, null, null, null, null);
 	}
 
 	public Cursor getCategoriesCursor() {
+
 		return database.query(SQLConstants.TABLE_CATEGORY, null, null, null, null, null, SQLConstants.FIELD_USAGE_COUNT + " DESC");
 	}
 
@@ -159,6 +171,7 @@ public class SQLDataManager {
 			+ ")WHERE " + SQLConstants.FIELD_DATE + " BETWEEN " + "? AND ? GROUP BY " + SQLConstants.FIELD_DATE;
 
 	public Cursor getGroupedByDateCursor() {
+
 		PeriodDate periodDate = SettingsManager.getCurrentPeriodDates();
 		return database.rawQuery(EXPENSE_GROUPED_BY_DATE_AND_AMOUNT_QUERY, new String[] { periodDate.getStartDate(), periodDate.getEndDate() });
 	}
@@ -178,6 +191,7 @@ public class SQLDataManager {
 			+ SQLConstants.FIELD_NAME + ")GROUP BY " + SQLConstants.FIELD_NAME;
 
 	public Cursor getGroupedByCategoryNameCursor() {
+
 		PeriodDate periodDate = SettingsManager.getCurrentPeriodDates();
 		return database.rawQuery(EXPENSE_GROUPED_BY_CATEGORY_NAME_QUERY, new String[] { periodDate.getStartDate(), periodDate.getEndDate() });
 	}
@@ -193,6 +207,7 @@ public class SQLDataManager {
 			+ SQLConstants.FIELD_DATE + "=?";
 
 	public Cursor getChildGroupedByDateExpenseCursor(Long date) {
+
 		return database.rawQuery(GET_CHILD_GROUPED_BY_DATE_QUERY, new String[] { String.valueOf(date) });
 	}
 
@@ -210,6 +225,7 @@ public class SQLDataManager {
 			+ SQLConstants.FIELD_PAYMENT_METHOD + "=" + SQLConstants.TABLE_PAYMENT_METHODS + "." + SQLConstants.FIELD_ID;
 
 	public Cursor getExpenseByIdCursor(Long id) {
+
 		return database.rawQuery(GET_EXPENSE_BY_ID_QUERY, new String[] { String.valueOf(id) });
 	}
 
@@ -227,12 +243,14 @@ public class SQLDataManager {
 			+ "." + SQLConstants.FIELD_DATE + " BETWEEN ? AND ?";
 
 	public Cursor getGroupedByCategoryNameChildCursor(int category) {
+
 		PeriodDate periodDate = SettingsManager.getCurrentPeriodDates();
 		return database.rawQuery(GET_CATEGORY_EXPENSE_QUERY,
 				new String[] { String.valueOf(category), periodDate.getStartDate(), periodDate.getEndDate() });
 	}
 
 	public Cursor getGrouperdByCategoryNameCategoriesCursor(long expenseId) {
+
 		return database.query(SQLConstants.TABLE_CATEGORY + "," + SQLConstants.TABLE_EXPENSE_CATEGORY, new String[] { SQLConstants.FIELD_NAME },
 				SQLConstants.TABLE_EXPENSE_CATEGORY + "." + SQLConstants.FIELD_CATEGORY_ID + "=" + SQLConstants.TABLE_CATEGORY + "."
 						+ SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE_CATEGORY + "." + SQLConstants.FIELD_EXPENSE_ID + "=?",
@@ -246,6 +264,7 @@ public class SQLDataManager {
 			+ SQLConstants.FIELD_CURRENCY + "=" + SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_ID;
 
 	public Cursor getPaymentMethods() {
+
 		return database.rawQuery(GET_PAYMENT_METHODS_QUERY, null);
 	}
 
@@ -257,6 +276,7 @@ public class SQLDataManager {
 			+ SQLConstants.TABLE_PAYMENT_METHODS + "." + SQLConstants.FIELD_ID + "=?";
 
 	public Cursor getPaymentMethod(Long id) {
+
 		return database.rawQuery(GET_PAYMENT_METHODS_BY_ID_QUERY, new String[] { String.valueOf(id) });
 	}
 
@@ -268,10 +288,12 @@ public class SQLDataManager {
 			+ SQLConstants.TABLE_PAYMENT_METHODS + "." + SQLConstants.FIELD_CURRENCY + ")";
 
 	public Cursor getSumBalance() {
+
 		return database.rawQuery(GET_SUM_BALANCE, null);
 	}
 
 	private Long getCategoryId(final String name) {
+
 		Cursor cursor = database.query(SQLConstants.TABLE_CATEGORY, new String[] { SQLConstants.FIELD_ID }, SQLConstants.FIELD_NAME + "=?",
 				new String[] { name }, null, null, null);
 		Long id = null;
@@ -288,6 +310,7 @@ public class SQLDataManager {
 	}
 
 	private List<Long> getCategoriesId(final List<String> categories) {
+
 		Cursor cursor = database.query(SQLConstants.TABLE_CATEGORY, new String[] { SQLConstants.FIELD_ID }, SQLConstants.FIELD_NAME + " IN("
 				+ makePlaceholders(categories.size()) + ")", categories.toArray(new String[] {}), null, null, null);
 		List<Long> categoriesId = new ArrayList<Long>();
@@ -303,6 +326,7 @@ public class SQLDataManager {
 	}
 
 	private String makePlaceholders(int len) {
+
 		if (len < 1) {
 			throw new RuntimeException("No placeholders");
 		} else {
@@ -316,12 +340,14 @@ public class SQLDataManager {
 	}
 
 	private void addCategory(final String name) {
+
 		ContentValues values = new ContentValues();
 		values.put(SQLConstants.FIELD_NAME, name);
 		database.insert(SQLConstants.TABLE_CATEGORY, null, values);
 	}
 
 	private void updateCategories(final List<String> categories) {
+
 		for (int i = 0; i < categories.size(); i++) {
 			if (getCategoryId(categories.get(i)) == null) {
 				categories.set(i, StringUtil.uppercaseFirstLetter(categories.get(i)));
@@ -331,6 +357,7 @@ public class SQLDataManager {
 	}
 
 	private void addExpenseCategories(final List<String> categories, final long expenseId) {
+
 		List<Long> categoriesId = getCategoriesId(categories);
 		ContentValues values = null;
 		for (int i = 0; i < categoriesId.size(); i++) {
@@ -342,10 +369,12 @@ public class SQLDataManager {
 	}
 
 	private void deleteExpenseCategories(final long expenseId) {
+
 		database.delete(SQLConstants.TABLE_EXPENSE_CATEGORY, SQLConstants.FIELD_EXPENSE_ID + "=?", new String[] { String.valueOf(expenseId) });
 	}
 
 	private Long getCurrencyId(final String currency) {
+
 		Cursor cursor = database.query(SQLConstants.TABLE_CURRENCY, new String[] { SQLConstants.FIELD_ID }, SQLConstants.FIELD_CODE + "=?",
 				new String[] { currency }, null, null, null);
 		Long id = null;
@@ -360,6 +389,7 @@ public class SQLDataManager {
 	}
 
 	private Long getPaymentMethodId(final String accountName) {
+
 		if (StringUtil.isEmpty(accountName)) {
 			return null;
 		}
@@ -376,6 +406,7 @@ public class SQLDataManager {
 	}
 
 	private void updateUsageCategoryCount(final List<String> categories) {
+
 		Cursor cursor = database.query(SQLConstants.TABLE_CATEGORY, null, SQLConstants.FIELD_NAME + " IN(" + makePlaceholders(categories.size())
 				+ ")", categories.toArray(new String[] {}), null, null, null);
 		if (cursor != null && cursor.getCount() > 0) {
@@ -394,6 +425,7 @@ public class SQLDataManager {
 	}
 
 	public void deletePayment(Long id) {
+
 		addToPaymentHistory(id);
 		database.delete(SQLConstants.TABLE_EXPENSE, SQLConstants.FIELD_ID + "=?", new String[] { String.valueOf(id) });
 	}
@@ -404,6 +436,7 @@ public class SQLDataManager {
 			+ SQLConstants.FIELD_PAYMENT_METHOD + " FROM " + SQLConstants.TABLE_EXPENSE + " WHERE " + SQLConstants.FIELD_ID + "= ?)";
 
 	public void substractFromPaymentHistory(Long paymentId) {
+
 		// TODO use this method not recomended
 		database.execSQL(SUBSTRACT_FROM_PAYMENT_METHOD_QUERY, new String[] { String.valueOf(paymentId), String.valueOf(paymentId) });
 	}
@@ -414,17 +447,26 @@ public class SQLDataManager {
 			+ SQLConstants.TABLE_EXPENSE + " WHERE " + SQLConstants.FIELD_ID + "= ?)";
 
 	public void addToPaymentHistory(Long paymentId) {
+
 		// TODO use this method not recomended
 		database.execSQL(ADD_TO_PAYMENT_METHOD_QUERY, new String[] { String.valueOf(paymentId), String.valueOf(paymentId) });
 	}
 
 	public void deletePaymentMethod(long id) {
+
 		database.delete(SQLConstants.TABLE_PAYMENT_METHODS, SQLConstants.FIELD_ID + "=?", new String[] { String.valueOf(id) });
 		database.delete(SQLConstants.TABLE_EXPENSE, SQLConstants.FIELD_PAYMENT_METHOD + "=?", new String[] { String.valueOf(id) });
 	}
 
 	public Cursor getCodes() {
+
 		return database.query(SQLConstants.TABLE_CURRENCY, new String[] { SQLConstants.FIELD_ID, SQLConstants.FIELD_CODE }, null, null, null, null,
 				null);
+	}
+
+	private static final String CLEAR_SHOWED_CURRENCY_QUERY = "UPDATE " + SQLConstants.TABLE_CURRENCY + " SET " + SQLConstants.FIELD_IS_USED + "= 0";
+
+	public void updateUsedCurrencies(long[] ids) {
+		
 	}
 }

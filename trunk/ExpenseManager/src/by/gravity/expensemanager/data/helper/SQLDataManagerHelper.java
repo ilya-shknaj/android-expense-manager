@@ -68,7 +68,7 @@ public class SQLDataManagerHelper extends SQLiteOpenHelper {
 			+ " VARCHAR (100),"
 			+ SQLConstants.FIELD_NAME_EN
 			+ " VARCHAR (100),"
-			+ SQLConstants.FIELD_IS_SHOW
+			+ SQLConstants.FIELD_IS_USED
 			+ " INTEGER);";
 
 	private static final String CREATE_TABLE_PAYMENT_METHODS = "CREATE TABLE IF NOT EXISTS "

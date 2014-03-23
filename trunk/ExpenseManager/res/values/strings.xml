@@ -60,6 +60,7 @@
     <string name="settingExchangeRates">Курсы валют</string>
     <string name="settingDefaultCurrency">Текущая валюта</string>
     <string name="lastTimeUpdate">Последнеее обновление</string>
+    <string name="settingsUsedCurrencies">Используемые валюты</string>
     
 
     <!-- settings category -->
