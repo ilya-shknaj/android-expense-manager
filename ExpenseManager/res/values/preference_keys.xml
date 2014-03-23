@@ -8,4 +8,5 @@
     <string name="keyPaymentMethod">keyPaymentMethod</string>
     <string name="keyExchangeRates">keyExchangeRates</string>
     <string name="keyDefautCurrency">keyDefautCurrency</string>
+    <string name="keyUsedCurrencies">keyUsedCurrencies</string>
 </resources>

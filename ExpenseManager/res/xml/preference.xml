@@ -13,6 +13,10 @@
             android:title="@string/settingDefaultCurrency" >
         </MultilinePreference>
         <MultilinePreference
+            android:key="@string/keyUsedCurrencies"
+            android:title="@string/settingsUsedCurrencies" >
+        </MultilinePreference>
+        <MultilinePreference
             android:key="@string/keyExchangeRates"
             android:title="@string/settingExchangeRates" >
         </MultilinePreference>

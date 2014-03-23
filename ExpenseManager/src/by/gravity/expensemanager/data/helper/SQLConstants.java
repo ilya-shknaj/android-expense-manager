@@ -21,7 +21,7 @@ public class SQLConstants {
 	public static final String FIELD_CATEGORY_ID = "categoryId";
 	public static final String FIELD_CODE = "code";
 	public static final String FIELD_BALANCE = "balance";
-	public static final String FIELD_IS_SHOW = "isShow";
+	public static final String FIELD_IS_USED = "isUsed";
 	public static final String FIELD_USAGE_COUNT = "usageCount";
 	public static final String FIELD_SUM_AMOUNT = "sumAmount";
 }
