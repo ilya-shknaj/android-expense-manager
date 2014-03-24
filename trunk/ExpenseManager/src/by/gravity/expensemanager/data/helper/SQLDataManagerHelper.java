@@ -1,13 +1,8 @@
 package by.gravity.expensemanager.data.helper;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import by.gravity.expensemanager.model.CurrencyModel;
 
 public class SQLDataManagerHelper extends SQLiteOpenHelper {
 
