@@ -1,7 +1,6 @@
 package by.gravity.expensemanager.fragments;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import android.database.Cursor;
@@ -152,6 +151,10 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 				Spinner spinner = (Spinner) getView().findViewById(R.id.currency);
 
 				EditText note = (EditText) getView().findViewById(R.id.note);
+
+				if (SettingsManager.getPaymentMethod().equals(getString(R.string.emptyPaymentMethods))) {
+					SettingsManager.putPaymentMethod(name.getText().toString());
+				}
 
 				if (getPaymentMethodId() == 0) {
 					SQLDataManager.getInstance().addPaymentMethod(name.getText().toString(), note.getText().toString(), balance.getText().toString(),

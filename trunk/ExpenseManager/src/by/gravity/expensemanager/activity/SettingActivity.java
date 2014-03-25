@@ -30,6 +30,8 @@ public class SettingActivity extends PreferenceActivity {
 
 	private Preference usedCurrencies;
 
+	private Preference paymentMethod;
+
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +74,7 @@ public class SettingActivity extends PreferenceActivity {
 		});
 		updateCategoriesShowCountSummary();
 
-		final Preference paymentMethod = findPreference(getString(R.string.keyPaymentMethod));
+		paymentMethod = findPreference(getString(R.string.keyPaymentMethod));
 		paymentMethod.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
@@ -84,7 +86,6 @@ public class SettingActivity extends PreferenceActivity {
 				return false;
 			}
 		});
-		paymentMethod.setSummary(SettingsManager.getPaymentMethod());
 
 		exchangeRates = findPreference(getString(R.string.keyExchangeRates));
 		exchangeRates.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -114,9 +115,16 @@ public class SettingActivity extends PreferenceActivity {
 
 	}
 
+	@Override
+	protected void onResume() {
+
+		super.onResume();
+		updatePaymentMethodSummary();
+	}
+
 	private void updatePaymentMethodSummary() {
 
-		categoriesShowCount.setSummary(SettingsManager.getPaymentMethod());
+		paymentMethod.setSummary(SettingsManager.getPaymentMethod());
 	}
 
 	private void updateCategoriesShowCountSummary() {
@@ -148,7 +156,6 @@ public class SettingActivity extends PreferenceActivity {
 
 		switch (requestCode) {
 		case SELECT_PAYMENT_METHOD_REQUEST_CODE:
-			SettingsManager.putPaymentMethod(data.getAction());
 			updatePaymentMethodSummary();
 			break;
 

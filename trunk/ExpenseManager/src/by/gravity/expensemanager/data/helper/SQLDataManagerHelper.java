@@ -4,6 +4,7 @@ import by.gravity.expensemanager.data.SettingsManager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class SQLDataManagerHelper extends SQLiteOpenHelper {
 

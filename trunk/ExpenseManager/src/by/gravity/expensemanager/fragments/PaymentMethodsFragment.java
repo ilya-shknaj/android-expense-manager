@@ -1,7 +1,6 @@
 package by.gravity.expensemanager.fragments;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -14,6 +13,7 @@ import android.widget.ListView;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.adapter.PaymentMethodsAdapter;
+import by.gravity.expensemanager.data.SettingsManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
 import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
@@ -56,8 +56,8 @@ public class PaymentMethodsFragment extends CommonProgressSherlockFragment imple
 					((MainActivity) getActivity()).showAddPaymentMethodFragment(id);
 				} else {
 					Cursor cursor = (Cursor) adapter.getItem(position);
-					Intent intent = new Intent(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
-					getActivity().setResult(Activity.RESULT_OK, intent);
+					SettingsManager.putPaymentMethod(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
+					getActivity().setResult(Activity.RESULT_OK);
 					getActivity().finish();
 				}
 			}
