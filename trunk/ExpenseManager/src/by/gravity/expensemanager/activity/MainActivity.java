@@ -13,7 +13,6 @@ import by.gravity.expensemanager.fragments.OutcomeFragment;
 import by.gravity.expensemanager.fragments.PaymentMethodsFragment;
 
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
@@ -28,6 +27,7 @@ public class MainActivity extends DrawerActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		String action = getIntent().getAction();
 		if (action.equals(Intent.ACTION_MAIN)) {
@@ -40,20 +40,24 @@ public class MainActivity extends DrawerActivity {
 		} else if (action.equals(PaymentMethodsFragment.class.getSimpleName())) {
 			showPaymentMethodsFragment();
 		} else if (action.equals(ChooseCurrencyFragment.class.getSimpleName())) {
-			//TODO
+			// TODO
 			showChooseCurrencyFragment(false);
 		}
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getSupportMenuInflater();
-		inflater.inflate(R.menu.main, menu);
+
+		getSupportMenuInflater().inflate(R.menu.main, menu);
+		if (getCallingActivity() != null) {
+			menu.findItem(R.id.actionSettings).setVisible(false);
+		}
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+
 		if (item.getTitle().equals(getString(R.string.action_settings))) {
 			startActivity(new Intent(this, SettingActivity.class));
 		}
@@ -67,6 +71,7 @@ public class MainActivity extends DrawerActivity {
 
 			@Override
 			public void run() {
+
 				if (item.equals(getString(R.string.outcome))) {
 					showOutcomeFragment(true);
 				} else if (item.equals(getString(R.string.main))) {
@@ -80,25 +85,30 @@ public class MainActivity extends DrawerActivity {
 	}
 
 	public void showMainFragment() {
+
 		getSupportFragmentManager().beginTransaction().replace(R.id.content, MainFragment.newInstance()).commit();
 
 	}
 
 	public void showOutcomeFragment(boolean isGroupedByDate) {
+
 		getSupportFragmentManager().beginTransaction().replace(R.id.content, OutcomeFragment.newInstance(isGroupedByDate)).commit();
 
 	}
 
 	public void showChoosePeriodFragment() {
+
 		getSupportFragmentManager().beginTransaction().replace(R.id.content, ChoosePeriodFragment.newInstanse())
 				.addToBackStack(ChoosePeriodFragment.class.getSimpleName()).commit();
 	}
 
 	public void showAddPaymentFragment() {
+
 		showAddPaymentFragment(null);
 	}
 
 	public void showAddPaymentFragment(Long paymentId) {
+
 		getSupportFragmentManager().beginTransaction().replace(R.id.content, AddPaymentFragment.newInstance(paymentId))
 				.addToBackStack(AddPaymentFragment.class.getSimpleName()).commit();
 	}
@@ -109,33 +119,40 @@ public class MainActivity extends DrawerActivity {
 	}
 
 	public void showAddPaymentMethodFragment() {
+
 		showAddPaymentMethodFragment(null);
 	}
 
 	public void showAddPaymentMethodFragment(Long paymentMethodId) {
+
 		getSupportFragmentManager().beginTransaction().replace(R.id.content, AddPaymentMethodsFragment.newInstance(paymentMethodId))
 				.addToBackStack(AddPaymentMethodsFragment.class.getSimpleName()).commit();
 	}
 
 	public void showSelectDateDialog(int year, int month, int day, OnDateSetListener dateSetListener) {
+
 		final DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(dateSetListener, year, month, day, false);
 		datePickerDialog.show(getSupportFragmentManager(), DatePickerDialog.class.getSimpleName());
 	}
 
 	public void showTimePickerDialog(int hourOfDay, int minute, OnTimeSetListener onTimeSetListener) {
+
 		final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(onTimeSetListener, hourOfDay, minute, true, false);
 		timePickerDialog.show(getSupportFragmentManager(), TimePickerDialog.class.getSimpleName());
 	}
 
 	public void showChooseCurrencyFragment(boolean showOnlyShortCurrencies) {
+
 		getSupportFragmentManager().beginTransaction().replace(R.id.content, ChooseCurrencyFragment.newInstance(showOnlyShortCurrencies)).commit();
 	}
 
 	public void delayedPopBackStack() {
+
 		handler.postDelayed(new Runnable() {
 
 			@Override
 			public void run() {
+
 				getSupportFragmentManager().popBackStack();
 			}
 		}, 5);
