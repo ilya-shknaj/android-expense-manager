@@ -1,5 +1,6 @@
 package by.gravity.expensemanager.data.helper;
 
+import by.gravity.expensemanager.data.SettingsManager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -81,7 +82,8 @@ public class SQLDataManagerHelper extends SQLiteOpenHelper {
 			+ " INTEGER );";
 	
 	
-	private static final String ADD_CURRENCY_VALUES = "INSERT INTO Currency (name,name_en,code)"+
+	private static final String ADD_CURRENCY_VALUES = "INSERT INTO "+SQLConstants.TABLE_CURRENCY +
+		"("+SQLConstants.FIELD_NAME + "," + SQLConstants.FIELD_NAME_EN +","+SQLConstants.FIELD_CODE+")"+
 		" SELECT 'Афгани' AS name, 'Afghani' AS name_en, 'AFN' as code"+
 		" UNION SELECT 'Алжирский динар', 'Algerian Dinar', 'DZD'"+
 		" UNION SELECT 'Армянский драм', 'Armenian Dram', 'AMD'"+
@@ -237,6 +239,10 @@ public class SQLDataManagerHelper extends SQLiteOpenHelper {
 		" UNION SELECT 'Замбийская квача', 'Zambian Kwacha', 'ZMW'"+
 		" UNION SELECT 'Доллар Зимбабве', 'Zimbabwe Dollar', 'ZWL'"+
 		" UNION SELECT 'Злотый', 'Zloty', 'PLN'";
+	
+	private static final String DEFAULT_USED_CURRENCIES = "UPDATE " + SQLConstants.TABLE_CURRENCY + 
+		" SET "+SQLConstants.FIELD_IS_USED + " = 1"+
+		" WHERE " + SQLConstants.FIELD_CODE + " IN (%s)";
 
 	
 	@Override
@@ -247,6 +253,7 @@ public class SQLDataManagerHelper extends SQLiteOpenHelper {
 		db.execSQL(CREATE_TABLE_EXPENCE_CATEGORY);
 		db.execSQL(CREATE_TABLE_PAYMENT_METHODS);
 		db.execSQL(ADD_CURRENCY_VALUES);
+		db.execSQL(String.format(DEFAULT_USED_CURRENCIES, SettingsManager.getUsedCurrencies(true)));
 	}
 	
 

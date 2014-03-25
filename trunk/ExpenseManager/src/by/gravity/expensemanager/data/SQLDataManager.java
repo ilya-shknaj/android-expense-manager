@@ -10,6 +10,7 @@ import by.gravity.common.task.AsyncTask;
 import by.gravity.common.task.OnLoadCompleteListener;
 import by.gravity.common.utils.ContextHolder;
 import by.gravity.common.utils.StringUtil;
+import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.data.helper.SQLDataManagerHelper;
 import by.gravity.expensemanager.model.PeriodDate;
@@ -148,13 +149,16 @@ public class SQLDataManager {
 
 	public Cursor getCurrenciesShortCursor() {
 
-		return database.query(SQLConstants.TABLE_CURRENCY, null, SQLConstants.FIELD_IS_USED + "=?", new String[] { "1" }, null, null, null);
+		return database.query(SQLConstants.TABLE_CURRENCY, null, SQLConstants.FIELD_IS_USED + "=?", new String[] { "1" }, null, null,
+				SQLConstants.FIELD_CODE);
 	}
 
 	public Cursor getCurrenciesFullCursor() {
 
-		return database.query(SQLConstants.TABLE_CURRENCY, new String[] { SQLConstants.FIELD_ID, SQLConstants.FIELD_CODE, SQLConstants.FIELD_NAME,
-				SQLConstants.FIELD_IS_USED }, null, null, null, null, null);
+		String currencyTableName = ContextHolder.getContext().getString(R.string.usedCurrencyName).equals("RU") ? SQLConstants.FIELD_NAME
+				: SQLConstants.FIELD_NAME_EN;
+		return database.query(SQLConstants.TABLE_CURRENCY, new String[] { SQLConstants.FIELD_ID, SQLConstants.FIELD_CODE,
+				currencyTableName + " AS " + SQLConstants.FIELD_NAME, SQLConstants.FIELD_IS_USED }, null, null, null, null, SQLConstants.FIELD_NAME);
 	}
 
 	public Cursor getCategoriesCursor() {
@@ -466,7 +470,23 @@ public class SQLDataManager {
 
 	private static final String CLEAR_SHOWED_CURRENCY_QUERY = "UPDATE " + SQLConstants.TABLE_CURRENCY + " SET " + SQLConstants.FIELD_IS_USED + "= 0";
 
+	private static final String SET_USED_CURRENCY_QUERY = "UPDATE " + SQLConstants.TABLE_CURRENCY + " SET " + SQLConstants.FIELD_IS_USED
+			+ " = 1 WHERE " + SQLConstants.FIELD_ID + " IN (%s)";
+
 	public void updateUsedCurrencies(long[] ids) {
-		
+
+		database.beginTransaction();
+		database.execSQL(CLEAR_SHOWED_CURRENCY_QUERY);
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < ids.length; i++) {
+			builder.append(ids[i]);
+			if (i + 1 < ids.length) {
+				builder.append(",");
+			}
+		}
+		database.execSQL(String.format(SET_USED_CURRENCY_QUERY, builder.toString()));
+		database.setTransactionSuccessful();
+		database.endTransaction();
+
 	}
 }
