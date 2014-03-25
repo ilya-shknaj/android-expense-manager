@@ -43,7 +43,7 @@ public class SettingsManager extends PreferenceHelper {
 
 	public static void putPaymentMethod(String paymentMethod) {
 
-		putString(R.string.keyPaymentMethod, paymentMethod);
+		putString(R.string.keyPaymentMethod, StringUtil.uppercaseFirstLetter(paymentMethod));
 	}
 
 	public static String getExchangeRatesLastUpdateTime() {
