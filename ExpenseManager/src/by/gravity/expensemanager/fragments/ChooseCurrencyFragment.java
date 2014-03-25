@@ -7,10 +7,13 @@ import android.support.v4.content.Loader;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.adapter.ChooseCurrencyAdapter;
+import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.loaders.CurrencyLoader;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
+import by.gravity.expensemanager.fragments.loaders.UpdateUsedCurrencies;
 
 public class ChooseCurrencyFragment extends CommonProgressSherlockFragment {
 
@@ -47,8 +50,14 @@ public class ChooseCurrencyFragment extends CommonProgressSherlockFragment {
 
 			@Override
 			public void onClick(View view) {
+
 				ListView listView = (ListView) getView().findViewById(R.id.listView);
-				listView.getCheckedItemIds();
+				if (listView.getCheckedItemIds().length > 0) {
+					LoaderHelper.getIntance().startLoader(ChooseCurrencyFragment.this, LoaderHelper.UPDATE_USED_CURRENCIES_ID,
+							ChooseCurrencyFragment.this);
+				} else {
+					Toast.makeText(getActivity(), R.string.selectUsedCurrencies, Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 
@@ -79,6 +88,9 @@ public class ChooseCurrencyFragment extends CommonProgressSherlockFragment {
 
 		if (id == LoaderHelper.ADD_PAYMENT_CURRENCIES_ID) {
 			return new CurrencyLoader(getActivity(), getShowOnlyShortCurrencies());
+		} else if (id == LoaderHelper.UPDATE_USED_CURRENCIES_ID) {
+			ListView listView = (ListView) getView().findViewById(R.id.listView);
+			return new UpdateUsedCurrencies(getActivity(), listView.getCheckedItemIds());
 		}
 		return null;
 	}
@@ -89,6 +101,9 @@ public class ChooseCurrencyFragment extends CommonProgressSherlockFragment {
 		super.onLoadFinished(loader, cursor);
 		if (loader.getId() == LoaderHelper.ADD_PAYMENT_CURRENCIES_ID) {
 			initCurrencies(cursor);
+		} else if (loader.getId() == LoaderHelper.UPDATE_USED_CURRENCIES_ID) {
+			getActivity().setResult(Activity.RESULT_OK);
+			getActivity().finish();
 		}
 
 		if (isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_CURRENCIES_ID)) {
@@ -98,11 +113,20 @@ public class ChooseCurrencyFragment extends CommonProgressSherlockFragment {
 
 	private void initCurrencies(Cursor cursor) {
 
-		ListView listView = (ListView) getView().findViewById(R.id.listView);
+		final ListView listView = (ListView) getView().findViewById(R.id.listView);
 		ChooseCurrencyAdapter adapter = new ChooseCurrencyAdapter(getActivity(), cursor);
-		listView.setAdapter(adapter);
 		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+		listView.setAdapter(adapter);
 		listView.setItemsCanFocus(false);
+
+		// TODO bad solution
+		for (int i = 0; i < cursor.getCount(); i++) {
+			cursor.moveToPosition(i);
+			if (cursor.getInt(cursor.getColumnIndex(SQLConstants.FIELD_IS_USED)) == 1) {
+				listView.setItemChecked(i, true);
+			}
+		}
 
 	}
 
@@ -115,7 +139,7 @@ public class ChooseCurrencyFragment extends CommonProgressSherlockFragment {
 	@Override
 	public int getTitleResource() {
 
-		return R.string.settingDefaultCurrency;
+		return R.string.settingsUsedCurrencies;
 	}
 
 }

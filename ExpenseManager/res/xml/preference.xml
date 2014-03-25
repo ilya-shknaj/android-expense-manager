@@ -9,10 +9,6 @@
 
     <PreferenceCategory android:title="@string/settingCategoryCurrency" >
         <MultilinePreference
-            android:key="@string/keyDefautCurrency"
-            android:title="@string/settingDefaultCurrency" >
-        </MultilinePreference>
-        <MultilinePreference
             android:key="@string/keyUsedCurrencies"
             android:title="@string/settingsUsedCurrencies" >
         </MultilinePreference>

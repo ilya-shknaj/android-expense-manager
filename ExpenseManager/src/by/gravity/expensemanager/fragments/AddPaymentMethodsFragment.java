@@ -1,6 +1,7 @@
 package by.gravity.expensemanager.fragments;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.database.Cursor;
@@ -20,6 +21,7 @@ import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.data.SQLDataManager;
+import by.gravity.expensemanager.data.SettingsManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.NumberDialog.OnInputCompleteListener;
 import by.gravity.expensemanager.fragments.loaders.CurrencyLoader;
@@ -43,6 +45,7 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 	private PaymentMethodModel paymentMethodModel = null;
 
 	public static AddPaymentMethodsFragment newInstance(Long paymentMethodId) {
+
 		AddPaymentMethodsFragment fragment = new AddPaymentMethodsFragment();
 		Bundle bundle = new Bundle();
 		if (paymentMethodId != null) {
@@ -53,11 +56,13 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 	}
 
 	private Long getPaymentMethodId() {
+
 		return getArguments().getLong(ARG_PAYMENT_METHOD_ID);
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
+
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
 		startLoaders();
@@ -65,18 +70,32 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 	}
 
 	@Override
+	public void onResume() {
+
+		String usedCurrencies = getUsedCurrencies();
+		if (!StringUtil.isEmpty(usedCurrencies) && !usedCurrencies.equals(SettingsManager.getUsedCurrencies())) {
+			LoaderHelper.getIntance().startLoader(this, LoaderHelper.ADD_PAYMENT_METHOD_CURENCIES_ID, this);
+
+		}
+		super.onResume();
+	}
+
+	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
 		inflater.inflate(R.menu.add_payment, menu);
 		menu.findItem(R.id.remove).setVisible(getPaymentMethodId() != 0);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+
 		if (item.getTitle().equals(getString(R.string.remove))) {
 			DialogHelper.showConfirmDialog(getActivity(), R.string.remove, R.string.removePayemntMethodMessage, new OnPositiveButtonClickListener() {
 
 				@Override
 				public void onPositiveButtonClicked() {
+
 					setContentShown(false);
 					LoaderHelper.getIntance().startLoader(AddPaymentMethodsFragment.this, LoaderHelper.DELETE_PAYMENT_METHOD_ID,
 							AddPaymentMethodsFragment.this);
@@ -87,13 +106,15 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 	}
 
 	private void startLoaders() {
-		getLoaderManager().initLoader(LoaderHelper.ADD_PAYMENT_METHOD_CURENCIES_ID, null, this);
+
+		LoaderHelper.getIntance().startLoader(this, LoaderHelper.ADD_PAYMENT_METHOD_CURENCIES_ID, this);
 		if (getPaymentMethodId() != 0) {
-			getLoaderManager().initLoader(LoaderHelper.PAYMENT_METHOD_BY_ID, null, this);
+			LoaderHelper.getIntance().startLoader(this, LoaderHelper.PAYMENT_METHOD_BY_ID, this);
 		}
 	}
 
 	private void initCurrency(List<String> currencyList) {
+
 		final Spinner spinner = (Spinner) getView().findViewById(R.id.currency);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, currencyList);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -102,11 +123,13 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 	}
 
 	private void initBottomTabBar() {
+
 		final View cancelButton = getView().findViewById(R.id.tabBarLayout).findViewById(R.id.cancelButton);
 		cancelButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
+
 				GlobalUtil.hideSoftKeyboard(getActivity());
 				getFragmentManager().popBackStack();
 			}
@@ -117,6 +140,7 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 
 			@Override
 			public void onClick(View v) {
+
 				EditText name = (EditText) getView().findViewById(R.id.name);
 				if (name.getText().toString().length() == 0) {
 					Toast.makeText(getActivity(), R.string.emptyName, Toast.LENGTH_SHORT).show();
@@ -135,6 +159,7 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 
 								@Override
 								public void onComplete(Void result) {
+
 									GlobalUtil.hideSoftKeyboard(getActivity());
 									getFragmentManager().popBackStack();
 								}
@@ -145,6 +170,7 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 
 								@Override
 								public void onComplete(Void result) {
+
 									GlobalUtil.hideSoftKeyboard(getActivity());
 									getFragmentManager().popBackStack();
 								}
@@ -155,12 +181,30 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 		});
 	}
 
+	private String getUsedCurrencies() {
+
+		if (getView() != null) {
+			Spinner spinner = (Spinner) getView().findViewById(R.id.currency);
+			List<String> currencies = new ArrayList<String>();
+			if (spinner != null && spinner.getAdapter() != null) {
+				for (int i = 0; i < spinner.getAdapter().getCount(); i++) {
+					currencies.add((String) spinner.getAdapter().getItem(i));
+				}
+			}
+			return StringUtil.strJoin(currencies.toArray(new String[] {}), ",");
+		}
+
+		return null;
+	}
+
 	private void initView() {
+
 		final EditText balance = (EditText) getView().findViewById(R.id.balance);
 		balance.setOnFocusChangeListener(new OnFocusChangeListener() {
 
 			@Override
 			public void onFocusChange(View arg0, boolean focused) {
+
 				if (focused) {
 					balance.clearFocus();
 					showNumberDialog(balance.getText().toString());
@@ -191,10 +235,12 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 	}
 
 	private void showNumberDialog(String costs) {
+
 		NumberDialog numberDialog = NumberDialog.newInstance(costs, new OnInputCompleteListener() {
 
 			@Override
 			public void onInputCompleted(String value) {
+
 				EditText costEditText = (EditText) getView().findViewById(R.id.balance);
 				costEditText.setText(value);
 			}
@@ -204,16 +250,19 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 
 	@Override
 	public int getViewId() {
+
 		return R.layout.f_add_payment_method;
 	}
 
 	@Override
 	public int getTitleResource() {
+
 		return R.string.addPaymentMethod;
 	}
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle budle) {
+
 		if (id == LoaderHelper.ADD_PAYMENT_METHOD_CURENCIES_ID) {
 			return new CurrencyLoader(getActivity(), true);
 		} else if (id == LoaderHelper.PAYMENT_METHOD_BY_ID) {
@@ -227,6 +276,7 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
 		super.onLoadFinished(loader, cursor);
 		if (loader.getId() == LoaderHelper.ADD_PAYMENT_METHOD_CURENCIES_ID) {
 			List<String> currencyList = parseCurrency(cursor);
@@ -246,6 +296,7 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 	}
 
 	private void parsePaymentMethod(Cursor cursor) {
+
 		paymentMethodModel = new PaymentMethodModel();
 		if (cursor.moveToFirst()) {
 			paymentMethodModel.setBalance(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_BALANCE)));
@@ -259,6 +310,7 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 	}
 
 	private List<String> parseCurrency(Cursor cursor) {
+
 		List<String> currencyList = new ArrayList<String>();
 		if (cursor != null && cursor.getCount() > 0) {
 			for (int i = 0; i < cursor.getCount(); i++) {
@@ -273,6 +325,7 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 
 	@Override
 	public void onDestroy() {
+
 		super.onDestroy();
 		LoaderHelper.getIntance().clearLoaderStatus(TAG);
 	}

@@ -51,6 +51,7 @@
     <string name="emptyOutcome">Отсутсвуют расходы</string>
     <string name="emptyName">Введите название</string>
     <string name="valueMustBeMoreThenZero">Значение должно быть больше 0</string>
+    <string name="selectUsedCurrencies">Выберите хотя бы одну валюту</string>
 
     <!-- settings -->
     <string name="settingCurrentPeriod">Выбранный период</string>
@@ -58,7 +59,6 @@
     <string name="settingCategoriesCount">Количество категорий</string>
     <string name="settingPaymentMethod">Cпособ оплаты</string>
     <string name="settingExchangeRates">Курсы валют</string>
-    <string name="settingDefaultCurrency">Текущая валюта</string>
     <string name="lastTimeUpdate">Последнеее обновление</string>
     <string name="settingsUsedCurrencies">Используемые валюты</string>
     
