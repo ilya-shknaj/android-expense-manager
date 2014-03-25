@@ -28,24 +28,28 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 	private static final String TAG = MainFragment.class.getSimpleName();
 
 	public static MainFragment newInstance() {
+
 		return new MainFragment();
 
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
+
 		super.onActivityCreated(savedInstanceState);
-		startLoaders();
+		startLoader();
 		initBottomBar();
 
 	}
 
-	private void startLoaders() {
+	private void startLoader() {
+
 		LoaderHelper.getIntance().startLoader(this, LoaderHelper.GET_PAYMENT_METHODS_ID, this);
-		LoaderHelper.getIntance().startLoader(this, LoaderHelper.SUM_BALANCE_ID, this);
+
 	}
 
 	private void initPaymentsMethods(List<PaymentMethodModel> paymentMethods) {
+
 		LinearLayout paymentsMethodLayout = (LinearLayout) getView().findViewById(R.id.paymentsMethodLayout);
 
 		paymentsMethodLayout.removeAllViews();
@@ -66,6 +70,7 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 
 			@Override
 			public void onClick(View v) {
+
 				((MainActivity) getActivity()).showPaymentMethodsFragment();
 			}
 		});
@@ -73,21 +78,25 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 	}
 
 	private boolean hasPaymentMethods() {
+
 		LinearLayout paymentsMethodLayout = (LinearLayout) getView().findViewById(R.id.paymentsMethodLayout);
 		return paymentsMethodLayout.getChildCount() > 0;
 	}
 
 	private void initBalance(String balance) {
+
 		TextView balanceTextView = (TextView) getView().findViewById(R.id.balanceLayout).findViewById(R.id.balance);
 		balanceTextView.setText(StringUtil.alignToRight(balance));
 	}
 
 	private void initBottomBar() {
+
 		View addPayment = getView().findViewById(R.id.addPayment);
 		addPayment.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View view) {
+
 				((MainActivity) getActivity()).showAddPaymentFragment();
 			}
 		});
@@ -97,6 +106,7 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 
 			@Override
 			public void onClick(View v) {
+
 				((MainActivity) getActivity()).showAddPaymentMethodFragment();
 			}
 		});
@@ -104,15 +114,18 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 
 	@Override
 	public int getViewId() {
+
 		return R.layout.f_main;
 	}
 
 	@Override
 	public int getTitleResource() {
+
 		return R.string.main;
 	}
 
 	private List<PaymentMethodModel> parsePaymentMethods(Cursor cursor) {
+
 		List<PaymentMethodModel> paymentMethods = new ArrayList<PaymentMethodModel>();
 		for (int i = 0; i < cursor.getCount(); i++) {
 			cursor.moveToPosition(i);
@@ -129,6 +142,7 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 	}
 
 	private String parseBalance(Cursor cursor) {
+
 		if (cursor.moveToFirst()) {
 
 			String balance = cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_BALANCE));
@@ -139,6 +153,7 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+
 		if (id == LoaderHelper.GET_PAYMENT_METHODS_ID) {
 			return new PaymentMethodsLoader(getActivity());
 		} else if (id == LoaderHelper.SUM_BALANCE_ID) {
@@ -149,10 +164,12 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
 		super.onLoadFinished(loader, cursor);
 		if (loader.getId() == LoaderHelper.GET_PAYMENT_METHODS_ID) {
 			List<PaymentMethodModel> paymentMethods = parsePaymentMethods(cursor);
 			initPaymentsMethods(paymentMethods);
+			LoaderHelper.getIntance().startLoader(this, LoaderHelper.SUM_BALANCE_ID, this);
 		} else if (loader.getId() == LoaderHelper.SUM_BALANCE_ID) {
 			String balance = parseBalance(cursor);
 			if (!StringUtil.isEmpty(balance)) {
