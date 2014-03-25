@@ -1,10 +1,9 @@
 package by.gravity.expensemanager.data.helper;
 
-import by.gravity.expensemanager.data.SettingsManager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+import by.gravity.expensemanager.data.SettingsManager;
 
 public class SQLDataManagerHelper extends SQLiteOpenHelper {
 
@@ -66,6 +65,8 @@ public class SQLDataManagerHelper extends SQLiteOpenHelper {
 			+ SQLConstants.FIELD_NAME_EN
 			+ " VARCHAR (100),"
 			+ SQLConstants.FIELD_IS_USED
+			+ " INTEGER,"
+			+ SQLConstants.FIELD_RATE
 			+ " INTEGER);";
 
 	private static final String CREATE_TABLE_PAYMENT_METHODS = "CREATE TABLE IF NOT EXISTS "
