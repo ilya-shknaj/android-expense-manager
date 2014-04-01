@@ -48,7 +48,17 @@ public class SettingsManager extends PreferenceHelper {
 
 	public static String getExchangeRatesLastUpdateTime() {
 
-		return getString(R.string.keyExchangeRates, R.string.never);
+		long lastUpdateTime = getLong(R.string.keyExchangeRates, -1);
+		if (lastUpdateTime == -1) {
+			return getString(R.string.never);
+		}
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT);
+		return simpleDateFormat.format(new Date(lastUpdateTime));
+	}
+
+	public static void putExchangeRateLastUpdateTime(long value) {
+
+		putLong(R.string.keyExchangeRates, value);
 	}
 
 	public static String getUsedCurrencies() {
@@ -70,6 +80,16 @@ public class SettingsManager extends PreferenceHelper {
 	public static void putUsedCurrencies(List<String> usedCurrenciesCodes) {
 
 		putString(R.string.keyUsedCurrencies, StringUtil.strJoin(usedCurrenciesCodes.toArray(new String[] {}), ","));
+	}
+
+	public static String getUpdateCurrencyPeriod() {
+
+		return getString(R.string.keyUpdateCurrencyPeriod, R.string.settingsPeriodEveryDay);
+	}
+
+	public static void putUpdateCurrencyPeriod(String period) {
+
+		putString(R.string.keyUpdateCurrencyPeriod, period);
 	}
 
 	public static String getFriendlyCurrentPeriod() {

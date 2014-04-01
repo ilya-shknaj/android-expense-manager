@@ -9,9 +9,11 @@ import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.data.SettingsManager;
 import by.gravity.expensemanager.fragments.ChooseCurrencyFragment;
 import by.gravity.expensemanager.fragments.ChoosePeriodFragment;
+import by.gravity.expensemanager.fragments.ExchangeRatesFragment;
 import by.gravity.expensemanager.fragments.PaymentMethodsFragment;
 import by.gravity.expensemanager.util.Constants;
 import by.gravity.expensemanager.util.DialogHelper;
+import by.gravity.expensemanager.util.DialogHelper.OnSelectedListener;
 import by.gravity.expensemanager.util.DialogHelper.onEditCompleteListener;
 
 public class SettingActivity extends PreferenceActivity {
@@ -31,6 +33,8 @@ public class SettingActivity extends PreferenceActivity {
 	private Preference usedCurrencies;
 
 	private Preference paymentMethod;
+
+	private Preference updateCurrencyPeriod;
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -93,7 +97,9 @@ public class SettingActivity extends PreferenceActivity {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 
-				// TODO Auto-generated method stub
+				Intent intent = new Intent(SettingActivity.this, MainActivity.class);
+				intent.setAction(ExchangeRatesFragment.class.getSimpleName());
+				startActivity(intent);
 				return false;
 			}
 		});
@@ -112,6 +118,29 @@ public class SettingActivity extends PreferenceActivity {
 			}
 		});
 		updateUsedCurrencies();
+
+		updateCurrencyPeriod = findPreference(getString(R.string.keyUpdateCurrencyPeriod));
+		updateCurrencyPeriod.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+
+				DialogHelper.showRadioButtonDialog(SettingActivity.this, R.string.settingsUpdateCurrencyPeriod, new String[] {
+						getString(R.string.settingsPeriodEveryDay), getString(R.string.settingsPeriodManualy) },
+						SettingsManager.getUpdateCurrencyPeriod(), new OnSelectedListener() {
+
+							@Override
+							public void onSelectedListener(String value) {
+
+								SettingsManager.putUpdateCurrencyPeriod(value);
+								updateCurrencyPeriod();
+							}
+						});
+
+				return false;
+			}
+		});
+		updateCurrencyPeriod();
 
 	}
 
@@ -139,12 +168,18 @@ public class SettingActivity extends PreferenceActivity {
 
 	private void updateExchangeRateSummary() {
 
-		exchangeRates.setSummary(getString(R.string.lastTimeUpdate) + Constants.NEW_STRING + SettingsManager.getExchangeRatesLastUpdateTime());
+		exchangeRates
+				.setSummary(getString(R.string.settingsLastTimeUpdate) + Constants.NEW_STRING + SettingsManager.getExchangeRatesLastUpdateTime());
 	}
 
 	private void updateUsedCurrencies() {
 
 		usedCurrencies.setSummary(SettingsManager.getUsedCurrencies());
+	}
+
+	private void updateCurrencyPeriod() {
+
+		updateCurrencyPeriod.setSummary(SettingsManager.getUpdateCurrencyPeriod());
 	}
 
 	@Override

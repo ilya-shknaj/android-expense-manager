@@ -58,9 +58,13 @@
     <string name="settingCategoriesShowCountDefault">Количество показываемых категорий</string>
     <string name="settingCategoriesCount">Количество категорий</string>
     <string name="settingPaymentMethod">Cпособ оплаты</string>
-    <string name="settingExchangeRates">Курсы валют</string>
-    <string name="lastTimeUpdate">Последнеее обновление</string>
+    <string name="settingsExchangeRates">Курсы валют</string>
+    <string name="settingsLastTimeUpdate">Последнеее обновление</string>
     <string name="settingsUsedCurrencies">Используемые валюты</string>
+    <string name="settingsUpdateCurrencyPeriod">Время обновления</string>
+    
+    <string name="settingsPeriodEveryDay">Каждый день</string>
+    <string name="settingsPeriodManualy">Вручную</string>
     
 
     <!-- settings category -->

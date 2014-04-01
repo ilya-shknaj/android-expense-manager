@@ -8,6 +8,7 @@ import by.gravity.expensemanager.fragments.AddPaymentFragment;
 import by.gravity.expensemanager.fragments.AddPaymentMethodsFragment;
 import by.gravity.expensemanager.fragments.ChooseCurrencyFragment;
 import by.gravity.expensemanager.fragments.ChoosePeriodFragment;
+import by.gravity.expensemanager.fragments.ExchangeRatesFragment;
 import by.gravity.expensemanager.fragments.MainFragment;
 import by.gravity.expensemanager.fragments.OutcomeFragment;
 import by.gravity.expensemanager.fragments.PaymentMethodsFragment;
@@ -42,6 +43,8 @@ public class MainActivity extends DrawerActivity {
 		} else if (action.equals(ChooseCurrencyFragment.class.getSimpleName())) {
 			// TODO
 			showChooseCurrencyFragment(false);
+		} else if (action.equals(ExchangeRatesFragment.class.getSimpleName())) {
+			showExchangeRatesFragment();
 		}
 	}
 
@@ -144,6 +147,11 @@ public class MainActivity extends DrawerActivity {
 	public void showChooseCurrencyFragment(boolean showOnlyShortCurrencies) {
 
 		getSupportFragmentManager().beginTransaction().replace(R.id.content, ChooseCurrencyFragment.newInstance(showOnlyShortCurrencies)).commit();
+	}
+
+	public void showExchangeRatesFragment() {
+
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, ExchangeRatesFragment.newInstance()).commit();
 	}
 
 	public void delayedPopBackStack() {

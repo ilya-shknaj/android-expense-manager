@@ -67,7 +67,7 @@ public class SQLDataManagerHelper extends SQLiteOpenHelper {
 			+ SQLConstants.FIELD_IS_USED
 			+ " INTEGER,"
 			+ SQLConstants.FIELD_RATE
-			+ " INTEGER);";
+			+ " DOUBLE);";
 
 	private static final String CREATE_TABLE_PAYMENT_METHODS = "CREATE TABLE IF NOT EXISTS "
 			+ SQLConstants.TABLE_PAYMENT_METHODS
@@ -178,8 +178,8 @@ public class SQLDataManagerHelper extends SQLiteOpenHelper {
 		" UNION SELECT 'Накфа', 'Nakfa', 'ERN'"+
 		" UNION SELECT 'Доллар Намибии', 'Namibia Dollar', 'NAD'"+
 		" UNION SELECT 'Непальская рупия', 'Nepalese Rupee', 'NPR'"+
-		" UNION SELECT 'Нидерландский антильский гульден', 'Netherlands Antiilean Guilder', 'ФТП'"+
-		" UNION SELECT 'Новый израильский шекел', 'New Israeli Sheqel', 'ISL'"+
+		" UNION SELECT 'Нидерландский антильский гульден', 'Netherlands Antiilean Guilder', 'ANG'"+
+		" UNION SELECT 'Новый израильский шекел', 'New Israeli Sheqel', 'ILS'"+
 		" UNION SELECT 'Новый тайваньский доллар', 'New Taiwan Dollar', 'TWD'"+
 		" UNION SELECT 'Новозеландский доллар', 'New Zealand Dollar', 'NZD'"+
 		" UNION SELECT 'Нгултрум', 'Ngultrum', 'BTN'"+
@@ -206,14 +206,12 @@ public class SQLDataManagerHelper extends SQLiteOpenHelper {
 		" UNION SELECT 'Фунт Святой Елены', 'Saint Helena Pound', 'SHP'"+
 		" UNION SELECT 'Саудовский риял', 'Saudi Riyal', 'SAR'"+
 		" UNION SELECT 'Сербский динар', 'Serbian Dinar', 'RSD'"+
-		" UNION SELECT 'Сейшельская рупия', 'Seychelles Rupee', 'SRC'"+
 		" UNION SELECT 'Сингапурский доллар', 'Singapore Dollar', 'SGD'"+
 		" UNION SELECT 'Сейшельская рупия', 'Seychelles Rupee', 'SCR'"+
 		" UNION SELECT 'Доллар Соломоновых Островов', 'Solomon Islands Dollar', 'SBD'"+
 		" UNION SELECT 'Сом', 'Som', 'KGS'"+
 		" UNION SELECT 'Сомалийский шиллинг', 'Somali Shiling', 'SOS'"+
 		" UNION SELECT 'Сомони', 'Somoni', 'TJS'"+
-		" UNION SELECT 'Южносуданский фунт', 'South Sudanese Pound', 'SSP'"+
 		" UNION SELECT 'Шри-ланкийская рупия', 'Sri Lanka Rupee', 'LKR'"+
 		" UNION SELECT 'Суданский фунт', 'Sudanese Pound', 'SDG'"+
 		" UNION SELECT 'Суринамский доллар', 'Surinam Dollar', 'SRD'"+
