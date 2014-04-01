@@ -1,5 +1,7 @@
 package by.gravity.expensemanager.fragments;
 
+import java.util.List;
+
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -28,6 +30,7 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 	private static final String ARG_IS_GROUPED_BY_DATE = "ARG_IS_GROUPED_BY_DATE";
 
 	public static OutcomeFragment newInstance(boolean isGroupedByDate) {
+
 		OutcomeFragment fragment = new OutcomeFragment();
 		Bundle bundle = new Bundle();
 		bundle.putBoolean(ARG_IS_GROUPED_BY_DATE, isGroupedByDate);
@@ -39,25 +42,27 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 
 	@Override
 	public void onResume() {
+
 		super.onResume();
 		if (!getCurrentPeriod().equals(SettingsManager.getFriendlyCurrentPeriod())) {
 			setContentShown(false);
 			initPeriod();
-			startLoader();
+			startLoaders();
 		}
 
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
+
 		super.onActivityCreated(savedInstanceState);
 		initPeriod();
 		initListView();
 		initBottomTabBar();
-		startLoader();
 	}
 
 	private void initPeriod() {
+
 		TextView period = (TextView) getView().findViewById(R.id.period);
 		period.setText(SettingsManager.getFriendlyCurrentPeriod());
 		View periodLayout = getView().findViewById(R.id.periodLayout);
@@ -65,17 +70,20 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 
 			@Override
 			public void onClick(View v) {
+
 				((MainActivity) getActivity()).showChoosePeriodFragment();
 			}
 		});
 	}
 
 	private String getCurrentPeriod() {
+
 		TextView period = (TextView) getView().findViewById(R.id.period);
 		return period.getText().toString();
 	}
 
 	private void initListView() {
+
 		ExpandableListView expandableListView = (ExpandableListView) getView().findViewById(R.id.expandableListView);
 		expandableListView.setChildDivider(getResources().getDrawable(R.color.divider));
 		expandableListView.setDivider(getResources().getDrawable(R.color.divider));
@@ -89,6 +97,7 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 
 			@Override
 			public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+
 				((MainActivity) getActivity()).showAddPaymentFragment(id);
 				return false;
 			}
@@ -105,28 +114,27 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 
 	}
 
-	private void startLoader() {
-		int loaderId = isGroupedByDate() ? LoaderHelper.OUTCOME_GROUP_BY_DATE_ID : LoaderHelper.OUTCOME_GROUP_BY_CATEGORY_NAME_ID;
 
-		if (getLoaderManager().getLoader(loaderId) != null && !getLoaderManager().getLoader(loaderId).isAbandoned()) {
-			getLoaderManager().restartLoader(loaderId, null, this);
+	@Override
+	public void getLoaderIds(List<Integer> loaderIds) {
 
-		} else {
-			getLoaderManager().initLoader(loaderId, null, this);
-		}
+		loaderIds.add(isGroupedByDate() ? LoaderHelper.OUTCOME_GROUP_BY_DATE_ID : LoaderHelper.OUTCOME_GROUP_BY_CATEGORY_NAME_ID);
 
 	}
 
 	private boolean isGroupedByDate() {
+
 		return getArguments().getBoolean(ARG_IS_GROUPED_BY_DATE);
 	}
 
 	private void initBottomTabBar() {
+
 		View addExpenseButton = getView().findViewById(R.id.addButton);
 		addExpenseButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
+
 				((MainActivity) getActivity()).showAddPaymentFragment();
 			}
 		});
@@ -136,6 +144,7 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 
 			@Override
 			public void onClick(View v) {
+
 				((MainActivity) getActivity()).showAddPaymentFragment();
 
 			}
@@ -146,6 +155,7 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 
 			@Override
 			public void onClick(View v) {
+
 				((MainActivity) getActivity()).showOutcomeFragment(!isGroupedByDate());
 
 			}
@@ -154,21 +164,25 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+
 		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
 	public int getViewId() {
+
 		return R.layout.f_outcome;
 	}
 
 	@Override
 	public int getTitleResource() {
+
 		return R.string.outcome;
 	}
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+
 		if (id == LoaderHelper.OUTCOME_GROUP_BY_DATE_ID) {
 			return new GroupedByDateCursorLoader(getActivity());
 		} else if (id == LoaderHelper.OUTCOME_GROUP_BY_CATEGORY_NAME_ID) {
@@ -189,6 +203,7 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
 		int id = loader.getId();
 		if (id == LoaderHelper.OUTCOME_GROUP_BY_CATEGORY_NAME_ID || id == LoaderHelper.OUTCOME_GROUP_BY_DATE_ID) {
 			if (cursor.getCount() > 0) {

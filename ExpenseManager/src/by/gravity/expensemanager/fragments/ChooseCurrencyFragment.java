@@ -1,5 +1,7 @@
 package by.gravity.expensemanager.fragments;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -39,7 +41,6 @@ public class ChooseCurrencyFragment extends CommonProgressSherlockFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 
 		super.onActivityCreated(savedInstanceState);
-		startLoader();
 		initBottomTabBar();
 	}
 
@@ -78,15 +79,17 @@ public class ChooseCurrencyFragment extends CommonProgressSherlockFragment {
 		});
 	}
 
-	private void startLoader() {
+	@Override
+	public void getLoaderIds(List<Integer> loaderIds) {
 
-		LoaderHelper.getIntance().startLoader(this, LoaderHelper.ADD_PAYMENT_CURRENCIES_ID, this);
+		loaderIds.add(LoaderHelper.CURRENCIES);
+
 	}
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
 
-		if (id == LoaderHelper.ADD_PAYMENT_CURRENCIES_ID) {
+		if (id == LoaderHelper.CURRENCIES) {
 			return new CurrencyLoader(getActivity(), getShowOnlyShortCurrencies());
 		} else if (id == LoaderHelper.UPDATE_USED_CURRENCIES_ID) {
 			ListView listView = (ListView) getView().findViewById(R.id.listView);
@@ -99,14 +102,14 @@ public class ChooseCurrencyFragment extends CommonProgressSherlockFragment {
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
 		super.onLoadFinished(loader, cursor);
-		if (loader.getId() == LoaderHelper.ADD_PAYMENT_CURRENCIES_ID) {
+		if (loader.getId() == LoaderHelper.CURRENCIES) {
 			initCurrencies(cursor);
 		} else if (loader.getId() == LoaderHelper.UPDATE_USED_CURRENCIES_ID) {
 			getActivity().setResult(Activity.RESULT_OK);
 			getActivity().finish();
 		}
 
-		if (isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_CURRENCIES_ID)) {
+		if (isLoaderFinished(TAG, LoaderHelper.CURRENCIES)) {
 			setContentShown(true);
 		}
 	}

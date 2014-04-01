@@ -14,7 +14,11 @@
         </MultilinePreference>
         <MultilinePreference
             android:key="@string/keyExchangeRates"
-            android:title="@string/settingExchangeRates" >
+            android:title="@string/settingsExchangeRates" >
+        </MultilinePreference>
+        <MultilinePreference
+            android:key="@string/keyUpdateCurrencyPeriod"
+            android:title="@string/settingsUpdateCurrencyPeriod" >
         </MultilinePreference>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/settingCategoryAddPayment" >

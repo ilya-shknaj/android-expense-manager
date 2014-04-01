@@ -37,14 +37,14 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 	public void onActivityCreated(Bundle savedInstanceState) {
 
 		super.onActivityCreated(savedInstanceState);
-		startLoader();
 		initBottomBar();
 
 	}
 
-	private void startLoader() {
+	@Override
+	public void getLoaderIds(List<Integer> loaderIds) {
 
-		LoaderHelper.getIntance().startLoader(this, LoaderHelper.GET_PAYMENT_METHODS_ID, this);
+		loaderIds.add(LoaderHelper.GET_PAYMENT_METHODS_ID);
 
 	}
 

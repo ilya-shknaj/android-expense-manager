@@ -13,7 +13,7 @@ public class LoaderHelper {
 
 	public static final int OUTCOME_GROUP_BY_CATEGORY_NAME_ID = -3;
 
-	public static final int ADD_PAYMENT_CURRENCIES_ID = -4;
+	public static final int CURRENCIES = -4;
 
 	public static final int ADD_PAYMENT_PAYMENT_METHODS_ID = -5;
 
@@ -32,8 +32,10 @@ public class LoaderHelper {
 	public static final int DELETE_PAYMENT_ID = -12;
 
 	public static final int DELETE_PAYMENT_METHOD_ID = -13;
-	
+
 	public static final int UPDATE_USED_CURRENCIES_ID = -14;
+
+	public static final int UPDATE_CURRENCY_RATE_ID = -15;
 
 	public static final String ARG_EXPENSE_DATA = "ARG_EXPENSE_DATA";
 
@@ -44,10 +46,13 @@ public class LoaderHelper {
 	private HashMap<String, HashMap<Integer, LoaderStatus>> loaderStatusMap = new HashMap<String, HashMap<Integer, LoaderStatus>>();
 
 	public enum LoaderStatus {
-		NOT_STARTED, STARTED, FINISHED;
+		NOT_STARTED,
+		STARTED,
+		FINISHED;
 	}
 
 	public static LoaderHelper getIntance() {
+
 		if (instance == null) {
 			instance = new LoaderHelper();
 		}
@@ -55,6 +60,7 @@ public class LoaderHelper {
 	}
 
 	public void putLoaderStatus(String fragmentName, int loaderId, LoaderStatus status) {
+
 		if (loaderStatusMap.get(fragmentName) == null) {
 			loaderStatusMap.put(fragmentName, new HashMap<Integer, LoaderStatus>());
 		}
@@ -62,6 +68,7 @@ public class LoaderHelper {
 	}
 
 	public LoaderStatus getLoaderStatus(String fragmentName, int loaderId) {
+
 		if (loaderStatusMap.get(fragmentName) == null || loaderStatusMap.get(fragmentName).get(loaderId) == null) {
 			return LoaderStatus.NOT_STARTED;
 		}
@@ -69,12 +76,14 @@ public class LoaderHelper {
 	}
 
 	public void clearLoaderStatus(String fragmentName) {
+
 		if (loaderStatusMap.get(fragmentName) != null) {
 			loaderStatusMap.put(fragmentName, null);
 		}
 	}
 
 	public void startLoader(Fragment fragment, int id, LoaderCallbacks<Cursor> loaderCallbacks) {
+
 		LoaderManager loaderManager = fragment.getLoaderManager();
 		if (loaderManager.getLoader(id) != null && !loaderManager.getLoader(id).isAbandoned()) {
 			loaderManager.restartLoader(id, null, loaderCallbacks);

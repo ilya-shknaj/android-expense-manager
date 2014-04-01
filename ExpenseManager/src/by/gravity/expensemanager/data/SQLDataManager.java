@@ -14,6 +14,7 @@ import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.data.helper.SQLDataManagerHelper;
 import by.gravity.expensemanager.model.PeriodDate;
+import by.gravity.expensemanager.model.RateModel;
 import by.gravity.expensemanager.util.Constants;
 
 public class SQLDataManager {
@@ -158,7 +159,8 @@ public class SQLDataManager {
 		String currencyTableName = ContextHolder.getContext().getString(R.string.usedCurrencyName).equals("RU") ? SQLConstants.FIELD_NAME
 				: SQLConstants.FIELD_NAME_EN;
 		return database.query(SQLConstants.TABLE_CURRENCY, new String[] { SQLConstants.FIELD_ID, SQLConstants.FIELD_CODE,
-				currencyTableName + " AS " + SQLConstants.FIELD_NAME, SQLConstants.FIELD_IS_USED }, null, null, null, null, SQLConstants.FIELD_NAME);
+				currencyTableName + " AS " + SQLConstants.FIELD_NAME, SQLConstants.FIELD_IS_USED, SQLConstants.FIELD_RATE }, null, null, null, null,
+				SQLConstants.FIELD_IS_USED + " DESC , "+ SQLConstants.FIELD_NAME);
 	}
 
 	public Cursor getCategoriesCursor() {
@@ -488,5 +490,18 @@ public class SQLDataManager {
 		database.setTransactionSuccessful();
 		database.endTransaction();
 
+	}
+
+	private static final String UPDATE_RATES_QUERY = "UPDATE " + SQLConstants.TABLE_CURRENCY + " SET " + SQLConstants.FIELD_RATE + "= %s" + " WHERE "
+			+ SQLConstants.FIELD_CODE + "= '%s'";
+
+	public void updateRates(List<RateModel> rateList) {
+
+		database.beginTransaction();
+		for (int i = 0; i < rateList.size(); i++) {
+			database.execSQL(String.format(UPDATE_RATES_QUERY, rateList.get(i).getRate(), rateList.get(i).getCode()));
+		}
+		database.setTransactionSuccessful();
+		database.endTransaction();
 	}
 }

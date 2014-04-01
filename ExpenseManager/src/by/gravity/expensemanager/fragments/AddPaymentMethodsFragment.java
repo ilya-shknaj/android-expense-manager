@@ -64,7 +64,6 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
-		startLoaders();
 		initBottomTabBar();
 	}
 
@@ -104,11 +103,13 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 		return false;
 	}
 
-	private void startLoaders() {
 
-		LoaderHelper.getIntance().startLoader(this, LoaderHelper.ADD_PAYMENT_METHOD_CURENCIES_ID, this);
+	@Override
+	public void getLoaderIds(List<Integer> loaderIds) {
+
+		loaderIds.add(LoaderHelper.ADD_PAYMENT_METHOD_CURENCIES_ID);
 		if (getPaymentMethodId() != 0) {
-			LoaderHelper.getIntance().startLoader(this, LoaderHelper.PAYMENT_METHOD_BY_ID, this);
+			loaderIds.add(LoaderHelper.PAYMENT_METHOD_BY_ID);
 		}
 	}
 
