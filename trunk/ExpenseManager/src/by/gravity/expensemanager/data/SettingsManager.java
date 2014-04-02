@@ -92,6 +92,16 @@ public class SettingsManager extends PreferenceHelper {
 		putString(R.string.keyUpdateCurrencyPeriod, period);
 	}
 
+	public static void putCurrentCurrency(String currency) {
+
+		putString(R.string.keyCurrentCurrency, currency);
+	}
+
+	public static String getCurrentCurrency() {
+
+		return getString(R.string.keyCurrentCurrency, R.string.defaultCurrencyCode);
+	}
+
 	public static String getFriendlyCurrentPeriod() {
 
 		String currentPeriod = getCurrentPeriod();
