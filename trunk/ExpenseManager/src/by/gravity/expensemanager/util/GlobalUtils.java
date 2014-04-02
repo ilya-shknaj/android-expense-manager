@@ -12,7 +12,7 @@ public class GlobalUtils {
 		} else if (to.equals(Constants.USD)) {
 			return rateFrom;
 		} else {
-			return 1.0 / rateFrom * rateTo;
+			return 1.0 / rateTo * rateFrom;
 		}
 	}
 

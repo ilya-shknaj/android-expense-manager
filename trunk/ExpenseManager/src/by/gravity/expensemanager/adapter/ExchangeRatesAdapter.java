@@ -28,12 +28,11 @@ public class ExchangeRatesAdapter extends ResourceCursorAdapter {
 		TextView currency = (TextView) view.findViewById(R.id.currency);
 		String name = cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME));
 		String code = cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE));
-
+		
 		currency.setText(String.format(Constants.CURRENCY_FORMAT, name, code));
 
 		TextView rate = (TextView) view.findViewById(R.id.rate);
 
-		// rate.setText(String.valueOf(cursor.getDouble(cursor.getColumnIndex(SQLConstants.FIELD_RATE)) * currencyRate));
 		rate.setText(GlobalUtils.getFormattedRate(currentCurrency, currencyRate, cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE)),
 				cursor.getDouble(cursor.getColumnIndex(SQLConstants.FIELD_RATE))));
 
@@ -65,5 +64,6 @@ public class ExchangeRatesAdapter extends ResourceCursorAdapter {
 			notifyDataSetChanged();
 		}
 	}
+
 
 }
