@@ -70,5 +70,7 @@ public class Constants {
 	public static final String DATE_FORMAT_USER_PERIOD = "%s - %s";
 	
 	public static final String CURRENCY_FORMAT = "%s (%s)";
+	
+	public static final String USD = "USD";
 
 }

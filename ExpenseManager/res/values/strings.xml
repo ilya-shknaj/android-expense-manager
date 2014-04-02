@@ -41,6 +41,7 @@
     <string name="removePaymentMessage">Вы уверены?</string>
     <string name="removePayemntMethodMessage">Вы уверены? Все платежи осуществленные этим методом будут удалены!</string>
     <string name="never">Никогда</string>
+    <string name="currenyCurrency">Текущая валюта</string>
     
 
     <!-- errors -->
