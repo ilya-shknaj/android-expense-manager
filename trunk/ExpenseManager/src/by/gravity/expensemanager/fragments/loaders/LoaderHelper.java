@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.util.SparseArray;
 
 public class LoaderHelper {
 
@@ -46,7 +47,7 @@ public class LoaderHelper {
 
 	private static LoaderHelper instance;
 
-	private HashMap<String, HashMap<Integer, LoaderStatus>> loaderStatusMap = new HashMap<String, HashMap<Integer, LoaderStatus>>();
+	private HashMap<String, SparseArray<LoaderStatus>> loaderStatusMap = new HashMap<String, SparseArray<LoaderStatus>>();
 
 	public enum LoaderStatus {
 		NOT_STARTED,
@@ -65,7 +66,7 @@ public class LoaderHelper {
 	public void putLoaderStatus(String fragmentName, int loaderId, LoaderStatus status) {
 
 		if (loaderStatusMap.get(fragmentName) == null) {
-			loaderStatusMap.put(fragmentName, new HashMap<Integer, LoaderStatus>());
+			loaderStatusMap.put(fragmentName, new SparseArray<LoaderStatus>());
 		}
 		loaderStatusMap.get(fragmentName).put(loaderId, status);
 	}
