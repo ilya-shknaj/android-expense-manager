@@ -10,6 +10,7 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import by.gravity.expensemanager.activity.DrawerActivity;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper.LoaderStatus;
 
@@ -23,6 +24,7 @@ public abstract class CommonProgressSherlockFragment extends SherlockProgressFra
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
+
 		super.onActivityCreated(savedInstanceState);
 		startLoaders();
 	}
@@ -58,6 +60,11 @@ public abstract class CommonProgressSherlockFragment extends SherlockProgressFra
 		for (int i = 0; i < loaderIds.size(); i++) {
 			LoaderHelper.getIntance().startLoader(this, loaderIds.get(i), this);
 		}
+	}
+
+	public void setDrawerLock() {
+
+		((DrawerActivity) getActivity()).enableLock();
 	}
 
 	public abstract int getViewId();

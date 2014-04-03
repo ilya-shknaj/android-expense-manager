@@ -50,7 +50,7 @@ public class SettingActivity extends PreferenceActivity {
 			public boolean onPreferenceClick(Preference preference) {
 
 				Intent intent = new Intent(SettingActivity.this, MainActivity.class);
-				intent.setAction(ChoosePeriodFragment.class.getSimpleName());
+				intent.setAction(ChoosePeriodFragment.TAG);
 				startActivityForResult(intent, SELECT_PERIOD_REQUEST_CODE);
 				return false;
 			}
@@ -85,7 +85,7 @@ public class SettingActivity extends PreferenceActivity {
 			public boolean onPreferenceClick(Preference preference) {
 
 				Intent intent = new Intent(SettingActivity.this, MainActivity.class);
-				intent.setAction(PaymentMethodsFragment.class.getSimpleName());
+				intent.setAction(PaymentMethodsFragment.TAG);
 				startActivityForResult(intent, SELECT_PAYMENT_METHOD_REQUEST_CODE);
 				return false;
 			}
@@ -98,7 +98,7 @@ public class SettingActivity extends PreferenceActivity {
 			public boolean onPreferenceClick(Preference preference) {
 
 				Intent intent = new Intent(SettingActivity.this, MainActivity.class);
-				intent.setAction(ExchangeRatesFragment.class.getSimpleName());
+				intent.setAction(ExchangeRatesFragment.TAG);
 				startActivity(intent);
 				return false;
 			}
@@ -112,7 +112,7 @@ public class SettingActivity extends PreferenceActivity {
 			public boolean onPreferenceClick(Preference preference) {
 
 				Intent intent = new Intent(SettingActivity.this, MainActivity.class);
-				intent.setAction(ChooseCurrencyFragment.class.getSimpleName());
+				intent.setAction(ChooseCurrencyFragment.TAG);
 				startActivityForResult(intent, SELECT_CURRENCY_REQUEST_CODE);
 				return false;
 			}

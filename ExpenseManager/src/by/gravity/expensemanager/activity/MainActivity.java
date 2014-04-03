@@ -3,6 +3,7 @@ package by.gravity.expensemanager.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentTransaction;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.fragments.AddPaymentFragment;
 import by.gravity.expensemanager.fragments.AddPaymentMethodsFragment;
@@ -35,25 +36,30 @@ public class MainActivity extends DrawerActivity {
 			showMainFragment();
 			// showOutcomeFragment(true);
 			// showPaymentMethodsFragment();
-		} else if (action.equals(ChoosePeriodFragment.class.getSimpleName())) {
-			showChoosePeriodFragment();
+		} else {
+			enableLock();
 
-		} else if (action.equals(PaymentMethodsFragment.class.getSimpleName())) {
-			showPaymentMethodsFragment();
-		} else if (action.equals(ChooseCurrencyFragment.class.getSimpleName())) {
-			// TODO
-			showChooseCurrencyFragment(false);
-		} else if (action.equals(ExchangeRatesFragment.class.getSimpleName())) {
-			showExchangeRatesFragment();
+			if (action.equals(ChoosePeriodFragment.TAG)) {
+				showChoosePeriodFragment();
+
+			} else if (action.equals(PaymentMethodsFragment.TAG)) {
+				showPaymentMethodsFragment();
+			} else if (action.equals(ChooseCurrencyFragment.TAG)) {
+				// TODO
+				showChooseCurrencyFragment(false);
+			} else if (action.equals(ExchangeRatesFragment.TAG)) {
+				showExchangeRatesFragment();
+			}
+
 		}
+
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
-		getSupportMenuInflater().inflate(R.menu.main, menu);
-		if (getCallingActivity() != null) {
-			menu.findItem(R.id.actionSettings).setVisible(false);
+		if (getIntent().getAction().equals(Intent.ACTION_MAIN)) {
+			getSupportMenuInflater().inflate(R.menu.main, menu);
 		}
 		return true;
 	}
@@ -101,8 +107,11 @@ public class MainActivity extends DrawerActivity {
 
 	public void showChoosePeriodFragment() {
 
-		getSupportFragmentManager().beginTransaction().replace(R.id.content, ChoosePeriodFragment.newInstanse())
-				.addToBackStack(ChoosePeriodFragment.class.getSimpleName()).commit();
+		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().replace(R.id.content, ChoosePeriodFragment.newInstanse());
+		if (!getIntent().getAction().equals(ChoosePeriodFragment.TAG)) {
+			transaction.addToBackStack(ChoosePeriodFragment.TAG);
+		}
+		transaction.commit();
 	}
 
 	public void showAddPaymentFragment() {
@@ -113,7 +122,7 @@ public class MainActivity extends DrawerActivity {
 	public void showAddPaymentFragment(Long paymentId) {
 
 		getSupportFragmentManager().beginTransaction().replace(R.id.content, AddPaymentFragment.newInstance(paymentId))
-				.addToBackStack(AddPaymentFragment.class.getSimpleName()).commit();
+				.addToBackStack(AddPaymentFragment.TAG).commit();
 	}
 
 	public void showPaymentMethodsFragment() {
@@ -129,7 +138,7 @@ public class MainActivity extends DrawerActivity {
 	public void showAddPaymentMethodFragment(Long paymentMethodId) {
 
 		getSupportFragmentManager().beginTransaction().replace(R.id.content, AddPaymentMethodsFragment.newInstance(paymentMethodId))
-				.addToBackStack(AddPaymentMethodsFragment.class.getSimpleName()).commit();
+				.addToBackStack(AddPaymentMethodsFragment.TAG).commit();
 	}
 
 	public void showSelectDateDialog(int year, int month, int day, OnDateSetListener dateSetListener) {

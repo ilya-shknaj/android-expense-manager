@@ -22,13 +22,17 @@ import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
 
 public class ChoosePeriodFragment extends CommonSherlockFragment {
 
+	public static final String TAG = ChoosePeriodFragment.class.getSimpleName();
+
 	public static ChoosePeriodFragment newInstanse() {
+
 		ChoosePeriodFragment fragment = new ChoosePeriodFragment();
 		return fragment;
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
+
 		super.onActivityCreated(savedInstanceState);
 
 		final RadioGroup periodGroup = (RadioGroup) getView().findViewById(R.id.periodGroup);
@@ -36,6 +40,7 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 
 			@Override
 			public void onCheckedChanged(RadioGroup radiogroup, int i) {
+
 				if (i == R.id.periodUser) {
 					enableUserPeriod();
 				} else {
@@ -55,12 +60,14 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 
 			@Override
 			public void onClick(View view) {
+
 				Calendar date = getStartDate();
 				((MainActivity) getActivity()).showSelectDateDialog(date.get(Calendar.YEAR), date.get(Calendar.MONTH),
 						date.get(Calendar.DAY_OF_MONTH), new OnDateSetListener() {
 
 							@Override
 							public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
+
 								initDateView(startDate, year, month, day);
 							}
 						});
@@ -74,12 +81,14 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 
 			@Override
 			public void onClick(View view) {
+
 				Calendar date = getFinishDate();
 				((MainActivity) getActivity()).showSelectDateDialog(date.get(Calendar.YEAR), date.get(Calendar.MONTH),
 						date.get(Calendar.DAY_OF_MONTH), new OnDateSetListener() {
 
 							@Override
 							public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
+
 								initDateView(finishDate, year, month, day);
 							}
 						});
@@ -91,6 +100,7 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 
 			@Override
 			public void onClick(View view) {
+
 				String selectedPeriod = getPeriodString(periodGroup.getCheckedRadioButtonId());
 				if (!StringUtil.isEmpty(selectedPeriod)) {
 					SettingsManager.putCurrentPeriod(selectedPeriod);
@@ -113,6 +123,7 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 
 			@Override
 			public void onClick(View view) {
+
 				if (getActivity().getCallingActivity() != null) {
 					getActivity().setResult(Activity.RESULT_CANCELED);
 					getActivity().finish();
@@ -126,6 +137,7 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 	}
 
 	private int getPeriodViewId() {
+
 		String currentPeriod = SettingsManager.getCurrentPeriod();
 		int periodId = -1;
 		if (currentPeriod.equals(getString(R.string.period_current_month))) {
@@ -146,6 +158,7 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 	}
 
 	private String getPeriodString(int viewId) {
+
 		int resId = -1;
 		if (viewId == R.id.periodCurrentMonth) {
 			resId = R.string.period_current_month;
@@ -169,18 +182,21 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 	}
 
 	private Calendar getStartDate() {
+
 		Calendar calendar = Calendar.getInstance();
 
 		return calendar;
 	}
 
 	private Calendar getFinishDate() {
+
 		Calendar calendar = Calendar.getInstance();
 
 		return calendar;
 	}
 
 	private void enableUserPeriod() {
+
 		LinearLayout chooseDateLayout = (LinearLayout) getView().findViewById(R.id.chooseDateLayout);
 		if (!chooseDateLayout.isEnabled()) {
 			ViewUtils.enableAllView(chooseDateLayout, true);
@@ -188,6 +204,7 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 	}
 
 	private void disableUserPeriod() {
+
 		LinearLayout chooseDateLayout = (LinearLayout) getView().findViewById(R.id.chooseDateLayout);
 		if (chooseDateLayout.isEnabled()) {
 			ViewUtils.enableAllView(chooseDateLayout, false);
@@ -195,6 +212,7 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 	}
 
 	private void initDateView(TextView textView, int year, int month, int day) {
+
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(year, month, day);
 
@@ -203,6 +221,7 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 	}
 
 	private String getCurrentDate() {
+
 		Calendar calendar = Calendar.getInstance();
 
 		return String.format(Constants.DATE_FORMAT_FULL, calendar.get(Calendar.DAY_OF_MONTH), CalendarUtil.getMonth(calendar.get(Calendar.MONTH)),
@@ -211,11 +230,13 @@ public class ChoosePeriodFragment extends CommonSherlockFragment {
 
 	@Override
 	public int getViewId() {
+
 		return R.layout.f_choose_period;
 	}
 
 	@Override
 	public int getTitleResource() {
+
 		return R.string.choose_period;
 	}
 

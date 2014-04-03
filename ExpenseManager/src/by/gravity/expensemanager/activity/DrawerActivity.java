@@ -43,12 +43,14 @@ public class DrawerActivity extends SherlockFragmentActivity {
 			initDrawer();
 		}
 
-		if (getCallingActivity() != null) {
-			if (mDrawerLayout == null) {
-				mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-			}
-			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+	}
+
+	public void enableLock() {
+
+		if (mDrawerLayout == null) {
+			mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
 		}
+		mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 	}
 
 	private void initDrawer() {
@@ -83,7 +85,7 @@ public class DrawerActivity extends SherlockFragmentActivity {
 		/*
 		 * The action bar home/up action should open or close the drawer. mDrawerToggle will take care of this.
 		 */
-		if (mDrawerToggle.onOptionsItemSelected(item)) {
+		if (mDrawerToggle!=null && mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

@@ -22,6 +22,8 @@ import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
 
 public class PaymentMethodsFragment extends CommonProgressSherlockFragment implements LoaderCallbacks<Cursor> {
 
+	public static final String TAG = PaymentMethodsFragment.class.getSimpleName();
+
 	public static PaymentMethodsFragment newInstance() {
 
 		PaymentMethodsFragment fragment = new PaymentMethodsFragment();
