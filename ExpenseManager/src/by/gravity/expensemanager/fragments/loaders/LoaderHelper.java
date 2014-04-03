@@ -14,7 +14,7 @@ public class LoaderHelper {
 
 	public static final int OUTCOME_GROUP_BY_CATEGORY_NAME_ID = -3;
 
-	public static final int CURRENCIES = -4;
+	public static final int LOAD_CURRENCIES = -4;
 
 	public static final int ADD_PAYMENT_PAYMENT_METHODS_ID = -5;
 
@@ -36,7 +36,9 @@ public class LoaderHelper {
 
 	public static final int UPDATE_USED_CURRENCIES_ID = -14;
 
-	public static final int UPDATE_CURRENCY_RATE_ID = -15;
+	public static final int REFRESH_CURRENCY_RATE_ID = -15;
+	
+	public static final int UPDATE_CURRENCY_RATE = -16;
 
 	public static final String ARG_EXPENSE_DATA = "ARG_EXPENSE_DATA";
 

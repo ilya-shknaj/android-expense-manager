@@ -83,14 +83,14 @@ public class ChooseCurrencyFragment extends CommonProgressSherlockFragment {
 	@Override
 	public void getLoaderIds(List<Integer> loaderIds) {
 
-		loaderIds.add(LoaderHelper.CURRENCIES);
+		loaderIds.add(LoaderHelper.LOAD_CURRENCIES);
 
 	}
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
 
-		if (id == LoaderHelper.CURRENCIES) {
+		if (id == LoaderHelper.LOAD_CURRENCIES) {
 			return new CurrencyLoader(getActivity(), getShowOnlyShortCurrencies());
 		} else if (id == LoaderHelper.UPDATE_USED_CURRENCIES_ID) {
 			ListView listView = (ListView) getView().findViewById(R.id.listView);
@@ -103,14 +103,14 @@ public class ChooseCurrencyFragment extends CommonProgressSherlockFragment {
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
 		super.onLoadFinished(loader, cursor);
-		if (loader.getId() == LoaderHelper.CURRENCIES) {
+		if (loader.getId() == LoaderHelper.LOAD_CURRENCIES) {
 			initCurrencies(cursor);
 		} else if (loader.getId() == LoaderHelper.UPDATE_USED_CURRENCIES_ID) {
 			getActivity().setResult(Activity.RESULT_OK);
 			getActivity().finish();
 		}
 
-		if (isLoaderFinished(TAG, LoaderHelper.CURRENCIES)) {
+		if (isLoaderFinished(TAG, LoaderHelper.LOAD_CURRENCIES)) {
 			setContentShown(true);
 		}
 	}

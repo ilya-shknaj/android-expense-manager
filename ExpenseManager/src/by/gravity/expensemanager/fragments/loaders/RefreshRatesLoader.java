@@ -12,9 +12,9 @@ import by.gravity.expensemanager.data.SQLDataManager;
 import by.gravity.expensemanager.data.SettingsManager;
 import by.gravity.expensemanager.model.RateModel;
 
-public class UpdateRatesLoader extends CursorLoader {
+public class RefreshRatesLoader extends CursorLoader {
 
-	public UpdateRatesLoader(Context context) {
+	public RefreshRatesLoader(Context context) {
 
 		super(context);
 	}

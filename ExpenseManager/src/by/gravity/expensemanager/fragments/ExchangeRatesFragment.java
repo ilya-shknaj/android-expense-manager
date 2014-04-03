@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -23,7 +24,9 @@ import by.gravity.expensemanager.data.SettingsManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.loaders.CurrencyLoader;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
+import by.gravity.expensemanager.fragments.loaders.RefreshRatesLoader;
 import by.gravity.expensemanager.fragments.loaders.UpdateRateLoader;
+import by.gravity.expensemanager.fragments.loaders.LoaderHelper.LoaderStatus;
 import by.gravity.expensemanager.util.Constants;
 import by.gravity.expensemanager.util.DialogHelper;
 import by.gravity.expensemanager.util.DialogHelper.onEditCompleteListener;
@@ -32,7 +35,7 @@ import by.gravity.expensemanager.util.GlobalUtils;
 public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
 
 	public static final String TAG = ExchangeRatesFragment.class.getSimpleName();
-	
+
 	private static final String ARG_CODE = "ARG_CODE";
 
 	private static final String ARG_RATE = "ARG_RATE";
@@ -57,10 +60,12 @@ public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
 
-		if (id == LoaderHelper.CURRENCIES) {
+		if (id == LoaderHelper.LOAD_CURRENCIES) {
 			return new CurrencyLoader(getActivity(), false);
-		} else if (id == LoaderHelper.UPDATE_CURRENCY_RATE_ID) {
+		} else if (id == LoaderHelper.UPDATE_CURRENCY_RATE) {
 			return new UpdateRateLoader(getActivity(), bundle.getString(ARG_CODE), bundle.getDouble(ARG_RATE));
+		} else if (id == LoaderHelper.REFRESH_CURRENCY_RATE_ID) {
+			return new RefreshRatesLoader(getActivity());
 		}
 
 		return null;
@@ -70,10 +75,10 @@ public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
 		super.onLoadFinished(loader, cursor);
-		if (loader.getId() == LoaderHelper.CURRENCIES) {
+		if (loader.getId() == LoaderHelper.LOAD_CURRENCIES) {
 			initListView(cursor);
 			setContentShown(true);
-		} else if (loader.getId() == LoaderHelper.UPDATE_CURRENCY_RATE_ID) {
+		} else if (loader.getId() == LoaderHelper.UPDATE_CURRENCY_RATE || loader.getId() == LoaderHelper.REFRESH_CURRENCY_RATE_ID) {
 			startLoaders();
 		}
 
@@ -83,6 +88,24 @@ public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
 		inflater.inflate(R.menu.exchange_rates, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		if (item.getTitle().equals(getString(R.string.refresh))) {
+			refreshCurrencies();
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	private void refreshCurrencies() {
+
+		if (LoaderHelper.getIntance().getLoaderStatus(ExchangeRatesFragment.TAG, LoaderHelper.REFRESH_CURRENCY_RATE_ID) != LoaderStatus.STARTED) {
+			setContentShown(false);
+			LoaderHelper.getIntance().startLoader(this, LoaderHelper.REFRESH_CURRENCY_RATE_ID, this);
+		}
 	}
 
 	private void initListView(final Cursor cursor) {
@@ -137,7 +160,7 @@ public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
 									Bundle bundle = new Bundle();
 									bundle.putString(ARG_CODE, !code.equals(Constants.USD) ? code : adapter.getCurrentCurrency());
 									bundle.putDouble(ARG_RATE, GlobalUtils.convertToUsdRate(code, adapter.getCurrencyRate(), value));
-									LoaderHelper.getIntance().startLoader(ExchangeRatesFragment.this, LoaderHelper.UPDATE_CURRENCY_RATE_ID,
+									LoaderHelper.getIntance().startLoader(ExchangeRatesFragment.this, LoaderHelper.UPDATE_CURRENCY_RATE,
 											ExchangeRatesFragment.this, bundle);
 
 								}
@@ -174,7 +197,7 @@ public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
 	@Override
 	public void getLoaderIds(List<Integer> loaderIds) {
 
-		loaderIds.add(LoaderHelper.CURRENCIES);
+		loaderIds.add(LoaderHelper.LOAD_CURRENCIES);
 	}
 
 }
