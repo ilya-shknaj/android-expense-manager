@@ -144,6 +144,7 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 				if (name.getText().toString().length() == 0) {
 					Toast.makeText(getActivity(), R.string.emptyName, Toast.LENGTH_SHORT).show();
 					name.requestFocus();
+					return;
 				}
 
 				EditText balance = (EditText) getView().findViewById(R.id.balance);
