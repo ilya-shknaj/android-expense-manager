@@ -24,6 +24,8 @@ public class SettingActivity extends PreferenceActivity {
 
 	private static final int SELECT_CURRENCY_REQUEST_CODE = 3;
 
+	private static final int EXCHANGE_RATE_REQUEST_CODE = 4;
+
 	private Preference currentPeriodPreference;
 
 	private Preference categoriesShowCount;
@@ -99,7 +101,7 @@ public class SettingActivity extends PreferenceActivity {
 
 				Intent intent = new Intent(SettingActivity.this, MainActivity.class);
 				intent.setAction(ExchangeRatesFragment.TAG);
-				startActivity(intent);
+				startActivityForResult(intent, EXCHANGE_RATE_REQUEST_CODE);
 				return false;
 			}
 		});
@@ -186,6 +188,12 @@ public class SettingActivity extends PreferenceActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 		if (resultCode != RESULT_OK) {
+			switch (requestCode) {
+			case EXCHANGE_RATE_REQUEST_CODE:
+				updateExchangeRateSummary();
+				break;
+			}
+
 			return;
 		}
 
@@ -207,5 +215,4 @@ public class SettingActivity extends PreferenceActivity {
 		}
 
 	}
-
 }

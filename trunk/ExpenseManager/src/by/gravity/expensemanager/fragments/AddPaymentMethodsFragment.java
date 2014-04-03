@@ -103,7 +103,6 @@ public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment im
 		return false;
 	}
 
-
 	@Override
 	public void getLoaderIds(List<Integer> loaderIds) {
 

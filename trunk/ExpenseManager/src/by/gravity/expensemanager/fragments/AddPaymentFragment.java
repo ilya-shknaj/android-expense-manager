@@ -43,7 +43,7 @@ import by.gravity.expensemanager.fragments.loaders.ExpenseLoader;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper.LoaderStatus;
 import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
-import by.gravity.expensemanager.fragments.loaders.UpdateRatesLoader;
+import by.gravity.expensemanager.fragments.loaders.RefreshRatesLoader;
 import by.gravity.expensemanager.model.ExpenseModel;
 import by.gravity.expensemanager.util.Constants;
 import by.gravity.expensemanager.util.DialogHelper;
@@ -116,7 +116,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 	@Override
 	public void getLoaderIds(List<Integer> loaderIds) {
 
-		loaderIds.add(LoaderHelper.CURRENCIES);
+		loaderIds.add(LoaderHelper.LOAD_CURRENCIES);
 		loaderIds.add(LoaderHelper.ADD_PAYMENT_PAYMENT_METHODS_ID);
 		loaderIds.add(LoaderHelper.ADD_PAYMENT_CATEGORIES_ID);
 		if (getExpenseId() != 0) {
@@ -124,7 +124,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		}
 
 		// TODO
-		loaderIds.add(LoaderHelper.UPDATE_CURRENCY_RATE_ID);
+		loaderIds.add(LoaderHelper.REFRESH_CURRENCY_RATE_ID);
 	}
 
 	private Long getExpenseId() {
@@ -626,7 +626,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
 
 		LoaderHelper.getIntance().putLoaderStatus(TAG, id, LoaderStatus.STARTED);
-		if (id == LoaderHelper.CURRENCIES) {
+		if (id == LoaderHelper.LOAD_CURRENCIES) {
 			return new CurrencyLoader(getActivity(), true);
 		} else if (id == LoaderHelper.ADD_PAYMENT_PAYMENT_METHODS_ID) {
 			return new PaymentMethodsLoader(getActivity());
@@ -636,8 +636,8 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 			return new ExpenseLoader(getActivity(), getExpenseId());
 		} else if (id == LoaderHelper.DELETE_PAYMENT_ID) {
 			return new DeletePaymentLoader(getActivity(), getExpenseId());
-		} else if (id == LoaderHelper.UPDATE_CURRENCY_RATE_ID) {
-			return new UpdateRatesLoader(getActivity());
+		} else if (id == LoaderHelper.REFRESH_CURRENCY_RATE_ID) {
+			return new RefreshRatesLoader(getActivity());
 		}
 		return null;
 	}
@@ -646,7 +646,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
 		super.onLoadFinished(loader, cursor);
-		if (loader.getId() == LoaderHelper.CURRENCIES) {
+		if (loader.getId() == LoaderHelper.LOAD_CURRENCIES) {
 			List<String> currencyList = parseCurrency(cursor);
 			initCurrency(currencyList);
 		} else if (loader.getId() == LoaderHelper.ADD_PAYMENT_PAYMENT_METHODS_ID) {
@@ -661,7 +661,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 			((MainActivity) getActivity()).delayedPopBackStack();
 		}
 
-		if (isLoaderFinished(TAG, LoaderHelper.CURRENCIES) && isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_CATEGORIES_ID)
+		if (isLoaderFinished(TAG, LoaderHelper.LOAD_CURRENCIES) && isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_CATEGORIES_ID)
 				&& isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_PAYMENT_METHODS_ID)
 				&& (getExpenseId() == 0 ? true : isLoaderFinished(TAG, LoaderHelper.ADD_PAYMENT_EXPENSE_ID))) {
 			initCostEditText();
