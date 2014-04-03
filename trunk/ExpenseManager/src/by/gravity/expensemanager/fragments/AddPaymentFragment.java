@@ -123,8 +123,6 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 			loaderIds.add(LoaderHelper.ADD_PAYMENT_EXPENSE_ID);
 		}
 
-		// TODO
-		loaderIds.add(LoaderHelper.REFRESH_CURRENCY_RATE_ID);
 	}
 
 	private Long getExpenseId() {

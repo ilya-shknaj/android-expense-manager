@@ -46,7 +46,12 @@ public class SettingsManager extends PreferenceHelper {
 		putString(R.string.keyPaymentMethod, StringUtil.uppercaseFirstLetter(paymentMethod));
 	}
 
-	public static String getExchangeRatesLastUpdateTime() {
+	public static long getExchangeRatesLastUpdateTime() {
+
+		return getLong(R.string.keyExchangeRates, -1);
+	}
+
+	public static String getExchangeRatesLastUpdateTimeString() {
 
 		long lastUpdateTime = getLong(R.string.keyExchangeRates, -1);
 		if (lastUpdateTime == -1) {
