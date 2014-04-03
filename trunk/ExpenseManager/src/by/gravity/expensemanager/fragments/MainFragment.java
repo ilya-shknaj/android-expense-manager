@@ -40,6 +40,7 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 
 		super.onActivityCreated(savedInstanceState);
 		initBottomBar();
+		
 
 	}
 

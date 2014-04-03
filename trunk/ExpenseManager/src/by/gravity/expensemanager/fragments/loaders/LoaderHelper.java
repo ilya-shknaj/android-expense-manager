@@ -86,11 +86,12 @@ public class LoaderHelper {
 	}
 
 	public void startLoader(Fragment fragment, int id, LoaderCallbacks<Cursor> loaderCallbacks) {
+		LoaderHelper.getIntance().putLoaderStatus(fragment.getClass().getSimpleName(), id, LoaderStatus.STARTED);
 		startLoader(fragment, id, loaderCallbacks, null);
 	}
 
 	public void startLoader(Fragment fragment, int id, LoaderCallbacks<Cursor> loaderCallbacks, Bundle bundle) {
-
+		
 		LoaderManager loaderManager = fragment.getLoaderManager();
 		if (loaderManager.getLoader(id) != null && !loaderManager.getLoader(id).isAbandoned()) {
 			loaderManager.restartLoader(id, bundle, loaderCallbacks);
