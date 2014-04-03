@@ -37,7 +37,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class AddPaymentMethodsFragment extends CommonProgressSherlockFragment implements LoaderCallbacks<Cursor> {
 
-	private static final String TAG = AddPaymentMethodsFragment.class.getSimpleName();
+	public static final String TAG = AddPaymentMethodsFragment.class.getSimpleName();
 
 	private static final String ARG_PAYMENT_METHOD_ID = "ARG_PAYMENT_METHOD_ID";
 

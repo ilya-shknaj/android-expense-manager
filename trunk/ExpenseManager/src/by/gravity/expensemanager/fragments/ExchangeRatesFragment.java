@@ -2,6 +2,9 @@ package by.gravity.expensemanager.fragments;
 
 import java.util.List;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
@@ -28,6 +31,8 @@ import by.gravity.expensemanager.util.GlobalUtils;
 
 public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
 
+	public static final String TAG = ExchangeRatesFragment.class.getSimpleName();
+	
 	private static final String ARG_CODE = "ARG_CODE";
 
 	private static final String ARG_RATE = "ARG_RATE";
@@ -39,6 +44,14 @@ public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
 		ExchangeRatesFragment fragment = new ExchangeRatesFragment();
 
 		return fragment;
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+
+		super.onActivityCreated(savedInstanceState);
+		setHasOptionsMenu(true);
+		setDrawerLock();
 	}
 
 	@Override
@@ -64,6 +77,12 @@ public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
 			startLoaders();
 		}
 
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+		inflater.inflate(R.menu.exchange_rates, menu);
 	}
 
 	private void initListView(final Cursor cursor) {

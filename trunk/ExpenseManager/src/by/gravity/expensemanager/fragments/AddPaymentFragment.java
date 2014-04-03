@@ -59,7 +59,7 @@ import com.sleepbot.datetimepicker.time.TimePickerDialog.OnTimeSetListener;
 
 public class AddPaymentFragment extends CommonProgressSherlockFragment implements LoaderCallbacks<Cursor> {
 
-	private static final String TAG = AddPaymentFragment.class.getSimpleName();
+	public static final String TAG = AddPaymentFragment.class.getSimpleName();
 
 	private static final String ARG_EXPENSE_ID = "ARG_PAYMENT_ID";
 

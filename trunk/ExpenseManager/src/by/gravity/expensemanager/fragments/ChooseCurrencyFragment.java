@@ -19,7 +19,7 @@ import by.gravity.expensemanager.fragments.loaders.UpdateUsedCurrencies;
 
 public class ChooseCurrencyFragment extends CommonProgressSherlockFragment {
 
-	private static final String TAG = ChooseCurrencyFragment.class.getSimpleName();
+	public static final String TAG = ChooseCurrencyFragment.class.getSimpleName();
 
 	private static final String ARG_SHOW_ONLY_SHORT_CURRENCIES = "ARG_SHOW_ONLY_SHORT_CURRENCIES";
 
@@ -42,6 +42,7 @@ public class ChooseCurrencyFragment extends CommonProgressSherlockFragment {
 
 		super.onActivityCreated(savedInstanceState);
 		initBottomTabBar();
+
 	}
 
 	private void initBottomTabBar() {

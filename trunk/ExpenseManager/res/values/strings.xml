@@ -43,6 +43,7 @@
     <string name="never">Никогда</string>
     <string name="currenyCurrency">Текущая валюта</string>
     <string name="rate">Курс %s</string>
+    <string name="refresh">Обновить</string>
     
 
     <!-- errors -->
