@@ -2,6 +2,7 @@ package by.gravity.expensemanager.fragments;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.activity.MainActivity;
+import by.gravity.expensemanager.data.SettingsManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
 import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
@@ -45,6 +47,10 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 	public void getLoaderIds(List<Integer> loaderIds) {
 
 		loaderIds.add(LoaderHelper.GET_PAYMENT_METHODS_ID);
+
+		if (SettingsManager.getUpdateCurrencyPeriod().equals(getString(R.string.settingsPeriodEveryDay))
+				&& TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - SettingsManager.getExchangeRatesLastUpdateTime()) >= 24)
+			loaderIds.add(LoaderHelper.REFRESH_CURRENCY_RATE_ID);
 
 	}
 

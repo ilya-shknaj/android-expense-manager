@@ -171,7 +171,7 @@ public class SettingActivity extends PreferenceActivity {
 	private void updateExchangeRateSummary() {
 
 		exchangeRates
-				.setSummary(getString(R.string.settingsLastTimeUpdate) + Constants.NEW_STRING + SettingsManager.getExchangeRatesLastUpdateTime());
+				.setSummary(getString(R.string.settingsLastTimeUpdate) + Constants.NEW_STRING + SettingsManager.getExchangeRatesLastUpdateTimeString());
 	}
 
 	private void updateUsedCurrencies() {
