@@ -3,6 +3,7 @@ package by.gravity.expensemanager.fragments.loaders;
 import java.util.HashMap;
 
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -83,12 +84,17 @@ public class LoaderHelper {
 	}
 
 	public void startLoader(Fragment fragment, int id, LoaderCallbacks<Cursor> loaderCallbacks) {
+		startLoader(fragment, id, loaderCallbacks, null);
+	}
+
+	public void startLoader(Fragment fragment, int id, LoaderCallbacks<Cursor> loaderCallbacks, Bundle bundle) {
 
 		LoaderManager loaderManager = fragment.getLoaderManager();
 		if (loaderManager.getLoader(id) != null && !loaderManager.getLoader(id).isAbandoned()) {
-			loaderManager.restartLoader(id, null, loaderCallbacks);
+			loaderManager.restartLoader(id, bundle, loaderCallbacks);
 		} else {
-			loaderManager.initLoader(id, null, loaderCallbacks);
+			loaderManager.initLoader(id, bundle, loaderCallbacks);
 		}
 	}
+
 }

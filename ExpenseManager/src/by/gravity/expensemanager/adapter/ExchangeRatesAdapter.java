@@ -28,7 +28,7 @@ public class ExchangeRatesAdapter extends ResourceCursorAdapter {
 		TextView currency = (TextView) view.findViewById(R.id.currency);
 		String name = cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME));
 		String code = cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE));
-		
+
 		currency.setText(String.format(Constants.CURRENCY_FORMAT, name, code));
 
 		TextView rate = (TextView) view.findViewById(R.id.rate);
@@ -65,5 +65,14 @@ public class ExchangeRatesAdapter extends ResourceCursorAdapter {
 		}
 	}
 
+	public String getCurrentCurrency() {
+
+		return currentCurrency;
+	}
+
+	public double getCurrencyRate() {
+
+		return currencyRate;
+	}
 
 }

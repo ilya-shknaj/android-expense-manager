@@ -1,9 +1,13 @@
 package by.gravity.expensemanager.util;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources.NotFoundException;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Selection;
@@ -25,7 +29,7 @@ public class DialogHelper {
 
 	public interface onEditCompleteListener {
 
-		public void onEditCompelted(String text);
+		public void onEditCompelted(double value);
 	}
 
 	public static void showConfirmDialog(Activity activity, int title, int message, final OnPositiveButtonClickListener onPositiveButtonClickListener) {
@@ -60,9 +64,15 @@ public class DialogHelper {
 	public static void showNumberEditDialog(final Activity activity, int title, int message, String value,
 			final onEditCompleteListener onEditCompleteListener) {
 
+		showNumberEditDialog(activity, activity.getString(title), message, value, onEditCompleteListener);
+	}
+
+	public static void showNumberEditDialog(final Activity activity, String title, int message, String value,
+			final onEditCompleteListener onEditCompleteListener) {
+
 		final EditText editText = new EditText(activity);
 		editText.setText(value);
-		editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+		editText.setRawInputType(InputType.TYPE_CLASS_NUMBER);
 
 		int position = editText.length();
 		Editable editable = editText.getText();
@@ -81,13 +91,20 @@ public class DialogHelper {
 
 			public void onClick(DialogInterface dialog, int which) {
 
-				if (Integer.parseInt(editText.getText().toString()) <= 0) {
+				String value = editText.getText().toString();
+				Double doubleValue = null;
+				try {
+					doubleValue = GlobalUtils.getExchangeNumberFormat().parse(value).doubleValue();
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				if (doubleValue != null && doubleValue <= 0.0) {
 					Toast.makeText(activity, R.string.valueMustBeMoreThenZero, Toast.LENGTH_SHORT).show();
 					return;
 				}
 
-				if (onEditCompleteListener != null) {
-					onEditCompleteListener.onEditCompelted(editText.getText().toString());
+				if (doubleValue != null && onEditCompleteListener != null) {
+					onEditCompleteListener.onEditCompelted(doubleValue);
 				}
 			}
 		});

@@ -67,9 +67,9 @@ public class SettingActivity extends PreferenceActivity {
 						new onEditCompleteListener() {
 
 							@Override
-							public void onEditCompelted(String text) {
+							public void onEditCompelted(double value) {
 
-								SettingsManager.putCategoriesShowCount(text);
+								SettingsManager.putCategoriesShowCount(String.valueOf((int) value));
 								updateCategoriesShowCountSummary();
 							}
 						});
