@@ -160,7 +160,7 @@ public class SQLDataManager {
 				: SQLConstants.FIELD_NAME_EN;
 		return database.query(SQLConstants.TABLE_CURRENCY, new String[] { SQLConstants.FIELD_ID, SQLConstants.FIELD_CODE,
 				currencyTableName + " AS " + SQLConstants.FIELD_NAME, SQLConstants.FIELD_IS_USED, SQLConstants.FIELD_RATE }, null, null, null, null,
-				SQLConstants.FIELD_IS_USED + " DESC , "+ SQLConstants.FIELD_NAME);
+				SQLConstants.FIELD_IS_USED + " DESC , " + SQLConstants.FIELD_NAME);
 	}
 
 	public Cursor getCategoriesCursor() {
@@ -495,6 +495,11 @@ public class SQLDataManager {
 	private static final String UPDATE_RATES_QUERY = "UPDATE " + SQLConstants.TABLE_CURRENCY + " SET " + SQLConstants.FIELD_RATE + "= %s" + " WHERE "
 			+ SQLConstants.FIELD_CODE + "= '%s'";
 
+	public void updateRate(RateModel rateModel) {
+
+		database.execSQL(String.format(UPDATE_RATES_QUERY, rateModel.getRate(), rateModel.getCode()));
+	}
+
 	public void updateRates(List<RateModel> rateList) {
 
 		database.beginTransaction();
@@ -504,4 +509,5 @@ public class SQLDataManager {
 		database.setTransactionSuccessful();
 		database.endTransaction();
 	}
+
 }

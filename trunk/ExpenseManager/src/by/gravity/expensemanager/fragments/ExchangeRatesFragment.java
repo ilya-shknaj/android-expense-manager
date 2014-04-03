@@ -8,9 +8,11 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.adapter.CurrentCurrencyAdapter;
 import by.gravity.expensemanager.adapter.ExchangeRatesAdapter;
@@ -18,8 +20,19 @@ import by.gravity.expensemanager.data.SettingsManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.loaders.CurrencyLoader;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
+import by.gravity.expensemanager.fragments.loaders.UpdateRateLoader;
+import by.gravity.expensemanager.util.Constants;
+import by.gravity.expensemanager.util.DialogHelper;
+import by.gravity.expensemanager.util.DialogHelper.onEditCompleteListener;
+import by.gravity.expensemanager.util.GlobalUtils;
 
 public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
+
+	private static final String ARG_CODE = "ARG_CODE";
+
+	private static final String ARG_RATE = "ARG_RATE";
+
+	private View headerView = null;
 
 	public static ExchangeRatesFragment newInstance() {
 
@@ -29,10 +42,12 @@ public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
 	}
 
 	@Override
-	public Loader<Cursor> onCreateLoader(int id, Bundle arg1) {
+	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
 
 		if (id == LoaderHelper.CURRENCIES) {
 			return new CurrencyLoader(getActivity(), false);
+		} else if (id == LoaderHelper.UPDATE_CURRENCY_RATE_ID) {
+			return new UpdateRateLoader(getActivity(), bundle.getString(ARG_CODE), bundle.getDouble(ARG_RATE));
 		}
 
 		return null;
@@ -45,6 +60,8 @@ public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
 		if (loader.getId() == LoaderHelper.CURRENCIES) {
 			initListView(cursor);
 			setContentShown(true);
+		} else if (loader.getId() == LoaderHelper.UPDATE_CURRENCY_RATE_ID) {
+			startLoaders();
 		}
 
 	}
@@ -58,7 +75,11 @@ public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
 		CurrentCurrencyAdapter currentCurrencyAdapter = new CurrentCurrencyAdapter(getActivity(), cursor);
 		spinner.setAdapter(currentCurrencyAdapter);
 		spinner.setSelection(position);
+		if (this.headerView != null) {
+			listView.removeHeaderView(this.headerView);
+		}
 		listView.addHeaderView(headerView);
+		this.headerView = headerView;
 		final ExchangeRatesAdapter adapter = new ExchangeRatesAdapter(getActivity(), cursor, position);
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -78,6 +99,33 @@ public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
 		});
 
 		listView.setAdapter(adapter);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+
+				cursor.moveToPosition(position - 1);
+				final String code = cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE));
+				if (!code.equals(adapter.getCurrentCurrency())) {
+					TextView rate = (TextView) view.findViewById(R.id.rate);
+					DialogHelper.showNumberEditDialog(getActivity(), String.format(getString(R.string.rate), code), 0, rate.getText().toString(),
+							new onEditCompleteListener() {
+
+								@Override
+								public void onEditCompelted(double value) {
+
+									setContentShown(false);
+									Bundle bundle = new Bundle();
+									bundle.putString(ARG_CODE, !code.equals(Constants.USD) ? code : adapter.getCurrentCurrency());
+									bundle.putDouble(ARG_RATE, GlobalUtils.convertToUsdRate(code, adapter.getCurrencyRate(), value));
+									LoaderHelper.getIntance().startLoader(ExchangeRatesFragment.this, LoaderHelper.UPDATE_CURRENCY_RATE_ID,
+											ExchangeRatesFragment.this, bundle);
+
+								}
+							});
+				}
+			}
+		});
 	}
 
 	private int getCurrencyCurrencyIndex(Cursor cursor) {
