@@ -45,12 +45,6 @@
                 </Spinner>
             </LinearLayout>
 
-            <CheckBox
-                android:id="@+id/rememberCurrency"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/rememberCurrency" />
-
             <include
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

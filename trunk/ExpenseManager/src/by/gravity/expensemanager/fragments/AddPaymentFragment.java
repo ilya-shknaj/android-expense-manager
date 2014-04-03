@@ -45,6 +45,7 @@ import by.gravity.expensemanager.fragments.loaders.LoaderHelper.LoaderStatus;
 import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
 import by.gravity.expensemanager.fragments.loaders.RefreshRatesLoader;
 import by.gravity.expensemanager.model.ExpenseModel;
+import by.gravity.expensemanager.model.PaymentMethodModel;
 import by.gravity.expensemanager.util.Constants;
 import by.gravity.expensemanager.util.DialogHelper;
 import by.gravity.expensemanager.util.DialogHelper.OnPositiveButtonClickListener;
@@ -250,24 +251,19 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 
 	}
 
-	private void selectExpenseCurrency() {
+	private void selectCurrency(String currency) {
 
 		final Spinner spinner = (Spinner) getView().findViewById(R.id.currency);
-		if (expenseModel == null) {
-			// TODO load from settings
-			spinner.setSelection(0);
-		} else {
-			int count = spinner.getAdapter().getCount();
-			for (int i = 0; i < count; i++) {
-				if (spinner.getItemAtPosition(i).toString().equals(expenseModel.getCurrency())) {
-					spinner.setSelection(i);
-					return;
-				}
+		int count = spinner.getAdapter().getCount();
+		for (int i = 0; i < count; i++) {
+			if (spinner.getItemAtPosition(i).toString().equals(currency)) {
+				spinner.setSelection(i);
+				return;
 			}
 		}
 	}
 
-	private void initPaymentsMethods(List<String> paymentMethods) {
+	private void initPaymentsMethods(List<PaymentMethodModel> paymentMethods) {
 
 		final RadioGroup paymentsMethodGroup = (RadioGroup) getView().findViewById(R.id.paymentMethodsGroup);
 
@@ -275,13 +271,24 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		if (paymentMethods.size() > 0) {
 			for (int i = 0; i < paymentMethods.size(); i++) {
 				RadioButton radioButton = new RadioButton(getActivity());
-				radioButton.setText(paymentMethods.get(i));
+				radioButton.setId(i);
+				radioButton.setText(paymentMethods.get(i).getName());
+				radioButton.setTag(paymentMethods.get(i).getCurrency());
 				paymentsMethodGroup.addView(radioButton, i);
 			}
 		} else {
 			View emptyPaymentMethods = getView().findViewById(R.id.emptyPaymentMethods);
 			emptyPaymentMethods.setVisibility(View.VISIBLE);
 		}
+
+		paymentsMethodGroup.setOnCheckedChangeListener(new android.widget.RadioGroup.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+				selectCurrency((String) group.getChildAt(checkedId).getTag());
+			}
+		});
 
 	}
 
@@ -648,7 +655,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 			List<String> currencyList = parseCurrency(cursor);
 			initCurrency(currencyList);
 		} else if (loader.getId() == LoaderHelper.ADD_PAYMENT_PAYMENT_METHODS_ID) {
-			List<String> paymentMethodsList = parsePaymentMethods(cursor);
+			List<PaymentMethodModel> paymentMethodsList = parsePaymentMethods(cursor);
 			initPaymentsMethods(paymentMethodsList);
 		} else if (loader.getId() == LoaderHelper.ADD_PAYMENT_CATEGORIES_ID) {
 			List<String> categoriesList = parseCategories(cursor);
@@ -665,10 +672,10 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 			initCostEditText();
 			initDate();
 			initNote();
-			selectExpenseCurrency();
 			selectPaymentMethod();
 			if (expenseModel != null) {
 				setExpenseCategories();
+				selectCurrency(expenseModel.getCurrency());
 			}
 			setContentShown(true);
 		}
@@ -689,13 +696,16 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		return currencyList;
 	}
 
-	private List<String> parsePaymentMethods(Cursor cursor) {
+	private List<PaymentMethodModel> parsePaymentMethods(Cursor cursor) {
 
-		List<String> paymentMethodsList = new ArrayList<String>();
+		List<PaymentMethodModel> paymentMethodsList = new ArrayList<PaymentMethodModel>();
 		if (cursor != null && cursor.getCount() > 0) {
 			for (int i = 0; i < cursor.getCount(); i++) {
 				cursor.moveToPosition(i);
-				paymentMethodsList.add(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
+				PaymentMethodModel paymentMethodModel = new PaymentMethodModel();
+				paymentMethodModel.setName(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
+				paymentMethodModel.setCurrency(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE)));
+				paymentMethodsList.add(paymentMethodModel);
 			}
 			cursor.close();
 
