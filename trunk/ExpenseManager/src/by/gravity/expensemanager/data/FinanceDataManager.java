@@ -85,7 +85,7 @@ public class FinanceDataManager {
 							if (rateObject.getString(ID).length() == 6) {
 								RateModel rateModel = new RateModel();
 								if (rateObject.has(RATE_VALUE)) {
-									rateModel.setRate(rateObject.getString(RATE_VALUE));
+									rateModel.setRate(rateObject.getDouble(RATE_VALUE));
 								}
 								rateModel.setCode(rateObject.getString(ID).substring(3));
 								rateList.add(rateModel);

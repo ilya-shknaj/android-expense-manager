@@ -4,7 +4,7 @@ public class RateModel {
 
 	private String code;
 
-	private String rate;
+	private double rate;
 
 	public String getCode() {
 
@@ -16,12 +16,12 @@ public class RateModel {
 		this.code = code;
 	}
 
-	public String getRate() {
+	public double getRate() {
 
 		return rate;
 	}
 
-	public void setRate(String rate) {
+	public void setRate(double rate) {
 
 		this.rate = rate;
 	}
