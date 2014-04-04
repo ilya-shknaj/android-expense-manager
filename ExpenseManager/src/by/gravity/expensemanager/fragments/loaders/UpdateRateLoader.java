@@ -15,7 +15,7 @@ public class UpdateRateLoader extends CursorLoader {
 		super(context);
 		rateModel = new RateModel();
 		rateModel.setCode(code);
-		rateModel.setRate(String.valueOf(rate));
+		rateModel.setRate(rate);
 	}
 
 	@Override

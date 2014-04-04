@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import by.gravity.common.task.AsyncTask;
 import by.gravity.common.task.OnLoadCompleteListener;
 import by.gravity.common.utils.ContextHolder;
@@ -13,9 +14,11 @@ import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.data.helper.SQLDataManagerHelper;
+import by.gravity.expensemanager.model.PaymentMethodModel;
 import by.gravity.expensemanager.model.PeriodDate;
 import by.gravity.expensemanager.model.RateModel;
 import by.gravity.expensemanager.util.Constants;
+import by.gravity.expensemanager.util.GlobalUtils;
 
 public class SQLDataManager {
 
@@ -49,21 +52,30 @@ public class SQLDataManager {
 				updateCategories(categories);
 
 				ContentValues values = new ContentValues();
+				Long currencyId = getCurrencyId(currency);
 				values.put(SQLConstants.FIELD_AMOUNT, amount.replaceAll(Constants.SPACE_PATTERN, Constants.EMPTY_STRING));
-				values.put(SQLConstants.FIELD_CURRENCY, getCurrencyId(currency));
+				values.put(SQLConstants.FIELD_CURRENCY, currencyId);
 				values.put(SQLConstants.FIELD_DATE, date);
 				values.put(SQLConstants.FIELD_TIME, time);
 				if (!StringUtil.isEmpty(note)) {
 					values.put(SQLConstants.FIELD_NOTE, note);
 				}
-				Long paymentMethodId = getPaymentMethodId(paymentMethod);
-				if (paymentMethodId != null) {
-					values.put(SQLConstants.FIELD_PAYMENT_METHOD, paymentMethodId);
+				PaymentMethodModel paymentMethodModel = getPaymentMethod(paymentMethod);
+				if (paymentMethodModel != null) {
+					values.put(SQLConstants.FIELD_PAYMENT_METHOD, paymentMethodModel.getId());
 				}
 				long expenseId = database.insert(SQLConstants.TABLE_EXPENSE, null, values);
 				addExpenseCategories(categories, expenseId);
 				updateUsageCategoryCount(categories);
-				substractFromPaymentHistory(expenseId);
+				double rate;
+				if (String.valueOf(currencyId).equals(paymentMethodModel.getCurrency())) {
+					rate = 1;
+				} else {
+					List<RateModel> rateList = getRates(new String[] { String.valueOf(currencyId), paymentMethodModel.getCurrency() });
+					rate = GlobalUtils.getRate(rateList.get(0).getCode(), rateList.get(0).getRate(), rateList.get(1).getCode(), rateList.get(1)
+							.getRate());
+				}
+				substractFromPaymentHistory(expenseId, rate);
 				return null;
 
 			}
@@ -79,23 +91,52 @@ public class SQLDataManager {
 			protected Void doInBackground(Void... params) {
 
 				updateCategories(categories);
-				addToPaymentHistory(id);
 
 				ContentValues values = new ContentValues();
+				Long currencyId = getCurrencyId(currency);
 				values.put(SQLConstants.FIELD_AMOUNT, amount.replaceAll(Constants.SPACE_PATTERN, Constants.EMPTY_STRING));
-				values.put(SQLConstants.FIELD_CURRENCY, getCurrencyId(currency));
+				values.put(SQLConstants.FIELD_CURRENCY, currencyId);
 				values.put(SQLConstants.FIELD_DATE, date);
 				values.put(SQLConstants.FIELD_TIME, time);
 				values.put(SQLConstants.FIELD_NOTE, note);
 
-				long paymentMethodId = getPaymentMethodId(paymentMethod);
-				values.put(SQLConstants.FIELD_PAYMENT_METHOD, paymentMethodId);
+				PaymentMethodModel paymentMethodModel = getPaymentMethod(paymentMethod);
+				values.put(SQLConstants.FIELD_PAYMENT_METHOD, paymentMethodModel.getId());
+
+				double rate;
+				if (String.valueOf(currencyId).equals(paymentMethodModel.getCurrency())) {
+					rate = 1;
+				} else {
+					List<RateModel> rateList = getRates(new String[] { String.valueOf(currencyId), paymentMethodModel.getCurrency() });
+					rate = GlobalUtils.getRate(rateList.get(0).getCode(), rateList.get(0).getRate(), rateList.get(1).getCode(), rateList.get(1)
+							.getRate());
+				}
+
+				Log.e("test", "start balance " + paymentMethodModel.getBalance());
+
+				Cursor cursor = getExpenseByIdCursor(id);
+				cursor.moveToFirst();
+				Log.e("test", "amount = " + cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
+				addToPaymentHistory(id, rate);
+
+				paymentMethodModel = getPaymentMethod(paymentMethod);
+				Log.e("test", "after add " + paymentMethodModel.getBalance());
 
 				long expenseId = database.update(SQLConstants.TABLE_EXPENSE, values, SQLConstants.FIELD_ID + "=?",
 						new String[] { String.valueOf(id) });
+				Log.e("test", "after update");
+				cursor = getExpenseByIdCursor(id);
+				cursor.moveToFirst();
+				Log.e("test", "amount = " + cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
 				deleteExpenseCategories(expenseId);
 				addExpenseCategories(categories, expenseId);
-				substractFromPaymentHistory(id);
+
+				substractFromPaymentHistory(expenseId, rate);
+				paymentMethodModel = getPaymentMethod(paymentMethod);
+				Log.e("test", "after substract " + paymentMethodModel.getBalance());
+				cursor = getExpenseByIdCursor(id);
+				cursor.moveToFirst();
+				Log.e("test", "amount = " + cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
 
 				return null;
 			}
@@ -394,21 +435,25 @@ public class SQLDataManager {
 		return id;
 	}
 
-	private Long getPaymentMethodId(final String accountName) {
+	private PaymentMethodModel getPaymentMethod(final String accountName) {
 
 		if (StringUtil.isEmpty(accountName)) {
 			return null;
 		}
-		Cursor cursor = database.query(SQLConstants.TABLE_PAYMENT_METHODS, new String[] { SQLConstants.FIELD_ID }, SQLConstants.FIELD_NAME + "=?",
-				new String[] { accountName }, null, null, null);
-		Long id = null;
+		Cursor cursor = database.query(SQLConstants.TABLE_PAYMENT_METHODS, new String[] { SQLConstants.FIELD_ID, SQLConstants.FIELD_CURRENCY,
+				SQLConstants.FIELD_BALANCE }, SQLConstants.FIELD_NAME + "=?", new String[] { accountName }, null, null, null);
+		PaymentMethodModel paymentMethodModel = null;
 		if (cursor != null && cursor.getCount() > 0) {
 			cursor.moveToFirst();
-			id = cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_ID));
+			paymentMethodModel = new PaymentMethodModel();
+			paymentMethodModel.setId(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_ID)));
+			paymentMethodModel.setCurrency(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CURRENCY)));
+			paymentMethodModel.setBalance(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_BALANCE)));
+
 			cursor.close();
 		}
 
-		return id;
+		return paymentMethodModel;
 	}
 
 	private void updateUsageCategoryCount(final List<String> categories) {
@@ -432,30 +477,29 @@ public class SQLDataManager {
 
 	public void deletePayment(Long id) {
 
-		addToPaymentHistory(id);
+		// addToPaymentHistory(id);
 		database.delete(SQLConstants.TABLE_EXPENSE, SQLConstants.FIELD_ID + "=?", new String[] { String.valueOf(id) });
 	}
 
 	private static final String SUBSTRACT_FROM_PAYMENT_METHOD_QUERY = "UPDATE " + SQLConstants.TABLE_PAYMENT_METHODS + " SET "
-			+ SQLConstants.FIELD_BALANCE + "=" + SQLConstants.FIELD_BALANCE + " - (SELECT " + SQLConstants.FIELD_AMOUNT + " FROM "
-			+ SQLConstants.TABLE_EXPENSE + " WHERE " + SQLConstants.FIELD_ID + "= ?) WHERE " + SQLConstants.FIELD_ID + "= (SELECT "
+			+ SQLConstants.FIELD_BALANCE + "=" + " ROUND (" + SQLConstants.FIELD_BALANCE + " - (SELECT " + SQLConstants.FIELD_AMOUNT + " * ? FROM "
+			+ SQLConstants.TABLE_EXPENSE + " WHERE " + SQLConstants.FIELD_ID + "= ?),2) WHERE " + SQLConstants.FIELD_ID + "= (SELECT "
 			+ SQLConstants.FIELD_PAYMENT_METHOD + " FROM " + SQLConstants.TABLE_EXPENSE + " WHERE " + SQLConstants.FIELD_ID + "= ?)";
 
-	public void substractFromPaymentHistory(Long paymentId) {
+	public void substractFromPaymentHistory(Long paymentId, double rate) {
 
-		// TODO use this method not recomended
-		database.execSQL(SUBSTRACT_FROM_PAYMENT_METHOD_QUERY, new String[] { String.valueOf(paymentId), String.valueOf(paymentId) });
+		database.execSQL(SUBSTRACT_FROM_PAYMENT_METHOD_QUERY,
+				new String[] { String.valueOf(rate), String.valueOf(paymentId), String.valueOf(paymentId) });
 	}
 
 	private static final String ADD_TO_PAYMENT_METHOD_QUERY = "UPDATE " + SQLConstants.TABLE_PAYMENT_METHODS + " SET " + SQLConstants.FIELD_BALANCE
-			+ "=" + SQLConstants.FIELD_BALANCE + " + (SELECT " + SQLConstants.FIELD_AMOUNT + " FROM " + SQLConstants.TABLE_EXPENSE + " WHERE "
-			+ SQLConstants.FIELD_ID + "= ?) WHERE " + SQLConstants.FIELD_ID + "= (SELECT " + SQLConstants.FIELD_PAYMENT_METHOD + " FROM "
-			+ SQLConstants.TABLE_EXPENSE + " WHERE " + SQLConstants.FIELD_ID + "= ?)";
+			+ "=" + " ROUND (" + SQLConstants.FIELD_BALANCE + " + (SELECT " + SQLConstants.FIELD_AMOUNT + " * ? FROM " + SQLConstants.TABLE_EXPENSE
+			+ " WHERE " + SQLConstants.FIELD_ID + "= ?),2) WHERE " + SQLConstants.FIELD_ID + "= (SELECT " + SQLConstants.FIELD_PAYMENT_METHOD
+			+ " FROM " + SQLConstants.TABLE_EXPENSE + " WHERE " + SQLConstants.FIELD_ID + "= ?)";
 
-	public void addToPaymentHistory(Long paymentId) {
+	public void addToPaymentHistory(Long paymentId, double rate) {
 
-		// TODO use this method not recomended
-		database.execSQL(ADD_TO_PAYMENT_METHOD_QUERY, new String[] { String.valueOf(paymentId), String.valueOf(paymentId) });
+		database.execSQL(ADD_TO_PAYMENT_METHOD_QUERY, new String[] { String.valueOf(rate), String.valueOf(paymentId), String.valueOf(paymentId) });
 	}
 
 	public void deletePaymentMethod(long id) {
@@ -510,4 +554,22 @@ public class SQLDataManager {
 		database.endTransaction();
 	}
 
+	public List<RateModel> getRates(String[] codes) {
+
+		Cursor cursor = database.query(SQLConstants.TABLE_CURRENCY, new String[] { SQLConstants.FIELD_RATE, SQLConstants.FIELD_CODE },
+				SQLConstants.FIELD_ID + " IN (" + makePlaceholders(codes.length) + ")", codes, null, null, null);
+
+		List<RateModel> rateList = new ArrayList<RateModel>();
+		for (int i = 0; i < cursor.getCount(); i++) {
+			cursor.moveToPosition(i);
+			RateModel rateModel = new RateModel();
+			rateModel.setCode(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE)));
+			rateModel.setRate(cursor.getDouble(cursor.getColumnIndex(SQLConstants.FIELD_RATE)));
+			rateList.add(rateModel);
+
+		}
+
+		return rateList;
+
+	}
 }
