@@ -6,13 +6,17 @@ import java.util.List;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.content.CursorLoader;
+import android.util.Log;
 import by.gravity.common.http.HttpClient;
 import by.gravity.expensemanager.data.FinanceDataManager;
 import by.gravity.expensemanager.data.SQLDataManager;
 import by.gravity.expensemanager.data.SettingsManager;
 import by.gravity.expensemanager.model.RateModel;
+import by.gravity.expensemanager.util.EmptyCursor;
 
 public class RefreshRatesLoader extends CursorLoader {
+
+	private static final String TAG = RefreshRatesLoader.class.getSimpleName();
 
 	public RefreshRatesLoader(Context context) {
 
@@ -29,7 +33,8 @@ public class RefreshRatesLoader extends CursorLoader {
 			SQLDataManager.getInstance().updateRates(rateList);
 			SettingsManager.putExchangeRateLastUpdateTime(System.currentTimeMillis());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.e(TAG, e.getMessage(), e);
+			return new EmptyCursor();
 		}
 
 		return null;

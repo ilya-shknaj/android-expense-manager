@@ -21,6 +21,7 @@ import by.gravity.expensemanager.data.SettingsManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
 import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
+import by.gravity.expensemanager.fragments.loaders.RefreshRatesLoader;
 import by.gravity.expensemanager.fragments.loaders.SumBalanceLoader;
 import by.gravity.expensemanager.model.PaymentMethodModel;
 import by.gravity.expensemanager.util.Constants;
@@ -40,7 +41,6 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 
 		super.onActivityCreated(savedInstanceState);
 		initBottomBar();
-		
 
 	}
 
@@ -62,8 +62,8 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 		paymentsMethodLayout.removeAllViews();
 
 		for (int i = 0; i < paymentMethods.size(); i++) {
-			RelativeLayout paymentDetailLayout = (RelativeLayout) LayoutInflater.from(getActivity()).inflate(R.layout.i_payments_methods_detail_pay,
-					null);
+			RelativeLayout paymentDetailLayout = (RelativeLayout) LayoutInflater.from(getActivity()).inflate(
+					R.layout.i_payments_methods_detail_pay, null);
 			TextView name = (TextView) paymentDetailLayout.findViewById(R.id.name);
 			name.setText(paymentMethods.get(i).getName());
 
@@ -165,6 +165,8 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 			return new PaymentMethodsLoader(getActivity());
 		} else if (id == LoaderHelper.SUM_BALANCE_ID) {
 			return new SumBalanceLoader(getActivity());
+		} else if (id == LoaderHelper.REFRESH_CURRENCY_RATE_ID) {
+			return new RefreshRatesLoader(getActivity());
 		}
 		return null;
 	}
