@@ -43,7 +43,6 @@
     <string name="currenyCurrency">Текущая валюта</string>
     <string name="rate">Курс %s</string>
     <string name="refresh">Обновить</string>
-    
 
     <!-- errors -->
     <string name="parseNumberError">Произошла ошибка во время обработки введенного значения</string>
@@ -54,6 +53,7 @@
     <string name="emptyName">Введите название</string>
     <string name="valueMustBeMoreThenZero">Значение должно быть больше 0</string>
     <string name="selectUsedCurrencies">Выберите хотя бы одну валюту</string>
+    <string name="updateRatesError">Произошла ошибка во время обновления курсов валют. Попробуйте повторить позже</string>
 
     <!-- settings -->
     <string name="settingCurrentPeriod">Выбранный период</string>
@@ -64,14 +64,11 @@
     <string name="settingsLastTimeUpdate">Последнеее обновление</string>
     <string name="settingsUsedCurrencies">Используемые валюты</string>
     <string name="settingsUpdateCurrencyPeriod">Время обновления</string>
-    
     <string name="settingsPeriodEveryDay">Каждый день</string>
     <string name="settingsPeriodManualy">Вручную</string>
-    
 
     <!-- settings category -->
     <string name="settingCategoryAddPayment">Добавление платежа</string>
-	<string name="settingCategoryCurrency">Валюта</string>
-	
-	
+    <string name="settingCategoryCurrency">Валюта</string>
+
 </resources>
