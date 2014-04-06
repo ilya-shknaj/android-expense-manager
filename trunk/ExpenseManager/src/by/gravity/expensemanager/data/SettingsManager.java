@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import android.util.Log;
 import by.gravity.common.preference.PreferenceHelper;
 import by.gravity.common.utils.CalendarUtil;
 import by.gravity.common.utils.ContextHolder;
@@ -62,7 +63,6 @@ public class SettingsManager extends PreferenceHelper {
 	}
 
 	public static void putExchangeRateLastUpdateTime(long value) {
-
 		putLong(R.string.keyExchangeRates, value);
 	}
 
