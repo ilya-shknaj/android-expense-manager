@@ -545,7 +545,6 @@ public class SQLDataManager {
 	}
 
 	public void updateRates(List<RateModel> rateList) {
-
 		database.beginTransaction();
 		for (int i = 0; i < rateList.size(); i++) {
 			database.execSQL(String.format(UPDATE_RATES_QUERY, rateList.get(i).getRate(), rateList.get(i).getCode()));

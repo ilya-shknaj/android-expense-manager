@@ -4,12 +4,15 @@ import java.util.HashMap;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.util.SparseArray;
 
 public class LoaderHelper {
+
+	public static final int LOADER_TIMEOUT = 45000;
 
 	public static final int OUTCOME_GROUP_BY_DATE_ID = -2;
 
@@ -38,7 +41,7 @@ public class LoaderHelper {
 	public static final int UPDATE_USED_CURRENCIES_ID = -14;
 
 	public static final int REFRESH_CURRENCY_RATE_ID = -15;
-	
+
 	public static final int UPDATE_CURRENCY_RATE = -16;
 
 	public static final String ARG_EXPENSE_DATA = "ARG_EXPENSE_DATA";
@@ -49,10 +52,10 @@ public class LoaderHelper {
 
 	private HashMap<String, SparseArray<LoaderStatus>> loaderStatusMap = new HashMap<String, SparseArray<LoaderStatus>>();
 
+	private Handler handler;
+
 	public enum LoaderStatus {
-		NOT_STARTED,
-		STARTED,
-		FINISHED;
+		NOT_STARTED, STARTED, FINISHED, CANCELED;
 	}
 
 	public static LoaderHelper getIntance() {
@@ -63,12 +66,28 @@ public class LoaderHelper {
 		return instance;
 	}
 
-	public void putLoaderStatus(String fragmentName, int loaderId, LoaderStatus status) {
+	private LoaderHelper() {
+		handler = new Handler();
+	}
+
+	public void putLoaderStatus(final String fragmentName, final int loaderId, final LoaderStatus status) {
 
 		if (loaderStatusMap.get(fragmentName) == null) {
 			loaderStatusMap.put(fragmentName, new SparseArray<LoaderStatus>());
 		}
 		loaderStatusMap.get(fragmentName).put(loaderId, status);
+		if (status == LoaderStatus.STARTED) {
+			handler.postDelayed(new Runnable() {
+
+				@Override
+				public void run() {
+					if (getLoaderStatus(fragmentName, loaderId) == LoaderStatus.STARTED) {
+						putLoaderStatus(fragmentName, loaderId, LoaderStatus.CANCELED);
+					}
+
+				}
+			}, LOADER_TIMEOUT);
+		}
 	}
 
 	public LoaderStatus getLoaderStatus(String fragmentName, int loaderId) {
@@ -92,7 +111,7 @@ public class LoaderHelper {
 	}
 
 	public void startLoader(Fragment fragment, int id, LoaderCallbacks<Cursor> loaderCallbacks, Bundle bundle) {
-		
+
 		LoaderManager loaderManager = fragment.getLoaderManager();
 		if (loaderManager.getLoader(id) != null && !loaderManager.getLoader(id).isAbandoned()) {
 			loaderManager.restartLoader(id, bundle, loaderCallbacks);

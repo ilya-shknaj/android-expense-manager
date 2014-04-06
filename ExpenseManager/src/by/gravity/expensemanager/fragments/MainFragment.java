@@ -20,6 +20,7 @@ import by.gravity.expensemanager.activity.MainActivity;
 import by.gravity.expensemanager.data.SettingsManager;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
+import by.gravity.expensemanager.fragments.loaders.LoaderHelper.LoaderStatus;
 import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
 import by.gravity.expensemanager.fragments.loaders.RefreshRatesLoader;
 import by.gravity.expensemanager.fragments.loaders.SumBalanceLoader;
@@ -50,8 +51,10 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 		loaderIds.add(LoaderHelper.GET_PAYMENT_METHODS_ID);
 
 		if (SettingsManager.getUpdateCurrencyPeriod().equals(getString(R.string.settingsPeriodEveryDay))
-				&& TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - SettingsManager.getExchangeRatesLastUpdateTime()) >= 24)
+				&& TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - SettingsManager.getExchangeRatesLastUpdateTime()) >= 24
+				&& LoaderHelper.getIntance().getLoaderStatus(TAG, LoaderHelper.REFRESH_CURRENCY_RATE_ID) != LoaderStatus.STARTED) {
 			loaderIds.add(LoaderHelper.REFRESH_CURRENCY_RATE_ID);
+		}
 
 	}
 

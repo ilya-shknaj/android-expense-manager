@@ -18,7 +18,7 @@ public class FinanceDataManager {
 
 	private static FinanceDataManager instance;
 
-	private static final String BASE_URL = "http://query.yahooapis.com/v1/public/yql?q=%s&env=store://datatables.org/alltableswithkeys&format=json";
+	private static final String BASE_URL = "http://query.yahooapis.com/v1/public/yql?q=%s&env=store://datatables.org/alltableswithkeys&format=json&unused=%d";
 
 	private static final String QUERY_URL = "select * from yahoo.finance.xchange where pair in (%s)";
 
@@ -51,7 +51,7 @@ public class FinanceDataManager {
 
 	public String getUrl() {
 
-		Cursor cursor = SQLDataManager.getInstance().getCurrenciesFullCursor();
+		Cursor cursor = SQLDataManager.getInstance().getCurrenciesShortCursor();
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < cursor.getCount(); i++) {
 			cursor.moveToPosition(i);
@@ -61,7 +61,8 @@ public class FinanceDataManager {
 			builder.append(String.format(CURRENCY_FORMAT, USD, cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE))));
 		}
 		try {
-			return String.format(BASE_URL, URLEncoder.encode(String.format(QUERY_URL, builder.toString()), "UTF-8"));
+			return String.format(BASE_URL, URLEncoder.encode(String.format(QUERY_URL, builder.toString()), "UTF-8"),
+					System.currentTimeMillis());
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
