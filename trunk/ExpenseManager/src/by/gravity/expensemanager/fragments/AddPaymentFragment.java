@@ -42,7 +42,6 @@ import by.gravity.expensemanager.fragments.loaders.DeletePaymentLoader;
 import by.gravity.expensemanager.fragments.loaders.ExpenseLoader;
 import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
 import by.gravity.expensemanager.fragments.loaders.PaymentMethodsLoader;
-import by.gravity.expensemanager.fragments.loaders.RefreshRatesLoader;
 import by.gravity.expensemanager.model.ExpenseModel;
 import by.gravity.expensemanager.model.PaymentMethodModel;
 import by.gravity.expensemanager.util.Constants;
@@ -100,15 +99,17 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		if (item.getTitle().equals(getString(R.string.remove))) {
-			DialogHelper.showConfirmDialog(getActivity(), R.string.remove, R.string.removePaymentMessage, new OnPositiveButtonClickListener() {
+			DialogHelper.showConfirmDialog(getActivity(), R.string.remove, R.string.removePaymentMessage,
+					new OnPositiveButtonClickListener() {
 
-				@Override
-				public void onPositiveButtonClicked() {
+						@Override
+						public void onPositiveButtonClicked() {
 
-					setContentShown(false);
-					LoaderHelper.getIntance().startLoader(AddPaymentFragment.this, LoaderHelper.DELETE_PAYMENT_ID, AddPaymentFragment.this);
-				}
-			});
+							setContentShown(false);
+							LoaderHelper.getIntance().startLoader(AddPaymentFragment.this, LoaderHelper.DELETE_PAYMENT_ID,
+									AddPaymentFragment.this);
+						}
+					});
 		}
 		return false;
 	}
@@ -173,7 +174,8 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 					return;
 				}
 
-				final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(R.id.categoriesEditText);
+				final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(
+						R.id.categoriesEditText);
 				final Spinner spinner = (Spinner) getView().findViewById(R.id.currency);
 				final TextView dateTextView = (TextView) getView().findViewById(R.id.date);
 				final TextView timeTextView = (TextView) getView().findViewById(R.id.time);
@@ -184,9 +186,9 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 
 				if (categoriesEditText.getText().length() != 0) {
 					if (getExpenseId() == 0) {
-						SQLDataManager.getInstance().addExpense(costEditText.getText().toString(), spinner.getSelectedItem().toString(), date, time,
-								getEnteredCategoriesList(categoriesEditText.getText().toString()), noteEditText.getText().toString(),
-								getPaymentMethod(), new OnLoadCompleteListener<Boolean>() {
+						SQLDataManager.getInstance().addExpense(costEditText.getText().toString(), spinner.getSelectedItem().toString(),
+								date, time, getEnteredCategoriesList(categoriesEditText.getText().toString()),
+								noteEditText.getText().toString(), getPaymentMethod(), new OnLoadCompleteListener<Boolean>() {
 
 									@Override
 									public void onComplete(Boolean result) {
@@ -200,8 +202,9 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 
 					} else {
 						SQLDataManager.getInstance().updateExpense(getExpenseId(), costEditText.getText().toString(),
-								spinner.getSelectedItem().toString(), date, time, getEnteredCategoriesList(categoriesEditText.getText().toString()),
-								noteEditText.getText().toString(), getPaymentMethod(), new OnLoadCompleteListener<Void>() {
+								spinner.getSelectedItem().toString(), date, time,
+								getEnteredCategoriesList(categoriesEditText.getText().toString()), noteEditText.getText().toString(),
+								getPaymentMethod(), new OnLoadCompleteListener<Void>() {
 
 									@Override
 									public void onComplete(Void result) {
@@ -442,20 +445,21 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		final LinearLayout categoriesLayout = (LinearLayout) getView().findViewById(R.id.categoriesLayout);
 		final List<String> allCategoriesList = categories;
 		final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(R.id.categoriesEditText);
-		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, allCategoriesList);
+		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line,
+				allCategoriesList);
 		categoriesEditText.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 		categoriesEditText.setAdapter(adapter);
 		int showCategoriesCount = Integer.parseInt(SettingsManager.getCategoriesShowCount());
-		final List<String> popularCategories = allCategoriesList.size() > showCategoriesCount ? allCategoriesList.subList(0, showCategoriesCount)
-				: allCategoriesList;
+		final List<String> popularCategories = allCategoriesList.size() > showCategoriesCount ? allCategoriesList.subList(0,
+				showCategoriesCount) : allCategoriesList;
 		final OnCheckedChangeListener checkedChangeListener = new OnCheckedChangeListener() {
 
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
 				if (hasEnteredCategory(buttonView.getText().toString(), categoriesEditText.getText().toString())) {
-					categoriesEditText.setText(getEditableCategoryTextAfterRemove(buttonView.getText().toString(), categoriesEditText.getText()
-							.toString()));
+					categoriesEditText.setText(getEditableCategoryTextAfterRemove(buttonView.getText().toString(), categoriesEditText
+							.getText().toString()));
 				} else {
 					categoriesEditText.append(buttonView.getText().toString() + Constants.CATEGORY_SPLITTER);
 				}
@@ -531,7 +535,8 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		}
 	}
 
-	private void checkCategory(LinearLayout categoriesLayout, OnCheckedChangeListener checkedChangeListener, String currentCategoryText, boolean check) {
+	private void checkCategory(LinearLayout categoriesLayout, OnCheckedChangeListener checkedChangeListener, String currentCategoryText,
+			boolean check) {
 
 		int index = currentCategoryText.lastIndexOf(Constants.COMMA_STRING);
 		String word = null;
@@ -639,8 +644,6 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 			return new ExpenseLoader(getActivity(), getExpenseId());
 		} else if (id == LoaderHelper.DELETE_PAYMENT_ID) {
 			return new DeletePaymentLoader(getActivity(), getExpenseId());
-		} else if (id == LoaderHelper.REFRESH_CURRENCY_RATE_ID) {
-			return new RefreshRatesLoader(getActivity());
 		}
 		return null;
 	}

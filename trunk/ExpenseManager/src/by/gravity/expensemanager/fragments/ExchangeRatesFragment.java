@@ -17,6 +17,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.adapter.CurrentCurrencyAdapter;
 import by.gravity.expensemanager.adapter.ExchangeRatesAdapter;
@@ -30,6 +31,7 @@ import by.gravity.expensemanager.fragments.loaders.LoaderHelper.LoaderStatus;
 import by.gravity.expensemanager.util.Constants;
 import by.gravity.expensemanager.util.DialogHelper;
 import by.gravity.expensemanager.util.DialogHelper.onEditCompleteListener;
+import by.gravity.expensemanager.util.EmptyCursor;
 import by.gravity.expensemanager.util.GlobalUtils;
 
 public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
@@ -78,8 +80,13 @@ public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
 		if (loader.getId() == LoaderHelper.LOAD_CURRENCIES) {
 			initListView(cursor);
 			setContentShown(true);
-		} else if (loader.getId() == LoaderHelper.UPDATE_CURRENCY_RATE || loader.getId() == LoaderHelper.REFRESH_CURRENCY_RATE_ID) {
+		} else if (loader.getId() == LoaderHelper.UPDATE_CURRENCY_RATE) {
 			startLoaders();
+		} else if (loader.getId() == LoaderHelper.REFRESH_CURRENCY_RATE_ID) {
+			if (cursor != null && cursor instanceof EmptyCursor) {
+				setContentShown(true);
+				Toast.makeText(getActivity(), R.string.updateRatesError, Toast.LENGTH_LONG).show();
+			}
 		}
 
 	}
@@ -150,21 +157,21 @@ public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
 				final String code = cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE));
 				if (!code.equals(adapter.getCurrentCurrency())) {
 					TextView rate = (TextView) view.findViewById(R.id.rate);
-					DialogHelper.showNumberEditDialog(getActivity(), String.format(getString(R.string.rate), code), 0, rate.getText().toString(),
-							new onEditCompleteListener() {
+					DialogHelper.showNumberEditDialog(getActivity(), String.format(getString(R.string.rate), code), 0, rate.getText()
+							.toString(), new onEditCompleteListener() {
 
-								@Override
-								public void onEditCompelted(double value) {
+						@Override
+						public void onEditCompelted(double value) {
 
-									setContentShown(false);
-									Bundle bundle = new Bundle();
-									bundle.putString(ARG_CODE, !code.equals(Constants.USD) ? code : adapter.getCurrentCurrency());
-									bundle.putDouble(ARG_RATE, GlobalUtils.convertToUsdRate(code, adapter.getCurrencyRate(), value));
-									LoaderHelper.getIntance().startLoader(ExchangeRatesFragment.this, LoaderHelper.UPDATE_CURRENCY_RATE,
-											ExchangeRatesFragment.this, bundle);
+							setContentShown(false);
+							Bundle bundle = new Bundle();
+							bundle.putString(ARG_CODE, !code.equals(Constants.USD) ? code : adapter.getCurrentCurrency());
+							bundle.putDouble(ARG_RATE, GlobalUtils.convertToUsdRate(code, adapter.getCurrencyRate(), value));
+							LoaderHelper.getIntance().startLoader(ExchangeRatesFragment.this, LoaderHelper.UPDATE_CURRENCY_RATE,
+									ExchangeRatesFragment.this, bundle);
 
-								}
-							});
+						}
+					});
 				}
 			}
 		});
