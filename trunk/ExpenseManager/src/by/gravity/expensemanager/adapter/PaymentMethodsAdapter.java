@@ -24,7 +24,7 @@ public class PaymentMethodsAdapter extends ResourceCursorAdapter {
 		name.setText(model.getName());
 
 		TextView balance = (TextView) view.findViewById(R.id.balance);
-		balance.setText(model.getBalance() + Constants.SPACE_STRING + model.getCurrency());
+		balance.setText(model.getBalance() + Constants.SPACE_STRING + model.getCurrencyId());
 
 	}
 
@@ -32,7 +32,7 @@ public class PaymentMethodsAdapter extends ResourceCursorAdapter {
 		PaymentMethodModel paymentDetail = new PaymentMethodModel();
 		paymentDetail.setName(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
 		paymentDetail.setBalance(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_BALANCE)));
-		paymentDetail.setCurrency(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE)));
+		paymentDetail.setCurrencyId(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_CODE)));
 
 		return paymentDetail;
 	}

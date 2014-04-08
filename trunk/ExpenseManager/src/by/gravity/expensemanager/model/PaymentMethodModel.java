@@ -14,6 +14,8 @@ public class PaymentMethodModel {
 
 	private String currency;
 
+	private Long currencyId;
+
 	public PaymentMethodModel() {
 
 	}
@@ -64,13 +66,21 @@ public class PaymentMethodModel {
 		this.balance = StringUtil.convertNumberToHumanFriednly(balance);
 	}
 
-	public String getCurrency() {
+	public Long getCurrencyId() {
 
+		return currencyId;
+	}
+
+	public void setCurrencyId(Long currencyId) {
+
+		this.currencyId = currencyId;
+	}
+
+	public String getCurrency() {
 		return currency;
 	}
 
 	public void setCurrency(String currency) {
-
 		this.currency = currency;
 	}
 

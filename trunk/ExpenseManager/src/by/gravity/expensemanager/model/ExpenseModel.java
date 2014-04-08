@@ -7,6 +7,8 @@ public class ExpenseModel {
 	private String amount;
 
 	private String currency;
+	
+	private Long currencyId;
 
 	private Long date;
 
@@ -17,6 +19,8 @@ public class ExpenseModel {
 	private List<String> categories;
 
 	private String paymentMethod;
+
+	private Long paymentMethodId;
 
 	public String getAmount() {
 		return amount;
@@ -72,6 +76,22 @@ public class ExpenseModel {
 
 	public void setPaymentMethod(String paymentMethod) {
 		this.paymentMethod = paymentMethod;
+	}
+
+	public Long getCurrencyId() {
+		return currencyId;
+	}
+
+	public void setCurrencyId(Long currencyId) {
+		this.currencyId = currencyId;
+	}
+
+	public Long getPaymentMethodId() {
+		return paymentMethodId;
+	}
+
+	public void setPaymentMethodId(Long paymentMethodId) {
+		this.paymentMethodId = paymentMethodId;
 	}
 
 }
