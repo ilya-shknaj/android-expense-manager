@@ -14,6 +14,7 @@ import by.gravity.common.utils.StringUtil;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.data.helper.SQLConstants;
 import by.gravity.expensemanager.data.helper.SQLDataManagerHelper;
+import by.gravity.expensemanager.model.ExpenseModel;
 import by.gravity.expensemanager.model.PaymentMethodModel;
 import by.gravity.expensemanager.model.PeriodDate;
 import by.gravity.expensemanager.model.RateModel;
@@ -67,14 +68,8 @@ public class SQLDataManager {
 				long expenseId = database.insert(SQLConstants.TABLE_EXPENSE, null, values);
 				addExpenseCategories(categories, expenseId);
 				updateUsageCategoryCount(categories);
-				double rate;
-				if (String.valueOf(currencyId).equals(paymentMethodModel.getCurrency())) {
-					rate = 1;
-				} else {
-					List<RateModel> rateList = getRates(new String[] { String.valueOf(currencyId), paymentMethodModel.getCurrency() });
-					rate = GlobalUtils.getRate(rateList.get(0).getCode(), rateList.get(0).getRate(), rateList.get(1).getCode(), rateList
-							.get(1).getRate());
-				}
+				double rate = getRate(currencyId, paymentMethodModel.getCurrencyId());
+
 				substractFromPaymentHistory(expenseId, rate);
 				return null;
 
@@ -104,32 +99,18 @@ public class SQLDataManager {
 				PaymentMethodModel paymentMethodModel = getPaymentMethod(paymentMethod);
 				values.put(SQLConstants.FIELD_PAYMENT_METHOD, paymentMethodModel.getId());
 
-				double rate;
-				if (String.valueOf(currencyId).equals(paymentMethodModel.getCurrency())) {
-					rate = 1;
-				} else {
-					List<RateModel> rateList = getRates(new String[] { String.valueOf(currencyId), paymentMethodModel.getCurrency() });
-					rate = GlobalUtils.getRate(rateList.get(0).getCode(), rateList.get(0).getRate(), rateList.get(1).getCode(), rateList
-							.get(1).getRate());
-				}
+				double rate = getRate(currencyId, paymentMethodModel.getCurrencyId());
 
 				Log.e("test", "start balance " + paymentMethodModel.getBalance());
 
-				Cursor cursor = getExpenseByIdCursor(id);
-				cursor.moveToFirst();
+				ExpenseModel expenseModel = getExpenseById(id);
 
-				Log.e("test", "amount = " + cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
+				Log.e("test", "amount = " + expenseModel.getAmount());
 
-				Long prevCurrencyId = getCurrencyId(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CODE)));
+				Long prevCurrencyId = expenseModel.getCurrencyId();
 				double prevRate;
 				if (prevCurrencyId != currencyId) {
-					if (String.valueOf(prevCurrencyId).equals(paymentMethodModel.getCurrency())) {
-						prevRate = 1;
-					} else {
-						List<RateModel> rateList = getRates(new String[] { String.valueOf(prevCurrencyId), paymentMethodModel.getCurrency() });
-						prevRate = GlobalUtils.getRate(rateList.get(0).getCode(), rateList.get(0).getRate(), rateList.get(1).getCode(),
-								rateList.get(1).getRate());
-					}
+					prevRate = getRate(prevCurrencyId, paymentMethodModel.getCurrencyId());
 				} else {
 					prevRate = rate;
 				}
@@ -139,21 +120,19 @@ public class SQLDataManager {
 				paymentMethodModel = getPaymentMethod(paymentMethod);
 				Log.e("test", "after add " + paymentMethodModel.getBalance());
 
-				long expenseId = database.update(SQLConstants.TABLE_EXPENSE, values, SQLConstants.FIELD_ID + "=?",
-						new String[] { String.valueOf(id) });
+				database.update(SQLConstants.TABLE_EXPENSE, values, SQLConstants.FIELD_ID + "=?", new String[] { String.valueOf(id) });
 				Log.e("test", "after update");
-				cursor = getExpenseByIdCursor(id);
-				cursor.moveToFirst();
-				Log.e("test", "amount = " + cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
-				deleteExpenseCategories(expenseId);
-				addExpenseCategories(categories, expenseId);
+				expenseModel = getExpenseById(id);
+				Log.e("test", "amount = " + expenseModel.getAmount());
+				deleteExpenseCategories(id);
+				addExpenseCategories(categories, id);
 
-				substractFromPaymentHistory(expenseId, rate);
+				substractFromPaymentHistory(id, rate);
 				paymentMethodModel = getPaymentMethod(paymentMethod);
 				Log.e("test", "after substract " + paymentMethodModel.getBalance());
-				cursor = getExpenseByIdCursor(id);
-				cursor.moveToFirst();
-				Log.e("test", "amount = " + cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
+				expenseModel = getExpenseById(id);
+
+				Log.e("test", "amount = " + expenseModel.getAmount());
 
 				return null;
 			}
@@ -353,6 +332,16 @@ public class SQLDataManager {
 		return database.rawQuery(GET_PAYMENT_METHODS_BY_ID_QUERY, new String[] { String.valueOf(id) });
 	}
 
+	private Long getPaymentMethodIdCurrency(Long paymentMethodId) {
+		Cursor cursor = database.query(SQLConstants.TABLE_PAYMENT_METHODS, new String[] { SQLConstants.FIELD_CURRENCY },
+				SQLConstants.FIELD_ID + "=?", new String[] { String.valueOf(paymentMethodId) }, null, null, null);
+		cursor.moveToFirst();
+		Long currrencyId = cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_CURRENCY));
+		cursor.close();
+
+		return currrencyId;
+	}
+
 	private static final String GET_SUM_BALANCE = "SELECT group_concat(" + SQLConstants.FIELD_BALANCE + ",'" + Constants.NEW_STRING
 			+ "') AS " + SQLConstants.FIELD_BALANCE + " FROM ( SELECT sum(" + SQLConstants.TABLE_PAYMENT_METHODS + "."
 			+ SQLConstants.FIELD_BALANCE + ") || ' ' || " + SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_CODE + " AS "
@@ -475,7 +464,7 @@ public class SQLDataManager {
 			cursor.moveToFirst();
 			paymentMethodModel = new PaymentMethodModel();
 			paymentMethodModel.setId(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_ID)));
-			paymentMethodModel.setCurrency(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_CURRENCY)));
+			paymentMethodModel.setCurrencyId(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_CURRENCY)));
 			paymentMethodModel.setBalance(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_BALANCE)));
 
 			cursor.close();
@@ -505,8 +494,11 @@ public class SQLDataManager {
 	}
 
 	public void deletePayment(Long id) {
+		ExpenseModel expenseModel = getExpenseById(id);
+		Long paymentMethodCurrencyId = getPaymentMethodIdCurrency(expenseModel.getPaymentMethodId());
+		double rate = getRate(expenseModel.getCurrencyId(), paymentMethodCurrencyId);
 
-		// addToPaymentHistory(id);
+		addToPaymentHistory(id, rate);
 		database.delete(SQLConstants.TABLE_EXPENSE, SQLConstants.FIELD_ID + "=?", new String[] { String.valueOf(id) });
 	}
 
@@ -528,10 +520,9 @@ public class SQLDataManager {
 			+ "= (SELECT " + SQLConstants.FIELD_PAYMENT_METHOD + " FROM " + SQLConstants.TABLE_EXPENSE + " WHERE " + SQLConstants.FIELD_ID
 			+ "= ?)";
 
-	public void addToPaymentHistory(Long paymentId, double rate) {
-
+	public void addToPaymentHistory(Long expensetId, double rate) {
 		database.execSQL(ADD_TO_PAYMENT_METHOD_QUERY,
-				new String[] { String.valueOf(rate), String.valueOf(paymentId), String.valueOf(paymentId) });
+				new String[] { String.valueOf(rate), String.valueOf(expensetId), String.valueOf(expensetId) });
 	}
 
 	public void deletePaymentMethod(long id) {
@@ -604,4 +595,34 @@ public class SQLDataManager {
 		return rateList;
 
 	}
+
+	private ExpenseModel getExpenseById(long id) {
+		ExpenseModel expenseModel = null;
+		Cursor cursor = database.query(SQLConstants.TABLE_EXPENSE, null, SQLConstants.FIELD_ID + "=?", new String[] { String.valueOf(id) },
+				null, null, null);
+		if (cursor.moveToFirst()) {
+			expenseModel = new ExpenseModel();
+			expenseModel.setCurrencyId(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_CURRENCY)));
+			expenseModel.setPaymentMethodId(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_PAYMENT_METHOD)));
+			expenseModel.setAmount(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
+
+			cursor.close();
+		}
+
+		return expenseModel;
+	}
+
+	private double getRate(Long currencyId, Long paymentMethodCurrencyId) {
+		double rate;
+		if (currencyId == paymentMethodCurrencyId) {
+			rate = 1;
+		} else {
+			List<RateModel> rateList = getRates(new String[] { String.valueOf(currencyId), String.valueOf(paymentMethodCurrencyId) });
+			rate = GlobalUtils.getRate(rateList.get(0).getCode(), rateList.get(0).getRate(), rateList.get(1).getCode(), rateList.get(1)
+					.getRate());
+		}
+
+		return rate;
+	}
+
 }
