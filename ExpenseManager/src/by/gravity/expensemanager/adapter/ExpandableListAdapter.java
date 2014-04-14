@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -34,6 +33,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 	private final SparseIntArray groupMap;
 
 	public ExpandableListAdapter(OutcomeFragment fragment, int groupLayout, int childLayout, boolean isGroupedByDate) {
+
 		super(fragment.getActivity(), null, groupLayout, childLayout);
 		this.isGroupedByDate = isGroupedByDate;
 		this.fragment = fragment;
@@ -42,18 +42,22 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 	}
 
 	public boolean isChildSelectable(int groupPosition, int childPosition) {
+
 		return true;
 	}
 
 	public boolean hasStableIds() {
+
 		return true;
 	}
 
 	public void configurePinnedHeader(View convertView, boolean isExpanded, int position) {
+
 		// getGroupView(position, isExpanded, convertView, null);
 	}
 
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
 		// if (view instanceof PinnedHeaderExpListView) {
 		// ((PinnedHeaderExpListView)
 		// view).configureHeaderView(firstVisibleItem);
@@ -153,6 +157,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 	}
 
 	private CollapsedModelGroupedByDate getCollapsedByDateModel(Cursor cursor) {
+
 		CollapsedModelGroupedByDate collapsedModel = new CollapsedModelGroupedByDate();
 		collapsedModel.setAmount(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_SUM_AMOUNT)));
 		collapsedModel.setDate(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_DATE)));
@@ -160,6 +165,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 	}
 
 	private CollapsedModelGroupedByCategoryName getCollapsedByCategoryNameModel(Cursor cursor) {
+
 		CollapsedModelGroupedByCategoryName collapsedModel = new CollapsedModelGroupedByCategoryName();
 		collapsedModel.setAmount(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_SUM_AMOUNT)));
 		collapsedModel.setName(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
@@ -167,6 +173,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 	}
 
 	private ExpenseGroupedByDateModel getExpenseGroupedByDateModel(Cursor cursor) {
+
 		ExpenseGroupedByDateModel expenseModel = new ExpenseGroupedByDateModel();
 		expenseModel.setId(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_ID)));
 		expenseModel.setAmount(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
@@ -185,6 +192,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 	}
 
 	private ExpenseGroupedByCategoryNameModel getExpenseGroupedByCategoryNameModel(Cursor cursor) {
+
 		ExpenseGroupedByCategoryNameModel expenseModel = new ExpenseGroupedByCategoryNameModel();
 		expenseModel.setId(cursor.getLong(cursor.getColumnIndex(SQLConstants.FIELD_ID)));
 		expenseModel.setAmount(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_AMOUNT)));
@@ -198,6 +206,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 
 	@Override
 	protected Cursor getChildrenCursor(Cursor groupCursor) {
+
 		Bundle bundle = new Bundle();
 		int id = groupCursor.getInt(groupCursor.getColumnIndex(SQLConstants.FIELD_ID));
 		if (getLoaderManager() == null) {
@@ -205,23 +214,13 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 		}
 		if (isGroupedByDate) {
 
-			Loader<Cursor> loader = getLoaderManager().getLoader(id);
 			Long date = groupCursor.getLong(groupCursor.getColumnIndex(SQLConstants.FIELD_DATE));
 			bundle.putLong(LoaderHelper.ARG_EXPENSE_DATA, date);
-			if (loader != null && !loader.isReset() && !loader.isAbandoned()) {
-				getLoaderManager().restartLoader(id, bundle, fragment);
-			} else {
-				getLoaderManager().initLoader(id, bundle, fragment);
-			}
+			LoaderHelper.getIntance().startLoader(fragment, id, fragment, bundle);
 		} else {
-			Loader<Cursor> loader = getLoaderManager().getLoader(id);
 			int categoryId = groupCursor.getInt(groupCursor.getColumnIndex(SQLConstants.FIELD_ID));
 			bundle.putInt(LoaderHelper.ARG_CATEGORY_ID, categoryId);
-			if (loader != null && !loader.isReset() && !loader.isAbandoned()) {
-				getLoaderManager().restartLoader(id, bundle, fragment);
-			} else {
-				getLoaderManager().initLoader(id, bundle, fragment);
-			}
+			LoaderHelper.getIntance().startLoader(fragment, id, fragment, bundle);
 		}
 
 		groupMap.put(id, groupCursor.getPosition());
@@ -229,6 +228,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 	}
 
 	private LoaderManager getLoaderManager() {
+
 		if (fragment.getActivity() != null) {
 			return fragment.getActivity().getSupportLoaderManager();
 		}
@@ -236,6 +236,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 	}
 
 	public SparseIntArray getGroupMap() {
+
 		return groupMap;
 	}
 
