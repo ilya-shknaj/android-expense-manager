@@ -3,7 +3,6 @@ package by.gravity.expensemanager.adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -209,15 +208,10 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 
 		Bundle bundle = new Bundle();
 		int id = groupCursor.getInt(groupCursor.getColumnIndex(SQLConstants.FIELD_ID));
-		if (getLoaderManager() == null) {
-			return null;
-		}
 		if (isGroupedByDate) {
-
 			Long date = groupCursor.getLong(groupCursor.getColumnIndex(SQLConstants.FIELD_DATE));
 			bundle.putLong(LoaderHelper.ARG_EXPENSE_DATA, date);
 			LoaderHelper.getIntance().startLoader(fragment, id, fragment, bundle);
-		} else {
 			int categoryId = groupCursor.getInt(groupCursor.getColumnIndex(SQLConstants.FIELD_ID));
 			bundle.putInt(LoaderHelper.ARG_CATEGORY_ID, categoryId);
 			LoaderHelper.getIntance().startLoader(fragment, id, fragment, bundle);
@@ -225,14 +219,6 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 
 		groupMap.put(id, groupCursor.getPosition());
 		return new EmptyCursor();
-	}
-
-	private LoaderManager getLoaderManager() {
-
-		if (fragment.getActivity() != null) {
-			return fragment.getActivity().getSupportLoaderManager();
-		}
-		return null;
 	}
 
 	public SparseIntArray getGroupMap() {
