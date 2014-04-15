@@ -89,8 +89,9 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 		expandableListView.setDivider(getResources().getDrawable(R.color.divider));
 		expandableListView.setDividerHeight(1);
 		expandableListView.setGroupIndicator(null);
-
-		adapter = new ExpandableListAdapter(OutcomeFragment.this, R.layout.i_collapsed, R.layout.i_expanded, isGroupedByDate());
+		if (adapter == null) {
+			adapter = new ExpandableListAdapter(OutcomeFragment.this, R.layout.i_collapsed, R.layout.i_expanded, isGroupedByDate());
+		}
 
 		expandableListView.setAdapter(adapter);
 		expandableListView.setOnChildClickListener(new OnChildClickListener() {
@@ -113,7 +114,6 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 		expandableListView.setAdapter(adapter);
 
 	}
-
 
 	@Override
 	public void getLoaderIds(List<Integer> loaderIds) {

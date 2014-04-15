@@ -55,7 +55,10 @@ public class LoaderHelper {
 	private Handler handler;
 
 	public enum LoaderStatus {
-		NOT_STARTED, STARTED, FINISHED, CANCELED;
+		NOT_STARTED,
+		STARTED,
+		FINISHED,
+		CANCELED;
 	}
 
 	public static LoaderHelper getIntance() {
@@ -67,6 +70,7 @@ public class LoaderHelper {
 	}
 
 	private LoaderHelper() {
+
 		handler = new Handler();
 	}
 
@@ -81,6 +85,7 @@ public class LoaderHelper {
 
 				@Override
 				public void run() {
+
 					if (getLoaderStatus(fragmentName, loaderId) == LoaderStatus.STARTED) {
 						putLoaderStatus(fragmentName, loaderId, LoaderStatus.CANCELED);
 					}
@@ -106,6 +111,7 @@ public class LoaderHelper {
 	}
 
 	public void startLoader(Fragment fragment, int id, LoaderCallbacks<Cursor> loaderCallbacks) {
+
 		LoaderHelper.getIntance().putLoaderStatus(fragment.getClass().getSimpleName(), id, LoaderStatus.STARTED);
 		startLoader(fragment, id, loaderCallbacks, null);
 	}
