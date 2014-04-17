@@ -6,7 +6,7 @@ public class ExpenseManagerApplication extends CoreApplication {
 
 	@Override
 	public void onCreate() {
-		super.onCreate();
+		super.onCreate(); 
 
 	}
 
