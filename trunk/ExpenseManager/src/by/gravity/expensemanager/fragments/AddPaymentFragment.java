@@ -677,6 +677,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		} else if (loader.getId() == LoaderHelper.ADD_PAYMENT_EXPENSE_ID) {
 			parseExpenseModel(cursor);
 		} else if (loader.getId() == LoaderHelper.DELETE_PAYMENT_ID) {
+			notifyOutcomeFragmentChanges(expenseModel.getDate());
 			((MainActivity) getActivity()).delayedPopBackStack();
 		}
 
