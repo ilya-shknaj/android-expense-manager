@@ -1,5 +1,7 @@
 package by.gravity.expensemanager.adapter;
 
+import java.util.HashMap;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -29,14 +31,17 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 
 	private OutcomeFragment fragment;
 
-	private final SparseIntArray groupMap;
+	private final SparseIntArray groupPositionMap;
+
+	private final HashMap<Long, Integer> groupCategoryMap;
 
 	public ExpandableListAdapter(OutcomeFragment fragment, int groupLayout, int childLayout, boolean isGroupedByDate) {
 
 		super(fragment.getActivity(), null, groupLayout, childLayout);
 		this.isGroupedByDate = isGroupedByDate;
 		this.fragment = fragment;
-		groupMap = new SparseIntArray();
+		groupPositionMap = new SparseIntArray();
+		groupCategoryMap = new HashMap<Long, Integer>();
 
 	}
 
@@ -183,7 +188,8 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 		if (expenseCategoryCursor != null && expenseCategoryCursor.getCount() > 0) {
 			for (int i = 0; i < expenseCategoryCursor.getCount(); i++) {
 				expenseCategoryCursor.moveToPosition(i);
-				expenseModel.getCategories().add(expenseCategoryCursor.getString(expenseCategoryCursor.getColumnIndex(SQLConstants.FIELD_NAME)));
+				expenseModel.getCategories().add(
+						expenseCategoryCursor.getString(expenseCategoryCursor.getColumnIndex(SQLConstants.FIELD_NAME)));
 			}
 			expenseCategoryCursor.close();
 		}
@@ -208,22 +214,30 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 
 		Bundle bundle = new Bundle();
 		int id = groupCursor.getInt(groupCursor.getColumnIndex(SQLConstants.FIELD_ID));
+		Long categoryId;
 		if (isGroupedByDate) {
-			Long date = groupCursor.getLong(groupCursor.getColumnIndex(SQLConstants.FIELD_DATE));
-			bundle.putLong(LoaderHelper.ARG_EXPENSE_DATA, date);
+			categoryId = groupCursor.getLong(groupCursor.getColumnIndex(SQLConstants.FIELD_DATE));
+			bundle.putLong(LoaderHelper.ARG_EXPENSE_DATA, categoryId);
 			LoaderHelper.getIntance().startLoader(fragment, id, fragment, bundle);
-			int categoryId = groupCursor.getInt(groupCursor.getColumnIndex(SQLConstants.FIELD_ID));
-			bundle.putInt(LoaderHelper.ARG_CATEGORY_ID, categoryId);
+
+		} else {
+			categoryId = groupCursor.getLong(groupCursor.getColumnIndex(SQLConstants.FIELD_ID));
+			bundle.putLong(LoaderHelper.ARG_CATEGORY_ID, categoryId);
 			LoaderHelper.getIntance().startLoader(fragment, id, fragment, bundle);
 		}
 
-		groupMap.put(id, groupCursor.getPosition());
+		groupPositionMap.put(id, groupCursor.getPosition());
+		groupCategoryMap.put(categoryId, id);
 		return new EmptyCursor();
 	}
 
-	public SparseIntArray getGroupMap() {
+	public SparseIntArray getGroupPositionMap() {
 
-		return groupMap;
+		return groupPositionMap;
+	}
+
+	public HashMap<Long, Integer> getGroupCategoryMap() {
+		return groupCategoryMap;
 	}
 
 }

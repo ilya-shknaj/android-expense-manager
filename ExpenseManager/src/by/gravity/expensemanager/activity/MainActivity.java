@@ -101,13 +101,15 @@ public class MainActivity extends DrawerActivity {
 
 	public void showOutcomeFragment(boolean isGroupedByDate) {
 
-		getSupportFragmentManager().beginTransaction().replace(R.id.content, OutcomeFragment.newInstance(isGroupedByDate)).commit();
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.content, OutcomeFragment.newInstance(isGroupedByDate), OutcomeFragment.TAG).commit();
 
 	}
 
 	public void showChoosePeriodFragment() {
 
-		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().replace(R.id.content, ChoosePeriodFragment.newInstanse());
+		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().replace(R.id.content,
+				ChoosePeriodFragment.newInstanse());
 		if (!getIntent().getAction().equals(ChoosePeriodFragment.TAG)) {
 			transaction.addToBackStack(ChoosePeriodFragment.TAG);
 		}
@@ -121,7 +123,7 @@ public class MainActivity extends DrawerActivity {
 
 	public void showAddPaymentFragment(Long paymentId) {
 
-		getSupportFragmentManager().beginTransaction().replace(R.id.content, AddPaymentFragment.newInstance(paymentId))
+		getSupportFragmentManager().beginTransaction().add(R.id.content, AddPaymentFragment.newInstance(paymentId))
 				.addToBackStack(AddPaymentFragment.TAG).commit();
 	}
 
@@ -155,7 +157,8 @@ public class MainActivity extends DrawerActivity {
 
 	public void showChooseCurrencyFragment(boolean showOnlyShortCurrencies) {
 
-		getSupportFragmentManager().beginTransaction().replace(R.id.content, ChooseCurrencyFragment.newInstance(showOnlyShortCurrencies)).commit();
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, ChooseCurrencyFragment.newInstance(showOnlyShortCurrencies))
+				.commit();
 	}
 
 	public void showExchangeRatesFragment() {

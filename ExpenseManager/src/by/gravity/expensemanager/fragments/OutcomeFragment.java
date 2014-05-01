@@ -1,5 +1,6 @@
 package by.gravity.expensemanager.fragments;
 
+import java.util.HashMap;
 import java.util.List;
 
 import android.database.Cursor;
@@ -24,6 +25,8 @@ import by.gravity.expensemanager.fragments.loaders.LoaderHelper;
 import com.actionbarsherlock.view.MenuItem;
 
 public class OutcomeFragment extends CommonProgressSherlockFragment implements LoaderCallbacks<Cursor> {
+
+	public static final String TAG = OutcomeFragment.class.getSimpleName();
 
 	private ExpandableListAdapter adapter;
 
@@ -118,8 +121,12 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 	@Override
 	public void getLoaderIds(List<Integer> loaderIds) {
 
-		loaderIds.add(isGroupedByDate() ? LoaderHelper.OUTCOME_GROUP_BY_DATE_ID : LoaderHelper.OUTCOME_GROUP_BY_CATEGORY_NAME_ID);
+		loaderIds.add(getGroupCursorId());
 
+	}
+
+	private int getGroupCursorId() {
+		return isGroupedByDate() ? LoaderHelper.OUTCOME_GROUP_BY_DATE_ID : LoaderHelper.OUTCOME_GROUP_BY_CATEGORY_NAME_ID;
 	}
 
 	private boolean isGroupedByDate() {
@@ -192,7 +199,7 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 			if (expenseDate != 0) {
 				return new ChildGroupedByDateCursorLoader(getActivity(), expenseDate);
 			} else {
-				int categoryId = bundle.getInt(LoaderHelper.ARG_CATEGORY_ID);
+				long categoryId = bundle.getLong(LoaderHelper.ARG_CATEGORY_ID);
 				return new ChildGroupedByCategoryNameLoader(getActivity(), categoryId);
 			}
 		}
@@ -214,7 +221,28 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 			}
 
 		} else {
-			adapter.setChildrenCursor(adapter.getGroupMap().get(id), cursor);
+			adapter.setChildrenCursor(adapter.getGroupPositionMap().get(id), cursor);
+		}
+
+	}
+
+	private HashMap<Long, Integer> getGroupCategoryMap() {
+		return adapter.getGroupCategoryMap();
+	}
+
+	public void notifyDataSetChanges(long id) {
+
+		Loader<Object> loader = getLoaderManager().getLoader(getGroupCursorId());
+		if (loader != null) {
+			loader.onContentChanged();
+		}
+		
+		Integer cursorId = getGroupCategoryMap().get(id);
+		if (cursorId != null) {
+			loader = getLoaderManager().getLoader(cursorId);
+			if (loader != null) {
+				loader.onContentChanged();
+			}
 		}
 
 	}

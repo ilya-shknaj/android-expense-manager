@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.text.Editable;
@@ -181,7 +182,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 				final TextView timeTextView = (TextView) getView().findViewById(R.id.time);
 				final EditText noteEditText = (EditText) getView().findViewById(R.id.note);
 
-				Long date = (Long) dateTextView.getTag();
+				final Long date = (Long) dateTextView.getTag();
 				Long time = (Long) timeTextView.getTag();
 
 				if (categoriesEditText.getText().length() != 0) {
@@ -194,8 +195,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 									public void onComplete(Boolean result) {
 
 										GlobalUtil.hideSoftKeyboard(getActivity());
-										// ((MainActivity)
-										// getActivity()).notifyOutcomeFragmentStateChanged();
+										notifyOutcomeFragmentChanges(date);
 										getFragmentManager().popBackStack();
 									}
 								});
@@ -210,6 +210,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 									public void onComplete(Void result) {
 
 										GlobalUtil.hideSoftKeyboard(getActivity());
+										notifyOutcomeFragmentChanges(date);
 										getActivity().getSupportFragmentManager().popBackStack();
 									}
 
@@ -223,6 +224,14 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 			}
 
 		});
+	}
+
+	private void notifyOutcomeFragmentChanges(long id) {
+		Fragment fragment = getFragmentManager().findFragmentByTag(OutcomeFragment.TAG);
+		if (fragment != null && fragment instanceof OutcomeFragment) {
+			OutcomeFragment outcomeFragment = (OutcomeFragment) fragment;
+			outcomeFragment.notifyDataSetChanges(id);
+		}
 	}
 
 	private void initCostEditText() {
@@ -426,10 +435,14 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 	private Calendar getCurrentDate() {
 
 		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
+		if (expenseModel != null) {
+			calendar.setTimeInMillis(expenseModel.getDate());
+		} else {
+			calendar.set(Calendar.HOUR_OF_DAY, 0);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+			calendar.set(Calendar.MILLISECOND, 0);
+		}
 		return calendar;
 
 	}

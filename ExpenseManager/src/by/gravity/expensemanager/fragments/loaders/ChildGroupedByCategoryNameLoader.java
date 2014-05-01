@@ -7,9 +7,9 @@ import by.gravity.expensemanager.data.SQLDataManager;
 
 public class ChildGroupedByCategoryNameLoader extends CursorLoader {
 
-	private int categoryId;
+	private long categoryId;
 
-	public ChildGroupedByCategoryNameLoader(Context context, int categoryId) {
+	public ChildGroupedByCategoryNameLoader(Context context, long categoryId) {
 		super(context);
 		this.categoryId = categoryId;
 	}

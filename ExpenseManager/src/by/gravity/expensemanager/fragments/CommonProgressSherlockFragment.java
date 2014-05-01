@@ -37,8 +37,8 @@ public abstract class CommonProgressSherlockFragment extends SherlockProgressFra
 	}
 
 	protected boolean isLoaderFinished(String name, int id) {
-
-		return getLoaderManager().getLoader(id) != null && getLoaderManager().getLoader(id).isStarted()
+		return getLoaderManager().getLoader(id) != null
+				&& getLoaderManager().getLoader(id).isStarted()
 				&& LoaderHelper.getIntance().getLoaderStatus(name, id) == LoaderStatus.FINISHED;
 	}
 
