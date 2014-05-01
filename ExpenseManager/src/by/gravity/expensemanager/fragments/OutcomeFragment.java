@@ -236,7 +236,7 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 		if (loader != null) {
 			loader.onContentChanged();
 		}
-		
+
 		Integer cursorId = getGroupCategoryMap().get(id);
 		if (cursorId != null) {
 			loader = getLoaderManager().getLoader(cursorId);
@@ -245,6 +245,24 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 			}
 		}
 
+	}
+
+	@Override
+	public void setContentShown(boolean shown) {
+		super.setContentShown(shown);
+		View selectPeriodLayout = getView().findViewById(R.id.selectPeriodLayout);
+		if (shown) {
+			selectPeriodLayout.setVisibility(View.VISIBLE);
+		} else {
+			selectPeriodLayout.setVisibility(View.GONE);
+		}
+	}
+
+	@Override
+	public void setContentEmpty(boolean isEmpty) {
+		super.setContentEmpty(isEmpty);
+		View selectPeriodLayout = getView().findViewById(R.id.selectPeriodLayout);
+		selectPeriodLayout.setVisibility(View.VISIBLE);
 	}
 
 }
