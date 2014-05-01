@@ -171,7 +171,6 @@ public class SettingsManager extends PreferenceHelper {
 			calendar.set(Calendar.DAY_OF_MONTH, 1);
 			periodDate.setStartDate(calendar.getTime());
 			calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-			calendar.add(Calendar.DAY_OF_MONTH, 1);
 			periodDate.setEndDate(calendar.getTime());
 
 		} else if (currentPeriod.equals(getString(R.string.period_week))) {

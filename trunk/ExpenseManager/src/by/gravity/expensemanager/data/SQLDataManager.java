@@ -216,7 +216,7 @@ public class SQLDataManager {
 			+ "? AND ? GROUP BY " + SQLConstants.FIELD_DATE;
 
 	public Cursor getGroupedByDateCursor() {
-
+		
 		PeriodDate periodDate = SettingsManager.getCurrentPeriodDates();
 		return database.rawQuery(EXPENSE_GROUPED_BY_DATE_AND_AMOUNT_QUERY,
 				new String[] { periodDate.getStartDate(), periodDate.getEndDate() });
