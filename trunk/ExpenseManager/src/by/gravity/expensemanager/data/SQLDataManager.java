@@ -293,7 +293,7 @@ public class SQLDataManager {
 			+ SQLConstants.TABLE_CURRENCY + "." + SQLConstants.FIELD_ID + " AND " + SQLConstants.TABLE_EXPENSE + "."
 			+ SQLConstants.FIELD_DATE + " BETWEEN ? AND ?";
 
-	public Cursor getGroupedByCategoryNameChildCursor(int category) {
+	public Cursor getGroupedByCategoryNameChildCursor(long category) {
 
 		PeriodDate periodDate = SettingsManager.getCurrentPeriodDates();
 		return database.rawQuery(GET_CATEGORY_EXPENSE_QUERY,

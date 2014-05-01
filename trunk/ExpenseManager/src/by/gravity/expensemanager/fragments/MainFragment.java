@@ -163,7 +163,6 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
-
 		if (id == LoaderHelper.GET_PAYMENT_METHODS_ID) {
 			return new PaymentMethodsLoader(getActivity());
 		} else if (id == LoaderHelper.SUM_BALANCE_ID) {
