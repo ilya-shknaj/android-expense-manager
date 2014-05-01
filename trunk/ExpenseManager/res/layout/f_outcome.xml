@@ -11,34 +11,35 @@
         android:layout_height="fill_parent"
         layout="@layout/i_progress_large" />
 
+    <LinearLayout
+        android:id="@+id/selectPeriodLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <include
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/i_period_title" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="@color/divider" />
+    </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/content_container"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_below="@id/selectPeriodLayout"
         android:visibility="gone" >
-
-        <LinearLayout
-            android:id="@+id/root"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <include
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                layout="@layout/i_period_title" />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1px"
-                android:background="@color/divider" />
-        </LinearLayout>
 
         <ExpandableListView
             android:id="@+id/expandableListView"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_below="@id/root"
             android:layout_marginBottom="50dp" >
         </ExpandableListView>
 
@@ -55,6 +56,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         layout="@layout/i_empty_outcome"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </RelativeLayout>
