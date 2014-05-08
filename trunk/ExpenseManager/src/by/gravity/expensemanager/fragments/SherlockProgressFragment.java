@@ -129,7 +129,7 @@ public class SherlockProgressFragment extends SherlockFragment {
 	 */
 	private void setContentShown(boolean shown, boolean animate) {
 		ensureContent();
-		if (mContentShown == shown) {
+		if (mContentShown == shown && !isContentEmpty()) {
 			return;
 		}
 		mContentShown = shown;

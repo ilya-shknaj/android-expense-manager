@@ -83,8 +83,8 @@ public class ExchangeRatesFragment extends CommonProgressSherlockFragment {
 		} else if (loader.getId() == LoaderHelper.UPDATE_CURRENCY_RATE) {
 			startLoaders();
 		} else if (loader.getId() == LoaderHelper.REFRESH_CURRENCY_RATE_ID) {
+			setContentShown(true);
 			if (cursor != null && cursor instanceof EmptyCursor) {
-				setContentShown(true);
 				Toast.makeText(getActivity(), R.string.updateRatesError, Toast.LENGTH_LONG).show();
 			}
 		}
