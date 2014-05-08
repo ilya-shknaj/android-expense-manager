@@ -5,6 +5,7 @@ import java.util.HashMap;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -188,8 +189,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 		if (expenseCategoryCursor != null && expenseCategoryCursor.getCount() > 0) {
 			for (int i = 0; i < expenseCategoryCursor.getCount(); i++) {
 				expenseCategoryCursor.moveToPosition(i);
-				expenseModel.getCategories().add(
-						expenseCategoryCursor.getString(expenseCategoryCursor.getColumnIndex(SQLConstants.FIELD_NAME)));
+				expenseModel.getCategories().add(expenseCategoryCursor.getString(expenseCategoryCursor.getColumnIndex(SQLConstants.FIELD_NAME)));
 			}
 			expenseCategoryCursor.close();
 		}
@@ -225,7 +225,6 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 			bundle.putLong(LoaderHelper.ARG_CATEGORY_ID, categoryId);
 			LoaderHelper.getIntance().startLoader(fragment, id, fragment, bundle);
 		}
-
 		groupPositionMap.put(id, groupCursor.getPosition());
 		groupCategoryMap.put(categoryId, id);
 		return new EmptyCursor();
@@ -237,6 +236,7 @@ public class ExpandableListAdapter extends ResourceCursorTreeAdapter {
 	}
 
 	public HashMap<Long, Integer> getGroupCategoryMap() {
+
 		return groupCategoryMap;
 	}
 

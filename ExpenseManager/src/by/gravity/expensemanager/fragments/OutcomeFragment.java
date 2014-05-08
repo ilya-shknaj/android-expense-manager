@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ExpandableListView;
@@ -126,6 +127,7 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 	}
 
 	private int getGroupCursorId() {
+
 		return isGroupedByDate() ? LoaderHelper.OUTCOME_GROUP_BY_DATE_ID : LoaderHelper.OUTCOME_GROUP_BY_CATEGORY_NAME_ID;
 	}
 
@@ -213,8 +215,8 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 
 		int id = loader.getId();
 		if (id == LoaderHelper.OUTCOME_GROUP_BY_CATEGORY_NAME_ID || id == LoaderHelper.OUTCOME_GROUP_BY_DATE_ID) {
+			adapter.setGroupCursor(cursor);
 			if (cursor.getCount() > 0) {
-				adapter.setGroupCursor(cursor);
 				setContentShown(true);
 			} else {
 				setContentEmpty(true);
@@ -227,6 +229,7 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 	}
 
 	private HashMap<Long, Integer> getGroupCategoryMap() {
+
 		return adapter.getGroupCategoryMap();
 	}
 
@@ -249,6 +252,7 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 
 	@Override
 	public void setContentShown(boolean shown) {
+
 		super.setContentShown(shown);
 		View selectPeriodLayout = getView().findViewById(R.id.selectPeriodLayout);
 		if (shown) {
@@ -260,6 +264,7 @@ public class OutcomeFragment extends CommonProgressSherlockFragment implements L
 
 	@Override
 	public void setContentEmpty(boolean isEmpty) {
+
 		super.setContentEmpty(isEmpty);
 		View selectPeriodLayout = getView().findViewById(R.id.selectPeriodLayout);
 		selectPeriodLayout.setVisibility(View.VISIBLE);

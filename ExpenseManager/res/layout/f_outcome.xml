@@ -56,6 +56,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         layout="@layout/i_empty_outcome"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 </RelativeLayout>
