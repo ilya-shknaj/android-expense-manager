@@ -43,6 +43,12 @@ public class LoaderHelper {
 	public static final int REFRESH_CURRENCY_RATE_ID = -15;
 
 	public static final int UPDATE_CURRENCY_RATE = -16;
+	
+	public static final int LOAD_CATEGORY_BY_ID = -17;
+	
+	public static final int ADD_CATEGORY_ID = -18;
+	
+	public static final int UPDATE_CATEGORY_ID = -19;
 
 	public static final String ARG_EXPENSE_DATA = "ARG_EXPENSE_DATA";
 

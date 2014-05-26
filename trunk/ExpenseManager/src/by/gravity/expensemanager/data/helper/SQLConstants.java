@@ -15,6 +15,9 @@ public class SQLConstants {
 	public static final String FIELD_TIME = "time";
 	public static final String FIELD_NOTE = "note";
 	public static final String FIELD_PAYMENT_METHOD = "paymentMethod";
+	public static final String FIELD_LAST_USAGE_TIME = "lastUsageTime";
+	public static final String FIELD_AVG_SUM = "avgSum";
+	public static final String FIELD_COLOR = "color";
 	public static final String FIELD_NAME = "name";
 	public static final String FIELD_NAME_EN = "name_en";
 	public static final String FIELD_EXPENSE_ID = "expenseId";

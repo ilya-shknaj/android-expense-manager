@@ -1,19 +1,25 @@
 package by.gravity.expensemanager.util;
 
-import java.math.BigDecimal;
 import java.text.ParseException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources.NotFoundException;
+import android.content.DialogInterface.OnClickListener;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Selection;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import by.gravity.expensemanager.R;
+
+import com.larswerkman.holocolorpicker.ColorPicker;
+import com.larswerkman.holocolorpicker.ColorPicker.OnColorSelectedListener;
+import com.larswerkman.holocolorpicker.OpacityBar;
+import com.larswerkman.holocolorpicker.SVBar;
 
 public class DialogHelper {
 
@@ -144,6 +150,43 @@ public class DialogHelper {
 		});
 		builder.show();
 
+	}
+
+	public static void showColorPickerDialog(final Context context, int color, final OnColorSelectedListener colorSelectedListener) {
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		View view = LayoutInflater.from(context).inflate(R.layout.d_color_picker, null);
+
+		final ColorPicker picker = (ColorPicker) view.findViewById(R.id.picker);
+		SVBar svBar = (SVBar) view.findViewById(R.id.svbar);
+		OpacityBar opacityBar = (OpacityBar) view.findViewById(R.id.opacitybar);
+
+		picker.addSVBar(svBar);
+		picker.addOpacityBar(opacityBar);
+		picker.setColor(color);
+		picker.setOldCenterColor(color);
+		picker.setNewCenterColor(color);
+
+		builder.setView(view);
+
+		builder.setNegativeButton(R.string.cancel, new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+
+				dialog.dismiss();
+			}
+		});
+
+		builder.setPositiveButton(R.string.ok, new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+
+				colorSelectedListener.onColorSelected(picker.getColor());
+			}
+		});
+		builder.show();
 	}
 
 }

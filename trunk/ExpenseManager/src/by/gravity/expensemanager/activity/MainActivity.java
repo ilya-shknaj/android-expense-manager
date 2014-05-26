@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import by.gravity.expensemanager.R;
+import by.gravity.expensemanager.fragments.AddCategoryFragment;
 import by.gravity.expensemanager.fragments.AddPaymentFragment;
 import by.gravity.expensemanager.fragments.AddPaymentMethodsFragment;
+import by.gravity.expensemanager.fragments.CategoriesFragment;
 import by.gravity.expensemanager.fragments.ChooseCurrencyFragment;
 import by.gravity.expensemanager.fragments.ChoosePeriodFragment;
 import by.gravity.expensemanager.fragments.ExchangeRatesFragment;
@@ -34,8 +36,6 @@ public class MainActivity extends DrawerActivity {
 		String action = getIntent().getAction();
 		if (action.equals(Intent.ACTION_MAIN)) {
 			showMainFragment();
-			// showOutcomeFragment(true);
-			// showPaymentMethodsFragment();
 		} else {
 			enableLock();
 
@@ -49,6 +49,8 @@ public class MainActivity extends DrawerActivity {
 				showChooseCurrencyFragment(false);
 			} else if (action.equals(ExchangeRatesFragment.TAG)) {
 				showExchangeRatesFragment();
+			} else if (action.equals(CategoriesFragment.TAG)) {
+				showCategoriesFragment();
 			}
 
 		}
@@ -95,21 +97,20 @@ public class MainActivity extends DrawerActivity {
 
 	public void showMainFragment() {
 
-		getSupportFragmentManager().beginTransaction().replace(R.id.content, MainFragment.newInstance()).commit();
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, MainFragment.newInstance(), MainFragment.TAG).commit();
 
 	}
 
 	public void showOutcomeFragment(boolean isGroupedByDate) {
 
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.content, OutcomeFragment.newInstance(isGroupedByDate), OutcomeFragment.TAG).commit();
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, OutcomeFragment.newInstance(isGroupedByDate), OutcomeFragment.TAG)
+				.commit();
 
 	}
 
 	public void showChoosePeriodFragment() {
 
-		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().replace(R.id.content,
-				ChoosePeriodFragment.newInstanse());
+		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().replace(R.id.content, ChoosePeriodFragment.newInstanse());
 		if (!getIntent().getAction().equals(ChoosePeriodFragment.TAG)) {
 			transaction.addToBackStack(ChoosePeriodFragment.TAG);
 		}
@@ -157,13 +158,23 @@ public class MainActivity extends DrawerActivity {
 
 	public void showChooseCurrencyFragment(boolean showOnlyShortCurrencies) {
 
-		getSupportFragmentManager().beginTransaction().replace(R.id.content, ChooseCurrencyFragment.newInstance(showOnlyShortCurrencies))
-				.commit();
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, ChooseCurrencyFragment.newInstance(showOnlyShortCurrencies)).commit();
 	}
 
 	public void showExchangeRatesFragment() {
 
 		getSupportFragmentManager().beginTransaction().replace(R.id.content, ExchangeRatesFragment.newInstance()).commit();
+	}
+
+	public void showCategoriesFragment() {
+
+		getSupportFragmentManager().beginTransaction().replace(R.id.content, CategoriesFragment.newInstance(), CategoriesFragment.TAG).commit();
+	}
+
+	public void showAddCategoryFragment(Integer categoryID) {
+
+		getSupportFragmentManager().beginTransaction().add(R.id.content, AddCategoryFragment.newInstance(categoryID))
+				.addToBackStack(AddCategoryFragment.TAG).commit();
 	}
 
 	public void delayedPopBackStack() {

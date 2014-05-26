@@ -1,12 +1,17 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="settings" >
 
-    <MultilinePreference
-        android:key="@string/keyCurrentPeriod"
-        android:summary="@string/period_current_month"
-        android:title="@string/settingCurrentPeriod" >
-    </MultilinePreference>
-
+    <PreferenceCategory android:title="@string/settingsCommon" >
+        <MultilinePreference
+            android:key="@string/keyCurrentPeriod"
+            android:summary="@string/period_current_month"
+            android:title="@string/settingCurrentPeriod" >
+        </MultilinePreference>
+        <MultilinePreference
+            android:key="@string/keyCategories"
+            android:title="@string/categories" >
+        </MultilinePreference>
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/settingCategoryCurrency" >
         <MultilinePreference
             android:key="@string/keyUsedCurrencies"

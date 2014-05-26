@@ -20,10 +20,10 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_margin="@dimen/field_margin"
             android:orientation="vertical"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp" >
+            android:paddingBottom="@dimen/field_margin"
+            android:paddingTop="@dimen/field_margin" >
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -53,7 +53,7 @@
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="1px"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/field_margin"
                 android:background="@color/line_background" />
 
             <include
@@ -64,7 +64,7 @@
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="1px"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/field_margin"
                 android:background="@color/line_background" />
 
             <TextView
@@ -98,14 +98,14 @@
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="1px"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/field_margin"
                 android:background="@color/line_background" />
 
             <TextView
                 style="@style/addPaymentTitlesStyle"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/field_margin"
                 android:text="@string/note" />
 
             <EditText
@@ -113,7 +113,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/field_margin"
                 android:hint="@string/note" />
         </LinearLayout>
     </ScrollView>

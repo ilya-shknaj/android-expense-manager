@@ -10,4 +10,5 @@
     <string name="keyUsedCurrencies">keyUsedCurrencies</string>
     <string name="keyUpdateCurrencyPeriod">keyUpdateCurrencyPeriod</string>
     <string name="keyCurrentCurrency">keyCurrentCurrency</string>
+    <string name="keyCategories">keyCategories</string>
 </resources>

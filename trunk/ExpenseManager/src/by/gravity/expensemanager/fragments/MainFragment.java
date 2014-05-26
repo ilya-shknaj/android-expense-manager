@@ -29,7 +29,7 @@ import by.gravity.expensemanager.util.Constants;
 
 public class MainFragment extends CommonProgressSherlockFragment implements LoaderCallbacks<Cursor> {
 
-	private static final String TAG = MainFragment.class.getSimpleName();
+	public static final String TAG = MainFragment.class.getSimpleName();
 
 	public static MainFragment newInstance() {
 
@@ -65,8 +65,8 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 		paymentsMethodLayout.removeAllViews();
 
 		for (int i = 0; i < paymentMethods.size(); i++) {
-			RelativeLayout paymentDetailLayout = (RelativeLayout) LayoutInflater.from(getActivity()).inflate(
-					R.layout.i_payments_methods_detail_pay, null);
+			RelativeLayout paymentDetailLayout = (RelativeLayout) LayoutInflater.from(getActivity()).inflate(R.layout.i_payments_methods_detail_pay,
+					null);
 			TextView name = (TextView) paymentDetailLayout.findViewById(R.id.name);
 			name.setText(paymentMethods.get(i).getName());
 
@@ -163,6 +163,7 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+
 		if (id == LoaderHelper.GET_PAYMENT_METHODS_ID) {
 			return new PaymentMethodsLoader(getActivity());
 		} else if (id == LoaderHelper.SUM_BALANCE_ID) {
@@ -195,6 +196,13 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 				setContentEmpty(true);
 			}
 		}
+	}
+
+	public void notifyDataSetChanges() {
+
+		Loader<Object> loader = getLoaderManager().getLoader(LoaderHelper.GET_PAYMENT_METHODS_ID);
+		loader.onContentChanged();
+
 	}
 
 }
