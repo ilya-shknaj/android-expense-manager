@@ -7,6 +7,7 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import by.gravity.expensemanager.R;
 import by.gravity.expensemanager.data.SettingsManager;
+import by.gravity.expensemanager.fragments.CategoriesFragment;
 import by.gravity.expensemanager.fragments.ChooseCurrencyFragment;
 import by.gravity.expensemanager.fragments.ChoosePeriodFragment;
 import by.gravity.expensemanager.fragments.ExchangeRatesFragment;
@@ -38,6 +39,8 @@ public class SettingActivity extends PreferenceActivity {
 
 	private Preference updateCurrencyPeriod;
 
+	private Preference categories;
+
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +54,7 @@ public class SettingActivity extends PreferenceActivity {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 
-				Intent intent = new Intent(SettingActivity.this, MainActivity.class);
-				intent.setAction(ChoosePeriodFragment.TAG);
-				startActivityForResult(intent, SELECT_PERIOD_REQUEST_CODE);
+				startForResult(ChoosePeriodFragment.TAG, SELECT_PERIOD_REQUEST_CODE);
 				return false;
 			}
 		});
@@ -86,9 +87,7 @@ public class SettingActivity extends PreferenceActivity {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 
-				Intent intent = new Intent(SettingActivity.this, MainActivity.class);
-				intent.setAction(PaymentMethodsFragment.TAG);
-				startActivityForResult(intent, SELECT_PAYMENT_METHOD_REQUEST_CODE);
+				startForResult(PaymentMethodsFragment.TAG, SELECT_PAYMENT_METHOD_REQUEST_CODE);
 				return false;
 			}
 		});
@@ -99,9 +98,7 @@ public class SettingActivity extends PreferenceActivity {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 
-				Intent intent = new Intent(SettingActivity.this, MainActivity.class);
-				intent.setAction(ExchangeRatesFragment.TAG);
-				startActivityForResult(intent, EXCHANGE_RATE_REQUEST_CODE);
+				startForResult(ExchangeRatesFragment.TAG, EXCHANGE_RATE_REQUEST_CODE);
 				return false;
 			}
 		});
@@ -113,9 +110,7 @@ public class SettingActivity extends PreferenceActivity {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 
-				Intent intent = new Intent(SettingActivity.this, MainActivity.class);
-				intent.setAction(ChooseCurrencyFragment.TAG);
-				startActivityForResult(intent, SELECT_CURRENCY_REQUEST_CODE);
+				startForResult(ChooseCurrencyFragment.TAG, SELECT_CURRENCY_REQUEST_CODE);
 				return false;
 			}
 		});
@@ -144,6 +139,24 @@ public class SettingActivity extends PreferenceActivity {
 		});
 		updateCurrencyPeriod();
 
+		categories = findPreference(getString(R.string.keyCategories));
+		categories.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+
+				startForResult(CategoriesFragment.TAG, 0);
+				return false;
+			}
+		});
+
+	}
+
+	private void startForResult(String action, int requestCode) {
+
+		Intent intent = new Intent(SettingActivity.this, MainActivity.class);
+		intent.setAction(action);
+		startActivityForResult(intent, requestCode);
 	}
 
 	@Override
@@ -170,8 +183,8 @@ public class SettingActivity extends PreferenceActivity {
 
 	private void updateExchangeRateSummary() {
 
-		exchangeRates
-				.setSummary(getString(R.string.settingsLastTimeUpdate) + Constants.NEW_STRING + SettingsManager.getExchangeRatesLastUpdateTimeString());
+		exchangeRates.setSummary(getString(R.string.settingsLastTimeUpdate) + Constants.NEW_STRING
+				+ SettingsManager.getExchangeRatesLastUpdateTimeString());
 	}
 
 	private void updateUsedCurrencies() {

@@ -8,6 +8,8 @@
     <string name="main">Главная</string>
     <string name="outcome">Расходы</string>
     <string name="income">Доходы</string>
+    <string name="categories">Категории</string>
+    
 
     <!-- periods -->
     <string name="choose_period">Выберите период</string>
@@ -20,7 +22,7 @@
     <string name="periodStart">С</string>
     <string name="periodFinish">По</string>
 
-    <!-- tab bar -->
+    
     <string name="cancel">Отмена</string>
     <string name="save">Сохранить</string>
     <string name="ok">ОК</string>
@@ -28,8 +30,8 @@
     <string name="paymentMethod">Способ оплаты</string>
     <string name="addPayment">Добавить покупку</string>
     <string name="addPaymentMethod">Добавить способ оплаты</string>
+    <string name="addCategory">Добавить категорию</string>
     <string name="enterAmount">Введите сумму</string>
-    <string name="categories">Категории</string>
     <string name="enterCategoryOrChooseFromList">Введите категории или выберите из списка</string>
     <string name="showAll">Показать все</string>
     <string name="date">Дата</string>
@@ -43,19 +45,25 @@
     <string name="currenyCurrency">Текущая валюта</string>
     <string name="rate">Курс %s</string>
     <string name="refresh">Обновить</string>
+    <string name="color">Цвет</string>
+    <string name="lastUsageTime">Последнее использование</string>
+    <string name="countUsage">Раз использовано</string>
+    <string name="avgSum">Средняя сумма</string>
 
     <!-- errors -->
     <string name="parseNumberError">Произошла ошибка во время обработки введенного значения</string>
     <string name="emptyPaymentMethods">Отсутсвуют способы оплаты</string>
     <string name="emptyAmount">Введите сумму</string>
     <string name="emptyCategory">Введите хотя бы одну категорию</string>
-    <string name="emptyOutcome">Отсутсвуют расходы</string>
+    <string name="emptyOutcome">Отсутствуют расходы</string>
     <string name="emptyName">Введите название</string>
+	<string name="emptyCategories">Отсутствуют категории</string>
     <string name="valueMustBeMoreThenZero">Значение должно быть больше 0</string>
     <string name="selectUsedCurrencies">Выберите хотя бы одну валюту</string>
     <string name="updateRatesError">Произошла ошибка во время обновления курсов валют. Попробуйте повторить позже</string>
 
     <!-- settings -->
+    <string name="settingsCommon">Общие</string>
     <string name="settingCurrentPeriod">Выбранный период</string>
     <string name="settingCategoriesShowCountDefault">Количество показываемых категорий</string>
     <string name="settingCategoriesCount">Количество категорий</string>

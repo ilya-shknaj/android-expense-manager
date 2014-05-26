@@ -100,17 +100,15 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		if (item.getTitle().equals(getString(R.string.remove))) {
-			DialogHelper.showConfirmDialog(getActivity(), R.string.remove, R.string.removePaymentMessage,
-					new OnPositiveButtonClickListener() {
+			DialogHelper.showConfirmDialog(getActivity(), R.string.remove, R.string.removePaymentMessage, new OnPositiveButtonClickListener() {
 
-						@Override
-						public void onPositiveButtonClicked() {
+				@Override
+				public void onPositiveButtonClicked() {
 
-							setContentShown(false);
-							LoaderHelper.getIntance().startLoader(AddPaymentFragment.this, LoaderHelper.DELETE_PAYMENT_ID,
-									AddPaymentFragment.this);
-						}
-					});
+					setContentShown(false);
+					LoaderHelper.getIntance().startLoader(AddPaymentFragment.this, LoaderHelper.DELETE_PAYMENT_ID, AddPaymentFragment.this);
+				}
+			});
 		}
 		return false;
 	}
@@ -175,8 +173,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 					return;
 				}
 
-				final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(
-						R.id.categoriesEditText);
+				final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(R.id.categoriesEditText);
 				final Spinner spinner = (Spinner) getView().findViewById(R.id.currency);
 				final TextView dateTextView = (TextView) getView().findViewById(R.id.date);
 				final TextView timeTextView = (TextView) getView().findViewById(R.id.time);
@@ -187,30 +184,29 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 
 				if (categoriesEditText.getText().length() != 0) {
 					if (getExpenseId() == 0) {
-						SQLDataManager.getInstance().addExpense(costEditText.getText().toString(), spinner.getSelectedItem().toString(),
-								date, time, getEnteredCategoriesList(categoriesEditText.getText().toString()),
-								noteEditText.getText().toString(), getPaymentMethod(), new OnLoadCompleteListener<Boolean>() {
+						SQLDataManager.getInstance().addExpense(costEditText.getText().toString(), spinner.getSelectedItem().toString(), date, time,
+								getEnteredCategoriesList(categoriesEditText.getText().toString()), noteEditText.getText().toString(),
+								getPaymentMethod(), new OnLoadCompleteListener<Boolean>() {
 
 									@Override
 									public void onComplete(Boolean result) {
 
 										GlobalUtil.hideSoftKeyboard(getActivity());
-										notifyOutcomeFragmentChanges(date);
+										notifyRelatedFragmentChanges(date);
 										getFragmentManager().popBackStack();
 									}
 								});
 
 					} else {
 						SQLDataManager.getInstance().updateExpense(getExpenseId(), costEditText.getText().toString(),
-								spinner.getSelectedItem().toString(), date, time,
-								getEnteredCategoriesList(categoriesEditText.getText().toString()), noteEditText.getText().toString(),
-								getPaymentMethod(), new OnLoadCompleteListener<Void>() {
+								spinner.getSelectedItem().toString(), date, time, getEnteredCategoriesList(categoriesEditText.getText().toString()),
+								noteEditText.getText().toString(), getPaymentMethod(), new OnLoadCompleteListener<Void>() {
 
 									@Override
 									public void onComplete(Void result) {
 
 										GlobalUtil.hideSoftKeyboard(getActivity());
-										notifyOutcomeFragmentChanges(date);
+										notifyRelatedFragmentChanges(date);
 										getActivity().getSupportFragmentManager().popBackStack();
 									}
 
@@ -226,11 +222,18 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		});
 	}
 
-	private void notifyOutcomeFragmentChanges(long id) {
+	private void notifyRelatedFragmentChanges(long id) {
+
 		Fragment fragment = getFragmentManager().findFragmentByTag(OutcomeFragment.TAG);
 		if (fragment != null && fragment instanceof OutcomeFragment) {
 			OutcomeFragment outcomeFragment = (OutcomeFragment) fragment;
 			outcomeFragment.notifyDataSetChanges(id);
+		}
+
+		fragment = getFragmentManager().findFragmentByTag(MainFragment.TAG);
+		if (fragment != null && fragment instanceof MainFragment) {
+			MainFragment mainFragment = (MainFragment) fragment;
+			mainFragment.notifyDataSetChanges();
 		}
 	}
 
@@ -458,21 +461,20 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		final LinearLayout categoriesLayout = (LinearLayout) getView().findViewById(R.id.categoriesLayout);
 		final List<String> allCategoriesList = categories;
 		final MultiAutoCompleteTextView categoriesEditText = (MultiAutoCompleteTextView) getView().findViewById(R.id.categoriesEditText);
-		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line,
-				allCategoriesList);
+		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, allCategoriesList);
 		categoriesEditText.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 		categoriesEditText.setAdapter(adapter);
 		int showCategoriesCount = Integer.parseInt(SettingsManager.getCategoriesShowCount());
-		final List<String> popularCategories = allCategoriesList.size() > showCategoriesCount ? allCategoriesList.subList(0,
-				showCategoriesCount) : allCategoriesList;
+		final List<String> popularCategories = allCategoriesList.size() > showCategoriesCount ? allCategoriesList.subList(0, showCategoriesCount)
+				: allCategoriesList;
 		final OnCheckedChangeListener checkedChangeListener = new OnCheckedChangeListener() {
 
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
 				if (hasEnteredCategory(buttonView.getText().toString(), categoriesEditText.getText().toString())) {
-					categoriesEditText.setText(getEditableCategoryTextAfterRemove(buttonView.getText().toString(), categoriesEditText
-							.getText().toString()));
+					categoriesEditText.setText(getEditableCategoryTextAfterRemove(buttonView.getText().toString(), categoriesEditText.getText()
+							.toString()));
 				} else {
 					categoriesEditText.append(buttonView.getText().toString() + Constants.CATEGORY_SPLITTER);
 				}
@@ -548,8 +550,7 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		}
 	}
 
-	private void checkCategory(LinearLayout categoriesLayout, OnCheckedChangeListener checkedChangeListener, String currentCategoryText,
-			boolean check) {
+	private void checkCategory(LinearLayout categoriesLayout, OnCheckedChangeListener checkedChangeListener, String currentCategoryText, boolean check) {
 
 		int index = currentCategoryText.lastIndexOf(Constants.COMMA_STRING);
 		String word = null;
@@ -672,12 +673,12 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 			List<PaymentMethodModel> paymentMethodsList = parsePaymentMethods(cursor);
 			initPaymentsMethods(paymentMethodsList);
 		} else if (loader.getId() == LoaderHelper.ADD_PAYMENT_CATEGORIES_ID) {
-			List<String> categoriesList = parseCategories(cursor);
+			List<String> categoriesList = SQLDataManager.getInstance().parseCategoriesListCursor(cursor);
 			initCategories(categoriesList);
 		} else if (loader.getId() == LoaderHelper.ADD_PAYMENT_EXPENSE_ID) {
 			parseExpenseModel(cursor);
 		} else if (loader.getId() == LoaderHelper.DELETE_PAYMENT_ID) {
-			notifyOutcomeFragmentChanges(expenseModel.getDate());
+			notifyRelatedFragmentChanges(expenseModel.getDate());
 			((MainActivity) getActivity()).delayedPopBackStack();
 		}
 
@@ -727,22 +728,6 @@ public class AddPaymentFragment extends CommonProgressSherlockFragment implement
 		}
 
 		return paymentMethodsList;
-
-	}
-
-	private List<String> parseCategories(Cursor cursor) {
-
-		List<String> categories = new ArrayList<String>();
-		if (cursor != null && cursor.getCount() > 0) {
-			for (int i = 0; i < cursor.getCount(); i++) {
-				cursor.moveToPosition(i);
-				categories.add(cursor.getString(cursor.getColumnIndex(SQLConstants.FIELD_NAME)));
-			}
-
-			cursor.close();
-		}
-
-		return categories;
 
 	}
 

@@ -2,10 +2,15 @@ package by.gravity.expensemanager.util;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Random;
+
+import android.graphics.Color;
 
 public class GlobalUtils {
 
 	private static NumberFormat exchangeNumberFormat;
+
+	private static Random random;
 
 	public static NumberFormat getExchangeNumberFormat() {
 
@@ -39,5 +44,13 @@ public class GlobalUtils {
 	public static String getFormattedRate(String from, double rateFrom, String to, double rateTo) {
 
 		return getExchangeNumberFormat().format(getRate(from, rateFrom, to, rateTo));
+	}
+
+	public static int generateRandomColor() {
+
+		if (random == null) {
+			random = new Random();
+		}
+		return Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
 	}
 }

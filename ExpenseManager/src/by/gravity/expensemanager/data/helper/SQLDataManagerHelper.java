@@ -41,7 +41,11 @@ public class SQLDataManagerHelper extends SQLiteOpenHelper {
 			+ SQLConstants.FIELD_NAME
 			+ " VARCHAR (50),"
 			+ SQLConstants.FIELD_USAGE_COUNT
-			+ " INTEGER DEFAULT 0);";
+			+ " INTEGER DEFAULT 0, "
+			+ SQLConstants.FIELD_LAST_USAGE_TIME
+			+ " INTEGER DEFAULT 0,"
+			+ SQLConstants.FIELD_COLOR
+			+ " INTEGER);";
 	
 	private static final String CREATE_TABLE_EXPENCE_CATEGORY = "CREATE TABLE IF NOT EXISTS "
 			+ SQLConstants.TABLE_EXPENSE_CATEGORY
