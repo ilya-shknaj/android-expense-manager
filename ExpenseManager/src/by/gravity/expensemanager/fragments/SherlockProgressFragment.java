@@ -196,9 +196,11 @@ public class SherlockProgressFragment extends SherlockFragment {
 		if (isEmpty) {
 			mProgressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
 			mContentContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
-			mEmptyView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
+			if (mEmptyView != null) {
+				mEmptyView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
+				mEmptyView.setVisibility(View.VISIBLE);
+			}
 
-			mEmptyView.setVisibility(View.VISIBLE);
 			mContentContainer.setVisibility(View.GONE);
 			if (mProgressContainer.getVisibility() == View.VISIBLE) {
 				mProgressContainer.setVisibility(View.GONE);
@@ -206,9 +208,10 @@ public class SherlockProgressFragment extends SherlockFragment {
 		} else {
 			mProgressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
 			mContentContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
-			mEmptyView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
-
-			mEmptyView.setVisibility(View.GONE);
+			if (mEmptyView != null) {
+				mEmptyView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+				mEmptyView.setVisibility(View.GONE);
+			}
 			mContentContainer.setVisibility(View.VISIBLE);
 			mProgressContainer.setVisibility(View.GONE);
 		}

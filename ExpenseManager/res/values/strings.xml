@@ -49,6 +49,7 @@
     <string name="lastUsageTime">Последнее использование</string>
     <string name="countUsage">Раз использовано</string>
     <string name="avgSum">Средняя сумма</string>
+    <string name="statistic">Отчет по категориям</string>
 
     <!-- errors -->
     <string name="parseNumberError">Произошла ошибка во время обработки введенного значения</string>

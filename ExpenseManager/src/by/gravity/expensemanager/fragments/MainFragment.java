@@ -65,8 +65,8 @@ public class MainFragment extends CommonProgressSherlockFragment implements Load
 		paymentsMethodLayout.removeAllViews();
 
 		for (int i = 0; i < paymentMethods.size(); i++) {
-			RelativeLayout paymentDetailLayout = (RelativeLayout) LayoutInflater.from(getActivity()).inflate(R.layout.i_payments_methods_detail_pay,
-					null);
+			RelativeLayout paymentDetailLayout = (RelativeLayout) LayoutInflater.from(getActivity()).inflate(
+					R.layout.i_payments_methods_detail_pay, null);
 			TextView name = (TextView) paymentDetailLayout.findViewById(R.id.name);
 			name.setText(paymentMethods.get(i).getName());
 

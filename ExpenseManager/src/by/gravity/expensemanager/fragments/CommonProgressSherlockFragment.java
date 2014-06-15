@@ -33,7 +33,9 @@ public abstract class CommonProgressSherlockFragment extends SherlockProgressFra
 	public void onResume() {
 
 		super.onResume();
-		getSherlockActivity().getSupportActionBar().setTitle(getTitleResource());
+		if (getTitleResource() != 0) {
+			getSherlockActivity().getSupportActionBar().setTitle(getTitleResource());
+		}
 	}
 
 	protected boolean isLoaderFinished(String name, int id) {
