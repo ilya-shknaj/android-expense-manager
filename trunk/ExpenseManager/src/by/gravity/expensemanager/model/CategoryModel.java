@@ -16,6 +16,10 @@ public class CategoryModel {
 
 	private List<String> avgSum = new ArrayList<String>();
 
+	private long sumAmount;
+
+	private String currency;
+
 	public String getName() {
 
 		return name;
@@ -73,4 +77,21 @@ public class CategoryModel {
 
 		return builder.toString();
 	}
+
+	public long getSumAmount() {
+		return sumAmount;
+	}
+
+	public void setSumAmount(long sumAmount) {
+		this.sumAmount = sumAmount;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
 }

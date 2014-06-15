@@ -49,6 +49,8 @@ public class LoaderHelper {
 	public static final int ADD_CATEGORY_ID = -18;
 	
 	public static final int UPDATE_CATEGORY_ID = -19;
+	
+	public static final int CATEGORIES_SUM_AMOUNT_ID = -20;
 
 	public static final String ARG_EXPENSE_DATA = "ARG_EXPENSE_DATA";
 
